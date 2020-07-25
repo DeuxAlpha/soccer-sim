@@ -1,4 +1,4 @@
-# soccer-sim
+# client
 
 ## Project setup
 ```
