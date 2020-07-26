@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{6673D1A7-73B9-4BEE-BDBA-9A0C33851001}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fiddles", "Fiddles\Fiddles.csproj", "{1CA5C797-7004-4A79-ADC4-416194916B85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{6673D1A7-73B9-4BEE-BDBA-9A0C33851001}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6673D1A7-73B9-4BEE-BDBA-9A0C33851001}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6673D1A7-73B9-4BEE-BDBA-9A0C33851001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CA5C797-7004-4A79-ADC4-416194916B85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CA5C797-7004-4A79-ADC4-416194916B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CA5C797-7004-4A79-ADC4-416194916B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CA5C797-7004-4A79-ADC4-416194916B85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
