@@ -7,5 +7,7 @@ namespace Domain.Models
         public int Minute { get; set; }
         public int AddedMinutes { get; set; }
         public int BallPosition { get; set; }
+        // If a team has momentum, the attacking strength gets respected. Otherwise, the defending strength gets respected.
+        public Team Momentum { get; set; }
     }
 }

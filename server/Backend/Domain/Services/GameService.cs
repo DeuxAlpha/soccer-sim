@@ -10,7 +10,22 @@ namespace Domain.Services
         private const double GoalChance = 0.75;
         private const int HalfFieldLength = 100;
 
-        public static GameResult CalculateGame(TeamLineUp homeTeam, TeamLineUp awayTeam)
+        public static GameResult CalculateGame_v2(TeamLineUp homeTeam, TeamLineUp awayTeam)
+        {
+            var gameStatus = new GameStatus
+            {
+                Minute = 0,
+                BallPosition = 0
+            };
+            var gameResult = new GameResult
+            {
+
+            };
+
+            return gameResult;
+        }
+
+        public static GameResult CalculateGame_v1(TeamLineUp homeTeam, TeamLineUp awayTeam)
         {
             var gameStatus = new GameStatus
             {
