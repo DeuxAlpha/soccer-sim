@@ -16,11 +16,11 @@ namespace Tests.Domain.ServiceTests.GameServiceTests
         {
             GameService.CalculateGame_v1(new TeamLineUp
             {
-                Strength = homeStrength
+                AttackStrength = homeStrength
             }, new TeamLineUp
             {
-                Strength = awayStrength
-            });
+                AttackStrength = awayStrength
+            }, new GameProperties());
             Assert.Pass("Simulation did not fail.");
         }
     }

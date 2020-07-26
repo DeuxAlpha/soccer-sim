@@ -14,6 +14,11 @@ namespace Domain.Services
             return Random.Next(start, inclusive ? end + 1 : end);
         }
 
+        public static double GetRandomNumber(double start, double end, bool inclusive = true)
+        {
+            return Random.Next((int) start, inclusive ? (int) end + 1 : (int) end);
+        }
+
         public static double GetRandomBetweenOneAndZero()
         {
             return Random.NextDouble();

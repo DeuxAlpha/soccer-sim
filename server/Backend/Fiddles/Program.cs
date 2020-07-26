@@ -11,31 +11,52 @@ namespace Fiddles
         private static void Main(string[] args)
         {
             CalculateResult_v1();
-            CalculateResult_v2();
         }
 
         private static void CalculateResult_v1()
         {
             var results = new List<GameResult>
             {
-                GameService.CalculateGame_v1(new TeamLineUp {Strength = 1000}, new TeamLineUp {Strength = 900}),
-                GameService.CalculateGame_v1(new TeamLineUp {Strength = 800}, new TeamLineUp {Strength = 600}),
-                GameService.CalculateGame_v1(new TeamLineUp {Strength = 250}, new TeamLineUp {Strength = 150}),
-                GameService.CalculateGame_v1(new TeamLineUp {Strength = 1200}, new TeamLineUp {Strength = 600}),
-                GameService.CalculateGame_v1(new TeamLineUp {Strength = 600}, new TeamLineUp {Strength = 1200}),
-                GameService.CalculateGame_v1(new TeamLineUp {Strength = 1000}, new TeamLineUp {Strength = 1050}),
+                GameService.CalculateGame_v1(
+                    new TeamLineUp
+                    {
+                        AttackStrength = 1150,
+                        DefenseStrength = 1150,
+                        GoalKeeperStrength = 1150,
+                        ShotOnGoalRate = 0.5,
+                        MaxPace = 40,
+                        PotentialPositiveShift = 10,
+                        PotentialPositiveShiftChance = 0.1,
+                        PotentialNegativeShift = 10,
+                        PotentialNegativeShiftChance = 0.1
+                    },
+                    new TeamLineUp
+                    {
+                        AttackStrength = 800,
+                        DefenseStrength = 800,
+                        GoalKeeperStrength = 800,
+                        ShotOnGoalRate = 0.5,
+                        MaxPace = 40,
+                        PotentialPositiveShift = 10,
+                        PotentialPositiveShiftChance = 0.1,
+                        PotentialNegativeShift = 10,
+                        PotentialNegativeShiftChance = 0.1
+                    },
+                    new GameProperties
+                    {
+                        ActionsPerMinute = 5, MaxOvertime = 10, MaxHalfFieldLength = 100
+                    }),
             };
             Console.WriteLine(results);
             foreach (var gameResult in results)
             {
-                Console.WriteLine($"Strengths - {gameResult.HomeStrength}:{gameResult.AwayStrength}");
                 foreach (var goalEvent in gameResult.GoalEvents)
                 {
                     if (goalEvent.IsGoal)
                     {
                         Console.WriteLine(goalEvent.AddedTime == null || goalEvent.AddedTime == 0
                             ? $"{goalEvent.Team} scores! {goalEvent.Minute}. Minute - {gameResult.GetScoreAtMinute(goalEvent.Minute)}"
-                            : $"{goalEvent.Team} scores! {goalEvent.Minute}. + {goalEvent.AddedTime} Minute - {gameResult.GetScoreAtMinute(goalEvent.Minute)}");
+                            : $"{goalEvent.Team} scores! {goalEvent.Minute}. + {goalEvent.AddedTime} Minute - {gameResult.GetScoreAtMinute(goalEvent.Minute, (int) goalEvent.AddedTime)}");
                     }
                     else
                     {
@@ -45,8 +66,11 @@ namespace Fiddles
                     }
                 }
 
+                Console.WriteLine($"Strengths at game end:");
+                Console.WriteLine($"{gameResult}");
                 Console.WriteLine(
                     $"Final result: {gameResult.HomeGoals}:{gameResult.AwayGoals} ({gameResult.HomeHalfTimeGoals}:{gameResult.AwayHalfTimeGoals})");
+                Console.WriteLine($"Tot. shots on goal: {gameResult.HomeShotsOnGoal}:{gameResult.AwayShotsOnGoal}");
                 Console.WriteLine($"Tot. chances: {gameResult.HomeChances}:{gameResult.AwayChances}");
             }
         }

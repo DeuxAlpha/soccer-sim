@@ -6,10 +6,6 @@ namespace Domain.Services
 {
     public static class GameService
     {
-        private const int MaxPace = 40;
-        private const double GoalChance = 0.75;
-        private const int HalfFieldLength = 100;
-
         public static GameResult CalculateGame_v2(TeamLineUp homeTeam, TeamLineUp awayTeam)
         {
             var gameStatus = new GameStatus
@@ -19,51 +15,79 @@ namespace Domain.Services
             };
             var gameResult = new GameResult
             {
-
             };
 
             return gameResult;
         }
 
-        public static GameResult CalculateGame_v1(TeamLineUp homeTeam, TeamLineUp awayTeam)
+        public static GameResult CalculateGame_v1(
+            TeamLineUp homeTeam,
+            TeamLineUp awayTeam,
+            GameProperties gameProperties)
         {
             var gameStatus = new GameStatus
             {
                 Minute = 0,
-                BallPosition = 0
+                BallPosition = 0,
             };
-            var gameResult = new GameResult
+            var gameResult = new GameResult();
+            var firstHalfMinutes = gameProperties.IsExtendedTime ? 15 : 45;
+            while (gameStatus.Minute < firstHalfMinutes)
             {
-                HomeStrength = homeTeam.Strength,
-                AwayStrength = awayTeam.Strength
-            };
-            while (gameStatus.Minute <= 45)
-            {
-                GameMovement(homeTeam, awayTeam, gameStatus);
-                AttackingOpportunity(gameResult, gameStatus);
+                gameStatus.Minute++;
+                for (var actionIndex = 0; actionIndex < gameProperties.ActionsPerMinute; actionIndex++)
+                {
+                    GameMovement(homeTeam, awayTeam, gameStatus);
+                }
+
+                AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
+                homeTeam.ApplyPotentialShift();
+                awayTeam.ApplyPotentialShift();
             }
 
-            var overtime = RandomService.GetRandomNumber(0, 8);
-            while (gameStatus.AddedMinutes <= overtime)
+            var overtime = RandomService.GetRandomNumber(0, gameProperties.MaxOvertime);
+            while (gameStatus.AddedMinutes < overtime)
             {
-                GameMovement(homeTeam, awayTeam, gameStatus, true);
-                AttackingOpportunity(gameResult, gameStatus);
+                gameStatus.AddedMinutes++;
+                for (var actionIndex = 0; actionIndex < gameProperties.ActionsPerMinute; actionIndex++)
+                {
+                    GameMovement(homeTeam, awayTeam, gameStatus);
+                }
+
+                AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
+                homeTeam.ApplyPotentialShift();
+                awayTeam.ApplyPotentialShift();
             }
 
             gameStatus.AddedMinutes = 0;
 
-            while (gameStatus.Minute <= 90)
+            var secondHalfMinutes = gameProperties.IsExtendedTime ? 30 : 90;
+            while (gameStatus.Minute < secondHalfMinutes)
             {
-                GameMovement(homeTeam, awayTeam, gameStatus);
-                AttackingOpportunity(gameResult, gameStatus);
+                gameStatus.Minute++;
+                for (var actionIndex = 0; actionIndex < gameProperties.ActionsPerMinute; actionIndex++)
+                {
+                    GameMovement(homeTeam, awayTeam, gameStatus);
+                }
+
+                AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
+                homeTeam.ApplyPotentialShift();
+                awayTeam.ApplyPotentialShift();
             }
 
-            overtime = RandomService.GetRandomNumber(0, 8);
+            overtime = RandomService.GetRandomNumber(0, gameProperties.MaxOvertime);
 
-            while (gameStatus.AddedMinutes <= overtime)
+            while (gameStatus.AddedMinutes < overtime)
             {
-                GameMovement(homeTeam, awayTeam, gameStatus, true);
-                AttackingOpportunity(gameResult, gameStatus);
+                gameStatus.AddedMinutes++;
+                for (var actionIndex = 0; actionIndex < gameProperties.ActionsPerMinute; actionIndex++)
+                {
+                    GameMovement(homeTeam, awayTeam, gameStatus);
+                }
+
+                AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
+                homeTeam.ApplyPotentialShift();
+                awayTeam.ApplyPotentialShift();
             }
 
             return gameResult;
@@ -72,50 +96,56 @@ namespace Domain.Services
         private static void GameMovement(
             TeamLineUp homeTeam,
             TeamLineUp awayTeam,
-            GameStatus gameStatus,
-            bool overtime = false)
+            GameStatus gameStatus)
         {
-            if (overtime)
-            {
-                gameStatus.AddedMinutes++;
-            }
-            else
-            {
-                gameStatus.Minute++;
-            }
-
-            var progressChance = homeTeam.Strength / (homeTeam.Strength + awayTeam.Strength);
-            var advancement = RandomService.GetRandomNumber(0, MaxPace);
+            var progressChance = gameStatus.Momentum == Team.Home
+                ? homeTeam.AttackStrength / (homeTeam.AttackStrength + awayTeam.DefenseStrength)
+                : awayTeam.AttackStrength / (awayTeam.AttackStrength + homeTeam.DefenseStrength);
             if (RandomService.GetRandomBetweenOneAndZero() < progressChance)
             {
-                gameStatus.BallPosition += advancement;
+                gameStatus.BallPosition += RandomService.GetRandomNumber(0, homeTeam.MaxPace);
+                gameStatus.Momentum = Team.Home;
             }
             else
             {
-                gameStatus.BallPosition -= advancement;
+                gameStatus.BallPosition -= RandomService.GetRandomNumber(0, awayTeam.MaxPace);
+                gameStatus.Momentum = Team.Away;
             }
         }
 
-        private static void AttackingOpportunity(GameResult gameResult, GameStatus gameStatus)
+        private static void AttackingOpportunity(
+            GameResult gameResult,
+            GameStatus gameStatus,
+            GameProperties gameProperties,
+            TeamLineUp homeTeam,
+            TeamLineUp awayTeam)
         {
-            if (gameStatus.BallPosition > HalfFieldLength)
+            if (gameStatus.BallPosition > gameProperties.MaxHalfFieldLength)
             {
+                var isShotOnGoal = RandomService.GetRandomBetweenOneAndZero() <= homeTeam.ShotOnGoalRate;
+                var goalChance = homeTeam.AttackStrength / (homeTeam.AttackStrength + awayTeam.GoalKeeperStrength);
+                var isKeeperBeat = RandomService.GetRandomBetweenOneAndZero() <= goalChance;
                 gameResult.GoalEvents.Add(new GoalEvent
                 {
                     Minute = gameStatus.Minute,
                     AddedTime = gameStatus.AddedMinutes,
-                    IsGoal = RandomService.GetRandomBetweenOneAndZero() <= GoalChance,
+                    IsShotOnGoal = isShotOnGoal,
+                    IsGoal = isKeeperBeat && isShotOnGoal,
                     Team = Team.Home
                 });
                 gameStatus.BallPosition = 0;
             }
-            else if (gameStatus.BallPosition < -HalfFieldLength)
+            else if (gameStatus.BallPosition < -gameProperties.MaxHalfFieldLength)
             {
+                var isShotOnGoal = RandomService.GetRandomBetweenOneAndZero() <= awayTeam.ShotOnGoalRate;
+                var goalChance = awayTeam.AttackStrength / (awayTeam.AttackStrength + homeTeam.GoalKeeperStrength);
+                var isKeeperBeat = RandomService.GetRandomBetweenOneAndZero() <= goalChance;
                 gameResult.GoalEvents.Add(new GoalEvent
                 {
                     Minute = gameStatus.Minute,
                     AddedTime = gameStatus.AddedMinutes,
-                    IsGoal = RandomService.GetRandomBetweenOneAndZero() <= GoalChance,
+                    IsShotOnGoal = isShotOnGoal,
+                    IsGoal = isKeeperBeat && isShotOnGoal,
                     Team = Team.Away
                 });
                 gameStatus.BallPosition = 0;
