@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fiddles", "Fiddles\Fiddles.csproj", "{1CA5C797-7004-4A79-ADC4-416194916B85}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{DA8CF6F7-196B-47FA-8005-8C7B0404F24E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{1CA5C797-7004-4A79-ADC4-416194916B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CA5C797-7004-4A79-ADC4-416194916B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CA5C797-7004-4A79-ADC4-416194916B85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA8CF6F7-196B-47FA-8005-8C7B0404F24E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA8CF6F7-196B-47FA-8005-8C7B0404F24E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA8CF6F7-196B-47FA-8005-8C7B0404F24E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA8CF6F7-196B-47FA-8005-8C7B0404F24E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
