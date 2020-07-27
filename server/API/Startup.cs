@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Database.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace API
 {
@@ -33,6 +28,10 @@ namespace API
                             .AllowAnyHeader()
                             .AllowAnyMethod());
             });
+
+            services.AddDbContext<SoccerSimContext>(options =>
+                options.UseSqlServer(
+                    "Server=localhost,20240;Database=soccer-sim;User Id=sa;Password=Your_password123"));
 
             services.AddControllers();
         }
