@@ -13,7 +13,9 @@ namespace Database.Models
         public double MaxHomeAdvantage { get; set; }
         public double MaxAwayDisadvantage { get; set; }
         public CompetitionType CompetitionType { get; set; }
+        public string CountryName { get; set; }
 
         public ICollection<TeamCompetition> Teams { get; set; }
+        public Country Country { get; set; }
     }
 }

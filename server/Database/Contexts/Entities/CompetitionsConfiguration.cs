@@ -12,6 +12,12 @@ namespace Database.Contexts.Entities
         {
             builder.HasKey(c => new {c.Name, c.Year});
 
+            builder.HasOne(c => c.Country)
+                .WithMany(c => c.Competitions)
+                .HasForeignKey(c => new {c.CountryName, c.Year})
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired(false);
+
             builder.Property(c => c.Year).HasMaxLength(4).IsRequired();
 
             builder.Property(c => c.Name).HasMaxLength(255).IsRequired();

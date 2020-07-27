@@ -1,4 +1,6 @@
-﻿namespace Database.Models
+﻿using System.Collections.Generic;
+
+namespace Database.Models
 {
     public class Country
     {
@@ -14,5 +16,7 @@
         public double PotentialNegativeChance { get; set; }
         public int MaxPace { get; set; }
         public double ShotOnGoalRate { get; set; }
+
+        public ICollection<Competition> Competitions { get; set; }
     }
 }
