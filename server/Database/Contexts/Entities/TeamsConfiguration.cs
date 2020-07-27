@@ -8,9 +8,9 @@ namespace Database.Contexts.Entities
     {
         public void Configure(EntityTypeBuilder<Team> builder)
         {
-            builder.HasKey(t => t.Id);
+            builder.HasKey(t => new {t.Name, t.Year});
 
-            builder.Property(t => t.Id).HasColumnName("ID").IsRequired();
+            builder.Property(t => t.Year).HasMaxLength(4).IsRequired();
 
             builder.Property(t => t.Name).HasMaxLength(255).IsRequired();
 
