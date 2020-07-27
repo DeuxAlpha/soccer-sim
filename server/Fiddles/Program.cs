@@ -31,7 +31,7 @@ namespace Fiddles
             {
                 AttackStrength = 800,
                 DefenseStrength = 650,
-                GoalKeeperStrength = 800,
+                GoalKeeperStrength = 1100,
                 ShotOnGoalRate = 0.3,
                 MaxPace = 45,
                 PotentialPositiveShift = 30,
@@ -49,8 +49,8 @@ namespace Fiddles
                         ActionsPerMinute = 5,
                         MaxOvertime = 10,
                         MaxHalfFieldLength = 100,
-                        ShotAccuracyModifier = 1,
-                        PaceModifier = 1,
+                        ShotAccuracyModifier = 0.8,
+                        PaceModifier = 0.8,
                         ApplyHomeAdvantage = true,
                         MaxHomeAdvantage = 50,
                         MaxAwayDisadvantage = 100
