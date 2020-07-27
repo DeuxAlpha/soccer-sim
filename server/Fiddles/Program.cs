@@ -20,35 +20,38 @@ namespace Fiddles
                 GameService.CalculateGame_v1(
                     new TeamLineUp
                     {
-                        AttackStrength = 350,
-                        DefenseStrength = 350,
-                        GoalKeeperStrength = 350,
-                        ShotOnGoalRate = 0.25,
+                        AttackStrength = 1250,
+                        DefenseStrength = 1000,
+                        GoalKeeperStrength = 900,
+                        ShotOnGoalRate = 0.4,
                         MaxPace = 40,
-                        PotentialPositiveShift = 10,
+                        PotentialPositiveShift = 25,
                         PotentialPositiveShiftChance = 0.1,
                         PotentialNegativeShift = 10,
-                        PotentialNegativeShiftChance = 0.1
+                        PotentialNegativeShiftChance = 0.075
                     },
                     new TeamLineUp
                     {
-                        AttackStrength = 150,
-                        DefenseStrength = 150,
-                        GoalKeeperStrength = 150,
-                        ShotOnGoalRate = 0.35,
-                        MaxPace = 40,
-                        PotentialPositiveShift = 20,
+                        AttackStrength = 800,
+                        DefenseStrength = 650,
+                        GoalKeeperStrength = 800,
+                        ShotOnGoalRate = 0.3,
+                        MaxPace = 45,
+                        PotentialPositiveShift = 30,
                         PotentialPositiveShiftChance = 0.1,
-                        PotentialNegativeShift = 10,
-                        PotentialNegativeShiftChance = 0.1
+                        PotentialNegativeShift = 25,
+                        PotentialNegativeShiftChance = 0.05
                     },
                     new GameProperties
                     {
                         ActionsPerMinute = 5,
                         MaxOvertime = 10,
                         MaxHalfFieldLength = 100,
-                        ShotAccuracyModifier = 0.9,
-                        PaceModifier = 1.4
+                        ShotAccuracyModifier = 1,
+                        PaceModifier = 1,
+                        ApplyHomeAdvantage = true,
+                        MaxHomeAdvantage = 50,
+                        MaxAwayDisadvantage = 100
                     }),
             };
             Console.WriteLine(results);

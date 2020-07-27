@@ -8,6 +8,9 @@
         public int MaxOvertime { get; set; }
         public double ShotAccuracyModifier { get; set; }
         public double PaceModifier { get; set; }
+        public double MaxHomeAdvantage { get; set; }
+        public double MaxAwayDisadvantage { get; set; }
+        public bool ApplyHomeAdvantage { get; set; }
 
         public GameProperties()
         {

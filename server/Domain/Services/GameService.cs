@@ -23,6 +23,15 @@ namespace Domain.Services
             TeamLineUp awayTeam,
             GameProperties gameProperties)
         {
+            if (gameProperties.ApplyHomeAdvantage)
+            {
+                homeTeam.AttackStrength += RandomService.GetRandomNumber(0, gameProperties.MaxHomeAdvantage);
+                homeTeam.DefenseStrength += RandomService.GetRandomNumber(0, gameProperties.MaxHomeAdvantage);
+                homeTeam.GoalKeeperStrength += RandomService.GetRandomNumber(0, gameProperties.MaxHomeAdvantage);
+                awayTeam.AttackStrength -= RandomService.GetRandomNumber(0, gameProperties.MaxAwayDisadvantage);
+                awayTeam.DefenseStrength -= RandomService.GetRandomNumber(0, gameProperties.MaxAwayDisadvantage);
+                awayTeam.GoalKeeperStrength -= RandomService.GetRandomNumber(0, gameProperties.MaxAwayDisadvantage);
+            }
             var gameStatus = new GameStatus
             {
                 Minute = 0,
