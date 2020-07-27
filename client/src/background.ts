@@ -16,11 +16,15 @@ protocol.registerSchemesAsPrivileged([
   {scheme: 'app', privileges: {secure: true, standard: true}}
 ])
 
-const serverPath = path.resolve(__dirname, '..\\..\\server\\Backend\\API\\bin\\Debug\\netcoreapp3.1\\API.exe');
-const server = childProcess.execFile(serverPath);
-server.on('close', (code, signal) => {
-
-})
+if (!process.env.IS_TEST) {
+  const serverPath = path.resolve(__dirname, '..\\..\\server\\Backend\\API\\bin\\Debug\\netcoreapp3.1\\API.exe');
+  const server = childProcess.execFile(serverPath);
+  server.on('close', ((code, signal) => console.log('connection to server closed', code, signal)));
+  server.on('disconnect', (() => console.log('connection to server lost')));
+  server.on('error', (err => console.log('received error message from server', err)));
+  server.on('exit', (code, signal) => console.log('server exited', code, signal));
+  server.on('message', (message, sendHandle) => console.log('received message from server', message, sendHandle));
+}
 
 function createWindow() {
   // Create the browser window.
@@ -34,6 +38,7 @@ function createWindow() {
         .ELECTRON_NODE_INTEGRATION as unknown) as boolean
     }
   })
+  win.maximize();
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
