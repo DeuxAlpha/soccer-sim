@@ -15,33 +15,35 @@ namespace Fiddles
 
         private static void CalculateResult_v1()
         {
+            var homeTeam = new TeamLineUp
+            {
+                AttackStrength = 1250,
+                DefenseStrength = 1000,
+                GoalKeeperStrength = 900,
+                ShotOnGoalRate = 0.4,
+                MaxPace = 40,
+                PotentialPositiveShift = 25,
+                PotentialPositiveShiftChance = 0.1,
+                PotentialNegativeShift = 10,
+                PotentialNegativeShiftChance = 0.075
+            };
+            var awayTeam = new TeamLineUp
+            {
+                AttackStrength = 800,
+                DefenseStrength = 650,
+                GoalKeeperStrength = 800,
+                ShotOnGoalRate = 0.3,
+                MaxPace = 45,
+                PotentialPositiveShift = 30,
+                PotentialPositiveShiftChance = 0.1,
+                PotentialNegativeShift = 25,
+                PotentialNegativeShiftChance = 0.05
+            };
             var results = new List<GameResult>
             {
                 GameService.CalculateGame_v1(
-                    new TeamLineUp
-                    {
-                        AttackStrength = 1250,
-                        DefenseStrength = 1000,
-                        GoalKeeperStrength = 900,
-                        ShotOnGoalRate = 0.4,
-                        MaxPace = 40,
-                        PotentialPositiveShift = 25,
-                        PotentialPositiveShiftChance = 0.1,
-                        PotentialNegativeShift = 10,
-                        PotentialNegativeShiftChance = 0.075
-                    },
-                    new TeamLineUp
-                    {
-                        AttackStrength = 800,
-                        DefenseStrength = 650,
-                        GoalKeeperStrength = 800,
-                        ShotOnGoalRate = 0.3,
-                        MaxPace = 45,
-                        PotentialPositiveShift = 30,
-                        PotentialPositiveShiftChance = 0.1,
-                        PotentialNegativeShift = 25,
-                        PotentialNegativeShiftChance = 0.05
-                    },
+                    homeTeam,
+                    awayTeam,
                     new GameProperties
                     {
                         ActionsPerMinute = 5,
@@ -77,6 +79,7 @@ namespace Fiddles
                     $"Final result: {gameResult.HomeGoals}:{gameResult.AwayGoals} ({gameResult.HomeHalfTimeGoals}:{gameResult.AwayHalfTimeGoals})");
                 Console.WriteLine($"Tot. shots on goal: {gameResult.HomeShotsOnGoal}:{gameResult.AwayShotsOnGoal}");
                 Console.WriteLine($"Tot. chances: {gameResult.HomeChances}:{gameResult.AwayChances}");
+                Console.WriteLine($"Possession: {gameResult.HomePossession * 100}%:{gameResult.AwayPossession * 100}%");
             }
         }
 

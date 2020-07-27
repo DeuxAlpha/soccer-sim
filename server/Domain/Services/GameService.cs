@@ -23,6 +23,7 @@ namespace Domain.Services
             TeamLineUp awayTeam,
             GameProperties gameProperties)
         {
+            var gameResult = new GameResult();
             if (gameProperties.ApplyHomeAdvantage)
             {
                 homeTeam.AttackStrength += RandomService.GetRandomNumber(0, gameProperties.MaxHomeAdvantage);
@@ -37,7 +38,6 @@ namespace Domain.Services
                 Minute = 0,
                 BallPosition = 0,
             };
-            var gameResult = new GameResult();
             var firstHalfMinutes = gameProperties.IsExtendedTime ? 15 : 45;
             while (gameStatus.Minute < firstHalfMinutes)
             {
@@ -45,6 +45,7 @@ namespace Domain.Services
                 for (var actionIndex = 0; actionIndex < gameProperties.ActionsPerMinute; actionIndex++)
                 {
                     GameMovement(homeTeam, awayTeam, gameStatus, gameProperties);
+                    gameResult.Possessions.Add(gameStatus.Momentum);
                 }
 
                 AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
@@ -59,6 +60,7 @@ namespace Domain.Services
                 for (var actionIndex = 0; actionIndex < gameProperties.ActionsPerMinute; actionIndex++)
                 {
                     GameMovement(homeTeam, awayTeam, gameStatus, gameProperties);
+                    gameResult.Possessions.Add(gameStatus.Momentum);
                 }
 
                 AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
@@ -75,6 +77,7 @@ namespace Domain.Services
                 for (var actionIndex = 0; actionIndex < gameProperties.ActionsPerMinute; actionIndex++)
                 {
                     GameMovement(homeTeam, awayTeam, gameStatus, gameProperties);
+                    gameResult.Possessions.Add(gameStatus.Momentum);
                 }
 
                 AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
@@ -90,6 +93,7 @@ namespace Domain.Services
                 for (var actionIndex = 0; actionIndex < gameProperties.ActionsPerMinute; actionIndex++)
                 {
                     GameMovement(homeTeam, awayTeam, gameStatus, gameProperties);
+                    gameResult.Possessions.Add(gameStatus.Momentum);
                 }
 
                 AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
