@@ -14,8 +14,10 @@ namespace Database.Models
         public double MaxAwayDisadvantage { get; set; }
         public CompetitionType CompetitionType { get; set; }
         public string CountryName { get; set; }
+        public string ContinentName { get; set; }
 
         public ICollection<TeamCompetition> Teams { get; set; }
         public Country Country { get; set; }
+        public Continent Continent { get; set; }
     }
 }

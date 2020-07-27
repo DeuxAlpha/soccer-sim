@@ -16,6 +16,7 @@ namespace Database.Contexts
         public DbSet<Competition> Competitions { get; set; }
         public DbSet<TeamCompetition> TeamCompetitions { get; set; }
         public DbSet<Country> Countries { get; set; }
+        public DbSet<Continent> Continents { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
