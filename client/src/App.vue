@@ -1,32 +1,25 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <div id="app" class="min-h-screen">
+    <div id="nav" class="bg-gray-100 flex flex-col min-h-screen">
+      <router-link class="transition duration-100 py-2 px-1 text-xl text-gray-800 hover:underline" to="/" :active-class="ActiveClass">Home</router-link>
     </div>
     <router-view/>
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script lang="ts">
+import {Vue, Component} from "vue-property-decorator";
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+@Component
+export default class App extends Vue {
+  get ActiveClass(): string {
+    return 'bg-blue-200';
   }
+}
+</script>
+
+<style lang="scss">
+#nav {
+  width: 200px;
 }
 </style>

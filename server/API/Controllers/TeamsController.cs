@@ -1,9 +1,7 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using API.Dtos;
 using Database.Contexts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Querying.Query.Models;
 using Querying.Query.Services;
 
