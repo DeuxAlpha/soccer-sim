@@ -1,4 +1,5 @@
-﻿using Database.Enums;
+﻿using System.Collections.Generic;
+using Database.Enums;
 
 namespace Database.Models
 {
@@ -12,5 +13,7 @@ namespace Database.Models
         public double MaxHomeAdvantage { get; set; }
         public double MaxAwayDisadvantage { get; set; }
         public CompetitionType CompetitionType { get; set; }
+
+        public ICollection<TeamCompetition> Teams { get; set; }
     }
 }

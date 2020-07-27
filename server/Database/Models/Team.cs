@@ -1,4 +1,6 @@
-﻿namespace Database.Models
+﻿using System.Collections.Generic;
+
+namespace Database.Models
 {
     public class Team
     {
@@ -15,5 +17,7 @@
         public double PotentialNegativeChance { get; set; }
         public int MaxPace { get; set; }
         public double ShotOnGoalRate { get; set; }
+
+        public ICollection<TeamCompetition> Competitions { get; set; }
     }
 }

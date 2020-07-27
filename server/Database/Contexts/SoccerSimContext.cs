@@ -14,6 +14,7 @@ namespace Database.Contexts
 
         public DbSet<Team> Teams { get; set; }
         public DbSet<Competition> Competitions { get; set; }
+        public DbSet<TeamCompetition> TeamCompetitions { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
