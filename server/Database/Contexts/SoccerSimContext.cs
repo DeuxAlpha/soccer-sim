@@ -22,7 +22,7 @@ namespace Database.Contexts
         {
             if (optionsBuilder.IsConfigured) return;
             optionsBuilder.UseSqlServer(
-                "Server=localhost,20240;Database=soccer-sim;User Id=sa;Password=Your_password123");
+                Configuration.StaticConfig.GetValue<string>("ConnectionStrings:Development"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

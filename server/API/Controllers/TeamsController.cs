@@ -2,9 +2,10 @@
 using System.Threading.Tasks;
 using API.Dtos;
 using Database.Contexts;
-using Database.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Querying.Query.Models;
+using Querying.Query.Services;
 
 namespace API.Controllers
 {
@@ -20,10 +21,10 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTeams()
+        public IActionResult GetTeams(QueryRequest request)
         {
-            var teams = await _context.Teams.ToListAsync();
-            return Ok(teams.Select(t => new TeamDto(t)));
+            var response = QueryService.GetQueryResponse(_context.Teams.Select(t => new TeamDto(t)), request);
+            return Ok(response);
         }
     }
 }
