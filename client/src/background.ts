@@ -5,7 +5,7 @@ import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, {VUEJS_DEVTOOLS} from 'electron-devtools-installer'
 import path from 'path';
 const isDevelopment = process.env.NODE_ENV !== 'production'
-import childProcess from 'child_process';
+import childProcess, {ChildProcess} from 'child_process';
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -16,9 +16,11 @@ protocol.registerSchemesAsPrivileged([
   {scheme: 'app', privileges: {secure: true, standard: true}}
 ])
 
-if (!process.env.IS_TEST) {
+let server: ChildProcess;
+
+if (process.env.NODE_ENV === 'production') {
   const serverPath = path.resolve(__dirname, '..\\..\\server\\Backend\\API\\bin\\Debug\\netcoreapp3.1\\API.exe');
-  const server = childProcess.execFile(serverPath);
+  server = childProcess.execFile(serverPath);
   server.on('close', ((code, signal) => console.log('connection to server closed', code, signal)));
   server.on('disconnect', (() => console.log('connection to server lost')));
   server.on('error', (err => console.log('received error message from server', err)));
@@ -59,6 +61,10 @@ function createWindow() {
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
+  if (server) {
+    server.kill();
+  }
+
   if (process.platform !== 'darwin') {
     app.quit()
   }
