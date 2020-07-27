@@ -1,0 +1,17 @@
+﻿version: "3.7"
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: on-failure
+    container_name: soccer-sim_sql-server
+    environment:
+      ACCEPT_EULA: y
+      SA_PASSWORD: Your_password123
+    ports:
+    - 20240:1433
+    volumes:
+    - soccer-sim-data:/var/opt/mssql
+
+volumes:
+  soccer-sim-data:
