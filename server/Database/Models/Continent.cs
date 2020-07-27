@@ -6,6 +6,6 @@ namespace Database.Models
     {
         public string Year { get; set; }
         public string Name { get; set; }
-        public ICollection<Competition> Competitions { get; set; }
+        public ICollection<Country> Countries { get; set; }
     }
 }

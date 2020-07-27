@@ -3,7 +3,7 @@ using Database.Enums;
 
 namespace Database.Models
 {
-    public class Competition
+    public class League
     {
         public string Year { get; set; }
         public string Name { get; set; }
@@ -12,13 +12,10 @@ namespace Database.Models
         public double PaceModifier { get; set; }
         public double MaxHomeAdvantage { get; set; }
         public double MaxAwayDisadvantage { get; set; }
-        public CompetitionType CompetitionType { get; set; }
-        public string CountryName { get; set; }
-        public string ContinentName { get; set; }
+        public string DivisionName { get; set; }
         public string Image { get; set; }
 
-        public ICollection<TeamCompetition> Teams { get; set; }
-        public Country Country { get; set; }
-        public Continent Continent { get; set; }
+        public ICollection<Team> Teams { get; set; }
+        public Division Division { get; set; }
     }
 }

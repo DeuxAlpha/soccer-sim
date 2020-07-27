@@ -17,9 +17,10 @@ namespace Database.Models
         public int MaxPace { get; set; }
         public double ShotOnGoalRate { get; set; }
         public double CountryStrengthModifier { get; set; }
+        public string ContinentName { get; set; }
         public string Image { get; set; }
 
-        public ICollection<Competition> Competitions { get; set; }
-        public ICollection<Team> Teams { get; set; }
+        public ICollection<Division> Divisions { get; set; }
+        public Continent Continent { get; set; }
     }
 }

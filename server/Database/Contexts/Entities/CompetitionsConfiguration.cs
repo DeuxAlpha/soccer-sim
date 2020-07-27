@@ -6,35 +6,23 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Database.Contexts.Entities
 {
-    public class CompetitionsConfiguration : IEntityTypeConfiguration<Competition>
+    public class CompetitionsConfiguration : IEntityTypeConfiguration<League>
     {
-        public void Configure(EntityTypeBuilder<Competition> builder)
+        public void Configure(EntityTypeBuilder<League> builder)
         {
             builder.HasKey(c => new {c.Name, c.Year});
 
-            builder.HasOne(c => c.Country)
-                .WithMany(c => c.Competitions)
-                .HasForeignKey(c => new {c.CountryName, c.Year})
+            builder.HasOne(c => c.Division)
+                .WithMany(c => c.Leagues)
+                .HasForeignKey(c => new {c.DivisionName, c.Year})
                 .OnDelete(DeleteBehavior.Restrict)
-                .IsRequired(false);
-
-            builder.HasOne(c => c.Continent)
-                .WithMany(c => c.Competitions)
-                .HasForeignKey(c => new {c.ContinentName, c.Year})
-                .OnDelete(DeleteBehavior.Restrict)
-                .IsRequired(false);
+                .IsRequired();
 
             builder.Property(c => c.Year).HasMaxLength(4).IsRequired();
 
             builder.Property(c => c.Name).HasMaxLength(255).IsRequired();
 
             builder.Property(c => c.Abbreviation).HasMaxLength(10);
-
-            builder.Property(c => c.CompetitionType)
-                .HasMaxLength(20)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => (CompetitionType) Enum.Parse(typeof(CompetitionType), v)).IsRequired();
 
             builder.Property(c => c.PaceModifier).HasDefaultValue(1).IsRequired();
 

@@ -10,9 +10,9 @@ namespace Database.Contexts.Entities
         {
             builder.HasKey(t => new {t.Name, t.Year});
 
-            builder.HasOne(t => t.Country)
+            builder.HasOne(t => t.League)
                 .WithMany(c => c.Teams)
-                .HasForeignKey(t => new {t.CountryName, t.Year})
+                .HasForeignKey(t => new {t.LeagueName, t.Year})
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 

@@ -17,10 +17,9 @@ namespace Database.Models
         public double PotentialNegativeChance { get; set; }
         public int MaxPace { get; set; }
         public double ShotOnGoalRate { get; set; }
-        public string CountryName { get; set; }
+        public string LeagueName { get; set; }
         public string Image { get; set; }
 
-        public ICollection<TeamCompetition> Competitions { get; set; }
-        public Country Country { get; set; }
+        public League League { get; set; }
     }
 }

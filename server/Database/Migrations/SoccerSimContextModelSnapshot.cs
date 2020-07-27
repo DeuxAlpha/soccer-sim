@@ -18,63 +18,6 @@ namespace Database.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Database.Models.Competition", b =>
-                {
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("Year")
-                        .HasColumnType("nvarchar(4)")
-                        .HasMaxLength(4);
-
-                    b.Property<string>("Abbreviation")
-                        .HasColumnType("nvarchar(10)")
-                        .HasMaxLength(10);
-
-                    b.Property<string>("CompetitionType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
-
-                    b.Property<string>("ContinentName")
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("CountryName")
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("MaxAwayDisadvantage")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(0.0);
-
-                    b.Property<double>("MaxHomeAdvantage")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(0.0);
-
-                    b.Property<double>("PaceModifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(1.0);
-
-                    b.Property<double>("ShotAccuracyModifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(1.0);
-
-                    b.HasKey("Name", "Year");
-
-                    b.HasIndex("ContinentName", "Year");
-
-                    b.HasIndex("CountryName", "Year");
-
-                    b.ToTable("Competitions");
-                });
-
             modelBuilder.Entity("Database.Models.Continent", b =>
                 {
                     b.Property<string>("Name")
@@ -109,6 +52,10 @@ namespace Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("float")
                         .HasDefaultValue(600.0);
+
+                    b.Property<string>("ContinentName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<double>("CountryStrengthModifier")
                         .ValueGeneratedOnAdd()
@@ -160,7 +107,87 @@ namespace Database.Migrations
 
                     b.HasKey("Name", "Year");
 
+                    b.HasIndex("ContinentName", "Year");
+
                     b.ToTable("Countries");
+                });
+
+            modelBuilder.Entity("Database.Models.Division", b =>
+                {
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("Year")
+                        .HasColumnType("nvarchar(4)")
+                        .HasMaxLength(4);
+
+                    b.Property<string>("Abbreviation")
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
+
+                    b.Property<string>("CountryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("Level")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.HasKey("Name", "Year");
+
+                    b.HasIndex("CountryName", "Year");
+
+                    b.ToTable("Divisions");
+                });
+
+            modelBuilder.Entity("Database.Models.League", b =>
+                {
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("Year")
+                        .HasColumnType("nvarchar(4)")
+                        .HasMaxLength(4);
+
+                    b.Property<string>("Abbreviation")
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
+
+                    b.Property<string>("DivisionName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("MaxAwayDisadvantage")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<double>("MaxHomeAdvantage")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<double>("PaceModifier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(1.0);
+
+                    b.Property<double>("ShotAccuracyModifier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(1.0);
+
+                    b.HasKey("Name", "Year");
+
+                    b.HasIndex("DivisionName", "Year");
+
+                    b.ToTable("Competitions");
                 });
 
             modelBuilder.Entity("Database.Models.Team", b =>
@@ -183,10 +210,6 @@ namespace Database.Migrations
                         .HasColumnType("float")
                         .HasDefaultValue(600.0);
 
-                    b.Property<string>("CountryName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(255)");
-
                     b.Property<double>("DefenseStrength")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("float")
@@ -199,6 +222,10 @@ namespace Database.Migrations
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LeagueName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("MaxPace")
                         .ValueGeneratedOnAdd()
@@ -236,67 +263,43 @@ namespace Database.Migrations
 
                     b.HasKey("Name", "Year");
 
-                    b.HasIndex("CountryName", "Year");
+                    b.HasIndex("LeagueName", "Year");
 
                     b.ToTable("Teams");
                 });
 
-            modelBuilder.Entity("Database.Models.TeamCompetition", b =>
-                {
-                    b.Property<string>("Year")
-                        .HasColumnType("nvarchar(4)")
-                        .HasMaxLength(4);
-
-                    b.Property<string>("TeamName")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("CompetitionName")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.HasKey("Year", "TeamName", "CompetitionName");
-
-                    b.HasIndex("CompetitionName", "Year");
-
-                    b.HasIndex("TeamName", "Year");
-
-                    b.ToTable("TeamCompetitions");
-                });
-
-            modelBuilder.Entity("Database.Models.Competition", b =>
+            modelBuilder.Entity("Database.Models.Country", b =>
                 {
                     b.HasOne("Database.Models.Continent", "Continent")
-                        .WithMany("Competitions")
+                        .WithMany("Countries")
                         .HasForeignKey("ContinentName", "Year")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
 
+            modelBuilder.Entity("Database.Models.Division", b =>
+                {
                     b.HasOne("Database.Models.Country", "Country")
-                        .WithMany("Competitions")
+                        .WithMany("Divisions")
                         .HasForeignKey("CountryName", "Year")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Database.Models.League", b =>
+                {
+                    b.HasOne("Database.Models.Division", "Division")
+                        .WithMany("Leagues")
+                        .HasForeignKey("DivisionName", "Year")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Database.Models.Team", b =>
                 {
-                    b.HasOne("Database.Models.Country", "Country")
+                    b.HasOne("Database.Models.League", "League")
                         .WithMany("Teams")
-                        .HasForeignKey("CountryName", "Year")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Database.Models.TeamCompetition", b =>
-                {
-                    b.HasOne("Database.Models.Competition", "Competition")
-                        .WithMany("Teams")
-                        .HasForeignKey("CompetitionName", "Year")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Database.Models.Team", "Team")
-                        .WithMany("Competitions")
-                        .HasForeignKey("TeamName", "Year")
+                        .HasForeignKey("LeagueName", "Year")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

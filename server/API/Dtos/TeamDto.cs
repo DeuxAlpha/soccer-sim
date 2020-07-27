@@ -18,7 +18,7 @@ namespace API.Dtos
         public double PotentialNegativeChance { get; set; }
         public int MaxPace { get; set; }
         public double ShotOnGoalRate { get; set; }
-        public string CountryName { get; set; }
+        public string LeagueName { get; set; }
         public string Image { get; set; }
 
         public TeamDto(Team team)
@@ -36,7 +36,7 @@ namespace API.Dtos
             PotentialNegativeChance = team.PotentialNegativeChance;
             MaxPace = team.MaxPace;
             ShotOnGoalRate = team.ShotOnGoalRate;
-            CountryName = team.CountryName;
+            LeagueName = team.LeagueName;
             Image = team.Image;
         }
     }
