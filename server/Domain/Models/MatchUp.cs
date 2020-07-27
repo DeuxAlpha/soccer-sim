@@ -1,8 +1,8 @@
 ﻿namespace Domain.Models
 {
-    public class MatchUp
+    public class MatchUp<T>
     {
-        public int HomeId { get; set; }
-        public int AwayId { get; set; }
+        public T Home { get; set; }
+        public T Away { get; set; }
     }
 }

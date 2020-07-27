@@ -7,37 +7,43 @@ namespace Domain.Services
 {
     public static class MatchUpService
     {
-        public static IEnumerable<GameDay> CreateRoundRobin(int teams, bool reverseFixtures)
+        public static IEnumerable<GameDay<T>> CreateRoundRobin<T>(List<T> participants, bool reverseFixtures)
         {
-            var overallGameDays = teams % 2 == 0 ? teams - 1 : teams;
+            var participantCount = participants.Count;
+            var overallGameDays = participantCount % 2 == 0 ? participantCount - 1 : participantCount;
             var sideToggle = true;
-            var teamIndices = new List<TeamIndex>();
-            for (var teamIndex = 0; teamIndex < teams; teamIndex++)
+            var teamIndices = new List<TeamIndex<T>>();
+            for (var teamIndex = 0; teamIndex < participantCount; teamIndex++)
             {
-                teamIndices.Add(new TeamIndex
+                var participant = participants[teamIndex];
+                teamIndices.Add(new TeamIndex<T>
                 {
                     Place = teamIndex + 1,
-                    TeamId = teamIndex
+                    Team = participant
                 });
             }
 
-            var gameDays = new List<GameDay>();
+            var gameDays = new List<GameDay<T>>();
             for (var gameDayIndex = 0; gameDayIndex < overallGameDays; gameDayIndex++)
             {
-                var gameDay = new GameDay();
-                var firstTeam = -1;
+                var gameDay = new GameDay<T>();
+                var firstTeamAssigned = false;
+                T firstTeam = default;
                 foreach (var teamIndex in teamIndices.OrderBy(i => i.Place))
                 {
-                    if (firstTeam == -1)
-                        firstTeam = teamIndex.TeamId;
+                    if (firstTeamAssigned == false)
+                    {
+                        firstTeam = teamIndex.Team;
+                        firstTeamAssigned = true;
+                    }
                     else
                     {
-                        gameDay.Games.Add(new MatchUp
+                        gameDay.Games.Add(new MatchUp<T>
                         {
-                            HomeId = sideToggle && teamIndex.Place == 2 ? firstTeam : teamIndex.TeamId,
-                            AwayId = sideToggle && teamIndex.Place == 2 ? teamIndex.TeamId : firstTeam
+                            Home = sideToggle && teamIndex.Place == 2 ? firstTeam : teamIndex.Team,
+                            Away = sideToggle && teamIndex.Place == 2 ? teamIndex.Team : firstTeam
                         });
-                        firstTeam = -1;
+                        firstTeamAssigned = false;
                     }
                 }
 
@@ -49,16 +55,16 @@ namespace Domain.Services
 
             if (!reverseFixtures) return gameDays;
             {
-                var reverseGames = new List<GameDay>();
+                var reverseGames = new List<GameDay<T>>();
                 foreach (var gameDay in gameDays)
                 {
-                    var reverseGameDay = new GameDay();
+                    var reverseGameDay = new GameDay<T>();
                     foreach (var game in gameDay.Games)
                     {
-                        reverseGameDay.Games.Add(new MatchUp
+                        reverseGameDay.Games.Add(new MatchUp<T>
                         {
-                            HomeId = game.AwayId,
-                            AwayId = game.HomeId
+                            Home = game.Away,
+                            Away = game.Home
                         });
                     }
 
@@ -70,19 +76,19 @@ namespace Domain.Services
             return gameDays;
         }
 
-        private static void Rotate(IReadOnlyCollection<TeamIndex> teamIndices)
+        private static void Rotate<T>(IReadOnlyCollection<TeamIndex<T>> teamIndices)
         {
             var maxPlace = teamIndices.Count;
-            foreach (var teamIndex in teamIndices.Where(teamIndex => teamIndex.TeamId != 0))
+            foreach (var teamIndex in teamIndices.Where(teamIndex => teamIndex.Place != 1))
             {
                 if (teamIndex.Place == maxPlace) teamIndex.Place = 2;
                 else teamIndex.Place++;
             }
         }
 
-        private class TeamIndex
+        private class TeamIndex<T>
         {
-            public int TeamId { get; set; }
+            public T Team { get; set; }
             public int Place { get; set; }
         }
     }
