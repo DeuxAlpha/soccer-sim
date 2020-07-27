@@ -187,7 +187,7 @@ namespace Database.Migrations
 
                     b.HasIndex("DivisionName", "Year");
 
-                    b.ToTable("Competitions");
+                    b.ToTable("Leagues");
                 });
 
             modelBuilder.Entity("Database.Models.LeagueFixture", b =>

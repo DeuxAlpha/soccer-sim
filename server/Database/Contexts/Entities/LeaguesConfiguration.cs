@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Database.Contexts.Entities
 {
-    public class CompetitionsConfiguration : IEntityTypeConfiguration<League>
+    public class LeaguesConfiguration : IEntityTypeConfiguration<League>
     {
         public void Configure(EntityTypeBuilder<League> builder)
         {

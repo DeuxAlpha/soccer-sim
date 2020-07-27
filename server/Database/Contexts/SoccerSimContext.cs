@@ -14,7 +14,7 @@ namespace Database.Contexts
         public SoccerSimContext(DbContextOptions options) : base(options){}
 
         public DbSet<Team> Teams { get; set; }
-        public DbSet<League> Competitions { get; set; }
+        public DbSet<League> Leagues { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<Continent> Continents { get; set; }
         public DbSet<Division> Divisions { get; set; }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Database.Migrations
 {
     [DbContext(typeof(SoccerSimContext))]
-    [Migration("20200727214416_InitialMigration")]
+    [Migration("20200727232016_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -189,7 +189,7 @@ namespace Database.Migrations
 
                     b.HasIndex("DivisionName", "Year");
 
-                    b.ToTable("Competitions");
+                    b.ToTable("Leagues");
                 });
 
             modelBuilder.Entity("Database.Models.LeagueFixture", b =>
