@@ -6,7 +6,9 @@
         public bool IsExtendedTime { get; set; }
         public int ActionsPerMinute { get; set; }
         public int MaxOvertime { get; set; }
+        // How many shots are accurate enough to go on goal.
         public double ShotAccuracyModifier { get; set; }
+        // How many shots generally happen.
         public double PaceModifier { get; set; }
         public double MaxHomeAdvantage { get; set; }
         public double MaxAwayDisadvantage { get; set; }
