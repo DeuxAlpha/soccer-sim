@@ -10,4 +10,10 @@ namespace Domain.Models
         public bool IsShotOnGoal { get; set; }
         public Team Team { get; set; }
     }
+
+    public class PenaltyEvent
+    {
+        public Team Team { get; set; }
+        public bool IsGoal { get; set; }
+    }
 }

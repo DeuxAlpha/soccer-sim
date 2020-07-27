@@ -18,6 +18,64 @@ namespace Domain.Services
             return gameResult;
         }
 
+        public static PenaltiesResult CalculatePenalties()
+        {
+            var result = new PenaltiesResult();
+            var homeShoots = true;
+            var tries = 0;
+            var maxTries = 10;
+            while (tries != maxTries)
+            {
+                tries++;
+                RandomService.GetRandomBetweenOneAndZero();
+                if (RandomService.GetRandomBetweenOneAndZero() <= 0.75)
+                {
+                    if (homeShoots)
+                    {
+                        result.PenaltyEvents.Add(new PenaltyEvent
+                        {
+                            Team = Team.Home,
+                            IsGoal = true
+                        });
+                        homeShoots = false;
+                    }
+                    else
+                    {
+                        result.PenaltyEvents.Add(new PenaltyEvent
+                        {
+                            Team = Team.Away,
+                            IsGoal = true
+                        });
+                        homeShoots = true;
+                    }
+                }
+                else if (homeShoots)
+                {
+                    result.PenaltyEvents.Add(new PenaltyEvent
+                    {
+                        Team = Team.Home,
+                        IsGoal = false
+                    });
+                    homeShoots = false;
+                }
+                else
+                {
+                    result.PenaltyEvents.Add(new PenaltyEvent
+                    {
+                        Team = Team.Away,
+                        IsGoal = false
+                    });
+                    homeShoots = true;
+                }
+                if (tries == maxTries && result.HomeGoals == result.AwayGoals)
+                {
+                    maxTries += 2;
+                }
+            }
+
+            return result;
+        }
+
         public static GameResult CalculateGame_v1(
             TeamLineUp homeTeam,
             TeamLineUp awayTeam,
