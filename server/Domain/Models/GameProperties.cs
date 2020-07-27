@@ -6,12 +6,15 @@
         public bool IsExtendedTime { get; set; }
         public int ActionsPerMinute { get; set; }
         public int MaxOvertime { get; set; }
+        public double ShotAccuracyModifier { get; set; }
+        public double PaceModifier { get; set; }
 
         public GameProperties()
         {
             MaxHalfFieldLength = 100;
             ActionsPerMinute = 1;
             MaxOvertime = 8;
+            ShotAccuracyModifier = 1;
             IsExtendedTime = false;
         }
     }

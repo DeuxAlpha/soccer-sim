@@ -20,10 +20,10 @@ namespace Fiddles
                 GameService.CalculateGame_v1(
                     new TeamLineUp
                     {
-                        AttackStrength = 1150,
-                        DefenseStrength = 1150,
-                        GoalKeeperStrength = 1150,
-                        ShotOnGoalRate = 0.5,
+                        AttackStrength = 350,
+                        DefenseStrength = 350,
+                        GoalKeeperStrength = 350,
+                        ShotOnGoalRate = 0.25,
                         MaxPace = 40,
                         PotentialPositiveShift = 10,
                         PotentialPositiveShiftChance = 0.1,
@@ -32,19 +32,23 @@ namespace Fiddles
                     },
                     new TeamLineUp
                     {
-                        AttackStrength = 800,
-                        DefenseStrength = 800,
-                        GoalKeeperStrength = 800,
-                        ShotOnGoalRate = 0.5,
+                        AttackStrength = 150,
+                        DefenseStrength = 150,
+                        GoalKeeperStrength = 150,
+                        ShotOnGoalRate = 0.35,
                         MaxPace = 40,
-                        PotentialPositiveShift = 10,
+                        PotentialPositiveShift = 20,
                         PotentialPositiveShiftChance = 0.1,
                         PotentialNegativeShift = 10,
                         PotentialNegativeShiftChance = 0.1
                     },
                     new GameProperties
                     {
-                        ActionsPerMinute = 5, MaxOvertime = 10, MaxHalfFieldLength = 100
+                        ActionsPerMinute = 5,
+                        MaxOvertime = 10,
+                        MaxHalfFieldLength = 100,
+                        ShotAccuracyModifier = 0.9,
+                        PaceModifier = 1.4
                     }),
             };
             Console.WriteLine(results);
@@ -66,8 +70,6 @@ namespace Fiddles
                     }
                 }
 
-                Console.WriteLine($"Strengths at game end:");
-                Console.WriteLine($"{gameResult}");
                 Console.WriteLine(
                     $"Final result: {gameResult.HomeGoals}:{gameResult.AwayGoals} ({gameResult.HomeHalfTimeGoals}:{gameResult.AwayHalfTimeGoals})");
                 Console.WriteLine($"Tot. shots on goal: {gameResult.HomeShotsOnGoal}:{gameResult.AwayShotsOnGoal}");

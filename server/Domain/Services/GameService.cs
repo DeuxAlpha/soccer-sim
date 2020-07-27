@@ -13,9 +13,7 @@ namespace Domain.Services
                 Minute = 0,
                 BallPosition = 0
             };
-            var gameResult = new GameResult
-            {
-            };
+            var gameResult = new GameResult();
 
             return gameResult;
         }
@@ -37,7 +35,7 @@ namespace Domain.Services
                 gameStatus.Minute++;
                 for (var actionIndex = 0; actionIndex < gameProperties.ActionsPerMinute; actionIndex++)
                 {
-                    GameMovement(homeTeam, awayTeam, gameStatus);
+                    GameMovement(homeTeam, awayTeam, gameStatus, gameProperties);
                 }
 
                 AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
@@ -51,7 +49,7 @@ namespace Domain.Services
                 gameStatus.AddedMinutes++;
                 for (var actionIndex = 0; actionIndex < gameProperties.ActionsPerMinute; actionIndex++)
                 {
-                    GameMovement(homeTeam, awayTeam, gameStatus);
+                    GameMovement(homeTeam, awayTeam, gameStatus, gameProperties);
                 }
 
                 AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
@@ -67,7 +65,7 @@ namespace Domain.Services
                 gameStatus.Minute++;
                 for (var actionIndex = 0; actionIndex < gameProperties.ActionsPerMinute; actionIndex++)
                 {
-                    GameMovement(homeTeam, awayTeam, gameStatus);
+                    GameMovement(homeTeam, awayTeam, gameStatus, gameProperties);
                 }
 
                 AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
@@ -82,7 +80,7 @@ namespace Domain.Services
                 gameStatus.AddedMinutes++;
                 for (var actionIndex = 0; actionIndex < gameProperties.ActionsPerMinute; actionIndex++)
                 {
-                    GameMovement(homeTeam, awayTeam, gameStatus);
+                    GameMovement(homeTeam, awayTeam, gameStatus, gameProperties);
                 }
 
                 AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
@@ -96,19 +94,22 @@ namespace Domain.Services
         private static void GameMovement(
             TeamLineUp homeTeam,
             TeamLineUp awayTeam,
-            GameStatus gameStatus)
+            GameStatus gameStatus,
+            GameProperties gameProperties)
         {
             var progressChance = gameStatus.Momentum == Team.Home
                 ? homeTeam.AttackStrength / (homeTeam.AttackStrength + awayTeam.DefenseStrength)
                 : awayTeam.AttackStrength / (awayTeam.AttackStrength + homeTeam.DefenseStrength);
             if (RandomService.GetRandomBetweenOneAndZero() < progressChance)
             {
-                gameStatus.BallPosition += RandomService.GetRandomNumber(0, homeTeam.MaxPace);
+                var maxPace = homeTeam.MaxPace * gameProperties.PaceModifier;
+                gameStatus.BallPosition += (int) RandomService.GetRandomNumber(0, maxPace);
                 gameStatus.Momentum = Team.Home;
             }
             else
             {
-                gameStatus.BallPosition -= RandomService.GetRandomNumber(0, awayTeam.MaxPace);
+                var maxPace = awayTeam.MaxPace * gameProperties.PaceModifier;
+                gameStatus.BallPosition -= (int) RandomService.GetRandomNumber(0, maxPace);
                 gameStatus.Momentum = Team.Away;
             }
         }
@@ -122,7 +123,8 @@ namespace Domain.Services
         {
             if (gameStatus.BallPosition > gameProperties.MaxHalfFieldLength)
             {
-                var isShotOnGoal = RandomService.GetRandomBetweenOneAndZero() <= homeTeam.ShotOnGoalRate;
+                var shotOnGoalChance = homeTeam.ShotOnGoalRate * gameProperties.ShotAccuracyModifier;
+                var isShotOnGoal = RandomService.GetRandomBetweenOneAndZero() <= shotOnGoalChance;
                 var goalChance = homeTeam.AttackStrength / (homeTeam.AttackStrength + awayTeam.GoalKeeperStrength);
                 var isKeeperBeat = RandomService.GetRandomBetweenOneAndZero() <= goalChance;
                 gameResult.GoalEvents.Add(new GoalEvent
@@ -137,7 +139,8 @@ namespace Domain.Services
             }
             else if (gameStatus.BallPosition < -gameProperties.MaxHalfFieldLength)
             {
-                var isShotOnGoal = RandomService.GetRandomBetweenOneAndZero() <= awayTeam.ShotOnGoalRate;
+                var shotOnGoalChance = awayTeam.ShotOnGoalRate * gameProperties.ShotAccuracyModifier;
+                var isShotOnGoal = RandomService.GetRandomBetweenOneAndZero() <= shotOnGoalChance;
                 var goalChance = awayTeam.AttackStrength / (awayTeam.AttackStrength + homeTeam.GoalKeeperStrength);
                 var isKeeperBeat = RandomService.GetRandomBetweenOneAndZero() <= goalChance;
                 gameResult.GoalEvents.Add(new GoalEvent
