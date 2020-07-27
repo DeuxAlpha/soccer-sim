@@ -3,14 +3,16 @@ using Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Database.Migrations
 {
     [DbContext(typeof(SoccerSimContext))]
-    partial class SoccerSimContextModelSnapshot : ModelSnapshot
+    [Migration("20200727052150_AddCountryTeamFk")]
+    partial class AddCountryTeamFk
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,7 +235,7 @@ namespace Database.Migrations
                     b.HasOne("Database.Models.Country", "Country")
                         .WithMany("Competitions")
                         .HasForeignKey("CountryName", "Year")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Database.Models.Team", b =>
@@ -250,13 +252,13 @@ namespace Database.Migrations
                     b.HasOne("Database.Models.Competition", "Competition")
                         .WithMany("Teams")
                         .HasForeignKey("CompetitionName", "Year")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Database.Models.Team", "Team")
                         .WithMany("Competitions")
                         .HasForeignKey("TeamName", "Year")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

@@ -18,5 +18,6 @@ namespace Database.Models
         public double ShotOnGoalRate { get; set; }
 
         public ICollection<Competition> Competitions { get; set; }
+        public ICollection<Team> Teams { get; set; }
     }
 }

@@ -13,13 +13,13 @@ namespace Database.Contexts.Entities
             builder.HasOne(c => c.Team)
                 .WithMany(t => t.Competitions)
                 .HasForeignKey(c => new {c.TeamName, c.Year})
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
             builder.HasOne(c => c.Competition)
                 .WithMany(c => c.Teams)
                 .HasForeignKey(c => new {c.CompetitionName, c.Year})
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
             builder.Property(c => c.Year).HasMaxLength(4).IsRequired();
