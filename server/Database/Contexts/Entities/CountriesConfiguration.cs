@@ -32,7 +32,7 @@ namespace Database.Contexts.Entities
 
             builder.Property(c => c.PotentialNegativeShift).HasDefaultValue(10).IsRequired();
 
-            builder.Property(c => c.PotentialPositiveChance).HasDefaultValue(0.1).IsRequired();
+            builder.Property(c => c.PotentialNegativeChance).HasDefaultValue(0.1).IsRequired();
         }
     }
 }
