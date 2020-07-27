@@ -18,7 +18,7 @@ namespace Database.Contexts.Entities
 
             builder.Property(d => d.Name).HasMaxLength(255).IsRequired();
 
-            builder.Property(d => d.Year).HasMaxLength(4).IsRequired();
+            builder.Property(d => d.Year).HasMaxLength(10).IsRequired();
 
             builder.Property(d => d.Abbreviation).HasMaxLength(10);
 

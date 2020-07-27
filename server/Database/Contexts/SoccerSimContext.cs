@@ -18,6 +18,8 @@ namespace Database.Contexts
         public DbSet<Country> Countries { get; set; }
         public DbSet<Continent> Continents { get; set; }
         public DbSet<Division> Divisions { get; set; }
+        public DbSet<LeagueGameDay> LeagueGameDays { get; set; }
+        public DbSet<LeagueFixture> LeagueFixtures { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

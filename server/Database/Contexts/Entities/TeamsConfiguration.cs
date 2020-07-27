@@ -16,7 +16,7 @@ namespace Database.Contexts.Entities
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
-            builder.Property(t => t.Year).HasMaxLength(4).IsRequired();
+            builder.Property(t => t.Year).HasMaxLength(10).IsRequired();
 
             builder.Property(t => t.Name).HasMaxLength(255).IsRequired();
 
@@ -34,13 +34,13 @@ namespace Database.Contexts.Entities
 
             builder.Property(t => t.ShotOnGoalRate).HasDefaultValue(0.4).IsRequired();
 
-            builder.Property(t => t.PotentialNegativeShift).HasDefaultValue(10).IsRequired();
+            builder.Property(t => t.PotentialNegativeShift).HasDefaultValue(0).IsRequired();
 
-            builder.Property(t => t.PotentialNegativeChance).HasDefaultValue(0.1).IsRequired();
+            builder.Property(t => t.PotentialNegativeChance).HasDefaultValue(0).IsRequired();
 
-            builder.Property(t => t.PotentialPositiveShift).HasDefaultValue(10).IsRequired();
+            builder.Property(t => t.PotentialPositiveShift).HasDefaultValue(0).IsRequired();
 
-            builder.Property(t => t.PotentialPositiveChance).HasDefaultValue(0.1).IsRequired();
+            builder.Property(t => t.PotentialPositiveChance).HasDefaultValue(0).IsRequired();
         }
     }
 }

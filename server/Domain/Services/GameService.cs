@@ -82,15 +82,12 @@ namespace Domain.Services
             GameProperties gameProperties)
         {
             var gameResult = new GameResult();
-            if (gameProperties.ApplyHomeAdvantage)
-            {
-                homeTeam.AttackStrength += RandomService.GetRandomNumber(0, gameProperties.MaxHomeAdvantage);
-                homeTeam.DefenseStrength += RandomService.GetRandomNumber(0, gameProperties.MaxHomeAdvantage);
-                homeTeam.GoalKeeperStrength += RandomService.GetRandomNumber(0, gameProperties.MaxHomeAdvantage);
-                awayTeam.AttackStrength -= RandomService.GetRandomNumber(0, gameProperties.MaxAwayDisadvantage);
-                awayTeam.DefenseStrength -= RandomService.GetRandomNumber(0, gameProperties.MaxAwayDisadvantage);
-                awayTeam.GoalKeeperStrength -= RandomService.GetRandomNumber(0, gameProperties.MaxAwayDisadvantage);
-            }
+            homeTeam.AttackStrength += RandomService.GetRandomNumber(0, gameProperties.MaxHomeAdvantage);
+            homeTeam.DefenseStrength += RandomService.GetRandomNumber(0, gameProperties.MaxHomeAdvantage);
+            homeTeam.GoalKeeperStrength += RandomService.GetRandomNumber(0, gameProperties.MaxHomeAdvantage);
+            awayTeam.AttackStrength -= RandomService.GetRandomNumber(0, gameProperties.MaxAwayDisadvantage);
+            awayTeam.DefenseStrength -= RandomService.GetRandomNumber(0, gameProperties.MaxAwayDisadvantage);
+            awayTeam.GoalKeeperStrength -= RandomService.GetRandomNumber(0, gameProperties.MaxAwayDisadvantage);
             var gameStatus = new GameStatus
             {
                 Minute = 0,
@@ -192,7 +189,7 @@ namespace Domain.Services
             TeamLineUp homeTeam,
             TeamLineUp awayTeam)
         {
-            if (gameStatus.BallPosition > gameProperties.MaxHalfFieldLength)
+            if (gameStatus.BallPosition > gameProperties.HalfFieldLength)
             {
                 var shotOnGoalChance = homeTeam.ShotOnGoalRate * gameProperties.ShotAccuracyModifier;
                 var isShotOnGoal = RandomService.GetRandomBetweenOneAndZero() <= shotOnGoalChance;
@@ -208,7 +205,7 @@ namespace Domain.Services
                 });
                 gameStatus.BallPosition = 0;
             }
-            else if (gameStatus.BallPosition < -gameProperties.MaxHalfFieldLength)
+            else if (gameStatus.BallPosition < -gameProperties.HalfFieldLength)
             {
                 var shotOnGoalChance = awayTeam.ShotOnGoalRate * gameProperties.ShotAccuracyModifier;
                 var isShotOnGoal = RandomService.GetRandomBetweenOneAndZero() <= shotOnGoalChance;

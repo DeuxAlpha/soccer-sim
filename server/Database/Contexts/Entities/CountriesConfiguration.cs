@@ -16,7 +16,7 @@ namespace Database.Contexts.Entities
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
-            builder.Property(c => c.Year).HasMaxLength(4).IsRequired();
+            builder.Property(c => c.Year).HasMaxLength(10).IsRequired();
 
             builder.Property(c => c.Name).HasMaxLength(255).IsRequired();
 

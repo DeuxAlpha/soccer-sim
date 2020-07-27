@@ -21,5 +21,7 @@ namespace Database.Models
         public string Image { get; set; }
 
         public League League { get; set; }
+        public ICollection<LeagueFixture> HomeLeagueFixtures { get; set; }
+        public ICollection<LeagueFixture> AwayLeagueFixtures { get; set; }
     }
 }

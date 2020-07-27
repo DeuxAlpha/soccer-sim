@@ -48,10 +48,9 @@ namespace Fiddles
                     {
                         ActionsPerMinute = 5,
                         MaxOvertime = 10,
-                        MaxHalfFieldLength = 100,
+                        HalfFieldLength = 100,
                         ShotAccuracyModifier = 0.8,
                         PaceModifier = 1.2,
-                        ApplyHomeAdvantage = true,
                         MaxHomeAdvantage = 50,
                         MaxAwayDisadvantage = 100
                     }),

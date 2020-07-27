@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Database.Migrations
 {
     [DbContext(typeof(SoccerSimContext))]
-    [Migration("20200727210042_InitialMigration")]
+    [Migration("20200727214416_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,8 +27,8 @@ namespace Database.Migrations
                         .HasMaxLength(255);
 
                     b.Property<string>("Year")
-                        .HasColumnType("nvarchar(4)")
-                        .HasMaxLength(4);
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
 
                     b.HasKey("Name", "Year");
 
@@ -42,8 +42,8 @@ namespace Database.Migrations
                         .HasMaxLength(255);
 
                     b.Property<string>("Year")
-                        .HasColumnType("nvarchar(4)")
-                        .HasMaxLength(4);
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
 
                     b.Property<string>("Abbreviation")
                         .IsRequired()
@@ -121,8 +121,8 @@ namespace Database.Migrations
                         .HasMaxLength(255);
 
                     b.Property<string>("Year")
-                        .HasColumnType("nvarchar(4)")
-                        .HasMaxLength(4);
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
 
                     b.Property<string>("Abbreviation")
                         .HasColumnType("nvarchar(10)")
@@ -151,8 +151,8 @@ namespace Database.Migrations
                         .HasMaxLength(255);
 
                     b.Property<string>("Year")
-                        .HasColumnType("nvarchar(4)")
-                        .HasMaxLength(4);
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
 
                     b.Property<string>("Abbreviation")
                         .HasColumnType("nvarchar(10)")
@@ -192,6 +192,179 @@ namespace Database.Migrations
                     b.ToTable("Competitions");
                 });
 
+            modelBuilder.Entity("Database.Models.LeagueFixture", b =>
+                {
+                    b.Property<string>("LeagueName")
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("Year")
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
+
+                    b.Property<int>("GameDayNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("HomeTeamName")
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("AwayTeamName")
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
+                    b.Property<int>("ActionsPerMinute")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(4);
+
+                    b.Property<double>("AwayAttackStrength")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(600.0);
+
+                    b.Property<double>("AwayDefenseStrength")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(600.0);
+
+                    b.Property<double>("AwayGoalKeeperStrength")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(600.0);
+
+                    b.Property<int>("AwayMaxPace")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(40);
+
+                    b.Property<double>("AwayPotentialNegativeChance")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<double>("AwayPotentialNegativeShift")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<double>("AwayPotentialPositiveChance")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<double>("AwayPotentialPositiveShift")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<double>("AwayShotOnGoalRate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.40000000000000002);
+
+                    b.Property<int>("HalfFieldLength")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(100);
+
+                    b.Property<double>("HomeAttackStrength")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(600.0);
+
+                    b.Property<double>("HomeDefenseStrength")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(600.0);
+
+                    b.Property<double>("HomeGoalKeeperStrength")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(600.0);
+
+                    b.Property<int>("HomeMaxPace")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(40);
+
+                    b.Property<double>("HomePotentialNegativeChance")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<double>("HomePotentialNegativeShift")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<double>("HomePotentialPositiveChance")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<double>("HomePotentialPositiveShift")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<double>("HomeShotOnGoalRate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.40000000000000002);
+
+                    b.Property<double>("MaxAwayDisadvantage")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<double>("MaxHomeAdvantage")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<int>("MaxOvertime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(8);
+
+                    b.Property<double>("PaceModifier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(1.0);
+
+                    b.Property<double>("ShotAccuracyModifier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(1.0);
+
+                    b.HasKey("LeagueName", "Year", "GameDayNumber", "HomeTeamName", "AwayTeamName");
+
+                    b.HasIndex("AwayTeamName", "Year");
+
+                    b.HasIndex("HomeTeamName", "Year");
+
+                    b.ToTable("LeagueFixtures");
+                });
+
+            modelBuilder.Entity("Database.Models.LeagueGameDay", b =>
+                {
+                    b.Property<string>("LeagueName")
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("Year")
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
+
+                    b.Property<int>("GameDayNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("LeagueName", "Year", "GameDayNumber");
+
+                    b.ToTable("LeagueGameDays");
+                });
+
             modelBuilder.Entity("Database.Models.Team", b =>
                 {
                     b.Property<string>("Name")
@@ -199,8 +372,8 @@ namespace Database.Migrations
                         .HasMaxLength(255);
 
                     b.Property<string>("Year")
-                        .HasColumnType("nvarchar(4)")
-                        .HasMaxLength(4);
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
 
                     b.Property<string>("Abbreviation")
                         .IsRequired()
@@ -237,22 +410,22 @@ namespace Database.Migrations
                     b.Property<double>("PotentialNegativeChance")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("float")
-                        .HasDefaultValue(0.10000000000000001);
+                        .HasDefaultValue(0.0);
 
                     b.Property<double>("PotentialNegativeShift")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("float")
-                        .HasDefaultValue(10.0);
+                        .HasDefaultValue(0.0);
 
                     b.Property<double>("PotentialPositiveChance")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("float")
-                        .HasDefaultValue(0.10000000000000001);
+                        .HasDefaultValue(0.0);
 
                     b.Property<double>("PotentialPositiveShift")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("float")
-                        .HasDefaultValue(10.0);
+                        .HasDefaultValue(0.0);
 
                     b.Property<string>("ShortName")
                         .HasColumnType("nvarchar(255)")
@@ -293,6 +466,36 @@ namespace Database.Migrations
                     b.HasOne("Database.Models.Division", "Division")
                         .WithMany("Leagues")
                         .HasForeignKey("DivisionName", "Year")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Database.Models.LeagueFixture", b =>
+                {
+                    b.HasOne("Database.Models.Team", "AwayTeam")
+                        .WithMany("AwayLeagueFixtures")
+                        .HasForeignKey("AwayTeamName", "Year")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Database.Models.Team", "HomeTeam")
+                        .WithMany("HomeLeagueFixtures")
+                        .HasForeignKey("HomeTeamName", "Year")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Database.Models.LeagueGameDay", "GameDay")
+                        .WithMany("Fixtures")
+                        .HasForeignKey("LeagueName", "Year", "GameDayNumber")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Database.Models.LeagueGameDay", b =>
+                {
+                    b.HasOne("Database.Models.League", "League")
+                        .WithMany("LeagueGameDays")
+                        .HasForeignKey("LeagueName", "Year")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
