@@ -13,6 +13,7 @@ namespace Database.Contexts
         public SoccerSimContext(DbContextOptions options) : base(options){}
 
         public DbSet<Team> Teams { get; set; }
+        public DbSet<Competition> Competitions { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
