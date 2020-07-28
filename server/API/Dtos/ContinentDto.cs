@@ -7,6 +7,7 @@ namespace API.Dtos
         public string Season { get; set; }
         public string Name { get; set; }
 
+        public ContinentDto(){}
         public ContinentDto(Continent continent)
         {
             Season = continent.Season;

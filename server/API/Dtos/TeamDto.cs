@@ -21,6 +21,10 @@ namespace API.Dtos
         public string LeagueName { get; set; }
         public string Image { get; set; }
 
+        public TeamDto()
+        {
+
+        }
         public TeamDto(Team team)
         {
             Season = team.Season;

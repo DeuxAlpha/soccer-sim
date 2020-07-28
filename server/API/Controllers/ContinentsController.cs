@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using API.Dtos;
 using Database.Contexts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Querying.Query.Models;
 using Querying.Query.Services;
@@ -40,9 +41,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{name}/{season}")]
-        public IActionResult GetContinent(string name, string season)
+        public async Task<IActionResult> GetContinent(string name, string season)
         {
-            var continent = _context.Continents.FirstOrDefault(c => c.Name == name && c.Season == season);
+            var continent = await _context.Continents.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
             if (continent == null) return NotFound(new {Name = name, Season = season});
             return Ok(new ContinentDto(continent));
         }
@@ -52,7 +53,19 @@ namespace API.Controllers
         {
             var newContinent = await _context.Continents.AddAsync(continentDto.Map());
             await _context.SaveChangesAsync();
-            return Created(Url.Action("GetContinent", "Continents", new {name = newContinent.}))
+            var returnObject = new {name = newContinent.Entity.Name, season = newContinent.Entity.Season};
+            return Created(Url.Action("GetContinent", "Continents", returnObject),
+                new ContinentDto(newContinent.Entity));
+        }
+
+        [HttpDelete("{name}/{season}")]
+        public async Task<IActionResult> DeleteContinent(string name, string season)
+        {
+            var continent = await _context.Continents.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
+            if (continent == null) return NotFound(new {Name = name, Season = season});
+            _context.Continents.Remove(continent);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
     }
 }
