@@ -17,10 +17,10 @@ namespace Fiddles
         {
             var homeTeam = new TeamLineUp
             {
-                AttackStrength = 1250,
-                DefenseStrength = 1000,
-                GoalKeeperStrength = 900,
-                ShotOnGoalRate = 0.4,
+                AttackStrength = 650,
+                DefenseStrength = 700,
+                GoalKeeperStrength = 600,
+                ShotOnGoalRate = 0.3,
                 MaxPace = 40,
                 PotentialPositiveShift = 25,
                 PotentialPositiveShiftChance = 0.1,
@@ -29,10 +29,10 @@ namespace Fiddles
             };
             var awayTeam = new TeamLineUp
             {
-                AttackStrength = 800,
-                DefenseStrength = 650,
-                GoalKeeperStrength = 1300,
-                ShotOnGoalRate = 0.3,
+                AttackStrength = 450,
+                DefenseStrength = 425,
+                GoalKeeperStrength = 400,
+                ShotOnGoalRate = 0.325,
                 MaxPace = 45,
                 PotentialPositiveShift = 30,
                 PotentialPositiveShiftChance = 0.1,
@@ -46,11 +46,11 @@ namespace Fiddles
                     awayTeam,
                     new GameProperties
                     {
-                        ActionsPerMinute = 5,
+                        ActionsPerMinute = 4,
                         MaxOvertime = 10,
                         HalfFieldLength = 100,
-                        ShotAccuracyModifier = 0.8,
-                        PaceModifier = 1.0,
+                        ShotAccuracyModifier = 1.2,
+                        PaceModifier = 1.15,
                         MaxHomeAdvantage = 50,
                         MaxAwayDisadvantage = 100
                     }),
@@ -65,6 +65,12 @@ namespace Fiddles
                         Console.WriteLine(goalEvent.AddedTime == null || goalEvent.AddedTime == 0
                             ? $"{goalEvent.Team} scores! {goalEvent.Minute}. Minute - {gameResult.GetScoreAtMinute(goalEvent.Minute)}"
                             : $"{goalEvent.Team} scores! {goalEvent.Minute}. + {goalEvent.AddedTime} Minute - {gameResult.GetScoreAtMinute(goalEvent.Minute, (int) goalEvent.AddedTime)}");
+                    }
+                    else if (goalEvent.IsShotOnGoal)
+                    {
+                        Console.WriteLine(goalEvent.AddedTime == null || goalEvent.AddedTime == 0
+                            ? $"{goalEvent.Team} shot saved! {goalEvent.Minute}. Minute"
+                            : $"{goalEvent.Team} shot saved! {goalEvent.Minute}. + {goalEvent.AddedTime} Minute");
                     }
                     else
                     {
