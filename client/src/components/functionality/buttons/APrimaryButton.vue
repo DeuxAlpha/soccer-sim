@@ -1,5 +1,5 @@
 <template>
-  <button class="flex flex-row justify-center px-2 py-2 mx-2 bg-blue-200" :class="ButtonClass" @click="emitClick">Continents</button>
+  <button class="flex flex-row justify-center px-2 py-2 mx-2 bg-blue-200" :class="ButtonClass" @click="emitClick"><slot/></button>
 </template>
 
 <script lang="ts">
