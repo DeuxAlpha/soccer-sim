@@ -17,27 +17,29 @@ namespace Fiddles
         {
             var homeTeam = new TeamLineUp
             {
-                AttackStrength = 650,
-                DefenseStrength = 700,
-                GoalKeeperStrength = 600,
-                ShotOnGoalRate = 0.3,
-                MaxPace = 40,
+                AttackStrength = 1500,
+                DefenseStrength = 1300,
+                GoalKeeperStrength = 1350,
+                ShotOnGoalRate = 0.4,
+                MaxPace = 35,
                 PotentialPositiveShift = 25,
                 PotentialPositiveShiftChance = 0.1,
-                PotentialNegativeShift = 10,
-                PotentialNegativeShiftChance = 0.075
+                PotentialNegativeShift = 25,
+                PotentialNegativeShiftChance = 0.125,
+                CurrentForm = -100
             };
             var awayTeam = new TeamLineUp
             {
-                AttackStrength = 450,
-                DefenseStrength = 425,
-                GoalKeeperStrength = 400,
-                ShotOnGoalRate = 0.325,
+                AttackStrength = 350,
+                DefenseStrength = 400,
+                GoalKeeperStrength = 425,
+                ShotOnGoalRate = 0.35,
                 MaxPace = 45,
                 PotentialPositiveShift = 30,
                 PotentialPositiveShiftChance = 0.1,
                 PotentialNegativeShift = 25,
-                PotentialNegativeShiftChance = 0.05
+                PotentialNegativeShiftChance = 0.05,
+                CurrentForm = 100
             };
             var results = new List<GameResult>
             {
@@ -49,8 +51,8 @@ namespace Fiddles
                         ActionsPerMinute = 4,
                         MaxOvertime = 10,
                         HalfFieldLength = 100,
-                        ShotAccuracyModifier = 1.2,
-                        PaceModifier = 1.15,
+                        ShotAccuracyModifier = 1,
+                        PaceModifier = 1,
                         MaxHomeAdvantage = 50,
                         MaxAwayDisadvantage = 100
                     }),

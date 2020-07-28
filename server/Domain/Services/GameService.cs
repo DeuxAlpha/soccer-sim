@@ -88,6 +88,30 @@ namespace Domain.Services
             awayTeam.AttackStrength -= RandomService.GetRandomNumber(0, gameProperties.MaxAwayDisadvantage);
             awayTeam.DefenseStrength -= RandomService.GetRandomNumber(0, gameProperties.MaxAwayDisadvantage);
             awayTeam.GoalKeeperStrength -= RandomService.GetRandomNumber(0, gameProperties.MaxAwayDisadvantage);
+            if (homeTeam.CurrentForm > 0)
+            {
+                homeTeam.AttackStrength += RandomService.GetRandomNumber(0, homeTeam.CurrentForm);
+                homeTeam.DefenseStrength += RandomService.GetRandomNumber(0, homeTeam.CurrentForm);
+                homeTeam.GoalKeeperStrength += RandomService.GetRandomNumber(0, homeTeam.CurrentForm);
+            }
+            else if (homeTeam.CurrentForm < 0)
+            {
+                homeTeam.AttackStrength += RandomService.GetRandomNumber(homeTeam.CurrentForm, 0);
+                homeTeam.DefenseStrength += RandomService.GetRandomNumber(homeTeam.CurrentForm, 0);
+                homeTeam.GoalKeeperStrength += RandomService.GetRandomNumber(homeTeam.CurrentForm, 0);
+            }
+            if (awayTeam.CurrentForm > 0)
+            {
+                awayTeam.AttackStrength += RandomService.GetRandomNumber(0, awayTeam.CurrentForm);
+                awayTeam.DefenseStrength += RandomService.GetRandomNumber(0, awayTeam.CurrentForm);
+                awayTeam.GoalKeeperStrength += RandomService.GetRandomNumber(0, awayTeam.CurrentForm);
+            }
+            else if (awayTeam.CurrentForm < 0)
+            {
+                awayTeam.AttackStrength += RandomService.GetRandomNumber(awayTeam.CurrentForm, 0);
+                awayTeam.DefenseStrength += RandomService.GetRandomNumber(awayTeam.CurrentForm, 0);
+                awayTeam.GoalKeeperStrength += RandomService.GetRandomNumber(awayTeam.CurrentForm, 0);
+            }
             var gameStatus = new GameStatus
             {
                 Minute = 0,

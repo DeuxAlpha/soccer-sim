@@ -13,6 +13,7 @@ namespace Domain.Models
         public double PotentialPositiveShiftChance { get; set; }
         public double PotentialNegativeShift { get; set; }
         public double PotentialNegativeShiftChance { get; set; }
+        public double CurrentForm { get; set; }
         public int MaxPace { get; set; }
         public double ShotOnGoalRate { get; set; }
 
