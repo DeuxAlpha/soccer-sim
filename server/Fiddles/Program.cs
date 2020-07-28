@@ -50,7 +50,7 @@ namespace Fiddles
                         MaxOvertime = 10,
                         HalfFieldLength = 100,
                         ShotAccuracyModifier = 0.8,
-                        PaceModifier = 1.2,
+                        PaceModifier = 1.0,
                         MaxHomeAdvantage = 50,
                         MaxAwayDisadvantage = 100
                     }),
