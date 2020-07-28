@@ -8,15 +8,15 @@ namespace Database.Contexts.Entities
     {
         public void Configure(EntityTypeBuilder<Team> builder)
         {
-            builder.HasKey(t => new {t.Name, t.Year});
+            builder.HasKey(t => new {t.Name, t.Season});
 
             builder.HasOne(t => t.League)
                 .WithMany(c => c.Teams)
-                .HasForeignKey(t => new {t.LeagueName, t.Year})
+                .HasForeignKey(t => new {t.LeagueName, t.Season})
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
-            builder.Property(t => t.Year).HasMaxLength(10).IsRequired();
+            builder.Property(t => t.Season).HasMaxLength(10).IsRequired();
 
             builder.Property(t => t.Name).HasMaxLength(255).IsRequired();
 

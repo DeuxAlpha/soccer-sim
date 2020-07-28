@@ -4,7 +4,7 @@ namespace Database.Models
 {
     public class Team
     {
-        public string Year { get; set; }
+        public string Season { get; set; }
         public string Name { get; set; }
         public string ShortName { get; set; }
         public string Abbreviation { get; set; }

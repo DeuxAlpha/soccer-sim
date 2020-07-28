@@ -8,9 +8,9 @@ namespace Database.Contexts.Entities
     {
         public void Configure(EntityTypeBuilder<Continent> builder)
         {
-            builder.HasKey(c => new {c.Name, c.Year});
+            builder.HasKey(c => new {c.Name, c.Season});
 
-            builder.Property(c => c.Year).HasMaxLength(10).IsRequired();
+            builder.Property(c => c.Season).HasMaxLength(10).IsRequired();
 
             builder.Property(c => c.Name).HasMaxLength(255).IsRequired();
         }

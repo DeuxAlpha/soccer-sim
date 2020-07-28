@@ -4,7 +4,7 @@ namespace Database.Models
 {
     public class LeagueGameDay
     {
-        public string Year { get; set; }
+        public string Season { get; set; }
         public string LeagueName { get; set; }
         public int GameDayNumber { get; set; }
 

@@ -8,29 +8,29 @@ namespace Database.Contexts.Entities
     {
         public void Configure(EntityTypeBuilder<LeagueFixture> builder)
         {
-            builder.HasKey(f => new {f.LeagueName, f.Year, f.GameDayNumber, HomeTeam = f.HomeTeamName, AwayTeam = f.AwayTeamName});
+            builder.HasKey(f => new {f.LeagueName, f.Season, f.GameDayNumber, HomeTeam = f.HomeTeamName, AwayTeam = f.AwayTeamName});
 
             builder.HasOne(f => f.GameDay)
                 .WithMany(d => d.Fixtures)
-                .HasForeignKey(f => new {f.LeagueName, f.Year, f.GameDayNumber})
+                .HasForeignKey(f => new {f.LeagueName, f.Season, f.GameDayNumber})
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
             builder.HasOne(f => f.HomeTeam)
                 .WithMany(t => t.HomeLeagueFixtures)
-                .HasForeignKey(f => new {f.HomeTeamName, f.Year})
+                .HasForeignKey(f => new {f.HomeTeamName, f.Season})
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
             builder.HasOne(f => f.AwayTeam)
                 .WithMany(t => t.AwayLeagueFixtures)
-                .HasForeignKey(f => new {f.AwayTeamName, f.Year})
+                .HasForeignKey(f => new {f.AwayTeamName, f.Season})
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
             builder.Property(f => f.LeagueName).HasMaxLength(255).IsRequired();
 
-            builder.Property(f => f.Year).HasMaxLength(10).IsRequired();
+            builder.Property(f => f.Season).HasMaxLength(10).IsRequired();
 
             builder.Property(f => f.GameDayNumber).IsRequired();
 

@@ -8,17 +8,17 @@ namespace Database.Contexts.Entities
     {
         public void Configure(EntityTypeBuilder<Division> builder)
         {
-            builder.HasKey(d => new {d.Name, d.Year});
+            builder.HasKey(d => new {d.Name, d.Season});
 
             builder.HasOne(d => d.Country)
                 .WithMany(c => c.Divisions)
-                .HasForeignKey(d => new {d.CountryName, d.Year})
+                .HasForeignKey(d => new {d.CountryName, d.Season})
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
             builder.Property(d => d.Name).HasMaxLength(255).IsRequired();
 
-            builder.Property(d => d.Year).HasMaxLength(10).IsRequired();
+            builder.Property(d => d.Season).HasMaxLength(10).IsRequired();
 
             builder.Property(d => d.Abbreviation).HasMaxLength(10);
 

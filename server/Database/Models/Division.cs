@@ -5,7 +5,7 @@ namespace Database.Models
     public class Division
     {
         public string Name { get; set; }
-        public string Year { get; set; }
+        public string Season { get; set; }
         public string Abbreviation { get; set; }
         public int Level { get; set; }
         public string CountryName { get; set; }

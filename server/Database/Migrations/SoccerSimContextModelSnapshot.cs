@@ -24,11 +24,11 @@ namespace Database.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
-                    b.Property<string>("Year")
+                    b.Property<string>("Season")
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
 
-                    b.HasKey("Name", "Year");
+                    b.HasKey("Name", "Season");
 
                     b.ToTable("Continents");
                 });
@@ -39,7 +39,7 @@ namespace Database.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
-                    b.Property<string>("Year")
+                    b.Property<string>("Season")
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
 
@@ -105,9 +105,9 @@ namespace Database.Migrations
                         .HasColumnType("float")
                         .HasDefaultValue(0.40000000000000002);
 
-                    b.HasKey("Name", "Year");
+                    b.HasKey("Name", "Season");
 
-                    b.HasIndex("ContinentName", "Year");
+                    b.HasIndex("ContinentName", "Season");
 
                     b.ToTable("Countries");
                 });
@@ -118,7 +118,7 @@ namespace Database.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
-                    b.Property<string>("Year")
+                    b.Property<string>("Season")
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
 
@@ -135,9 +135,9 @@ namespace Database.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(1);
 
-                    b.HasKey("Name", "Year");
+                    b.HasKey("Name", "Season");
 
-                    b.HasIndex("CountryName", "Year");
+                    b.HasIndex("CountryName", "Season");
 
                     b.ToTable("Divisions");
                 });
@@ -148,7 +148,7 @@ namespace Database.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
-                    b.Property<string>("Year")
+                    b.Property<string>("Season")
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
 
@@ -183,9 +183,9 @@ namespace Database.Migrations
                         .HasColumnType("float")
                         .HasDefaultValue(1.0);
 
-                    b.HasKey("Name", "Year");
+                    b.HasKey("Name", "Season");
 
-                    b.HasIndex("DivisionName", "Year");
+                    b.HasIndex("DivisionName", "Season");
 
                     b.ToTable("Leagues");
                 });
@@ -196,7 +196,7 @@ namespace Database.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
-                    b.Property<string>("Year")
+                    b.Property<string>("Season")
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
 
@@ -336,11 +336,11 @@ namespace Database.Migrations
                         .HasColumnType("float")
                         .HasDefaultValue(1.0);
 
-                    b.HasKey("LeagueName", "Year", "GameDayNumber", "HomeTeamName", "AwayTeamName");
+                    b.HasKey("LeagueName", "Season", "GameDayNumber", "HomeTeamName", "AwayTeamName");
 
-                    b.HasIndex("AwayTeamName", "Year");
+                    b.HasIndex("AwayTeamName", "Season");
 
-                    b.HasIndex("HomeTeamName", "Year");
+                    b.HasIndex("HomeTeamName", "Season");
 
                     b.ToTable("LeagueFixtures");
                 });
@@ -351,14 +351,14 @@ namespace Database.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
-                    b.Property<string>("Year")
+                    b.Property<string>("Season")
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
 
                     b.Property<int>("GameDayNumber")
                         .HasColumnType("int");
 
-                    b.HasKey("LeagueName", "Year", "GameDayNumber");
+                    b.HasKey("LeagueName", "Season", "GameDayNumber");
 
                     b.ToTable("LeagueGameDays");
                 });
@@ -369,7 +369,7 @@ namespace Database.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
-                    b.Property<string>("Year")
+                    b.Property<string>("Season")
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
 
@@ -434,9 +434,9 @@ namespace Database.Migrations
                         .HasColumnType("float")
                         .HasDefaultValue(0.40000000000000002);
 
-                    b.HasKey("Name", "Year");
+                    b.HasKey("Name", "Season");
 
-                    b.HasIndex("LeagueName", "Year");
+                    b.HasIndex("LeagueName", "Season");
 
                     b.ToTable("Teams");
                 });
@@ -445,7 +445,7 @@ namespace Database.Migrations
                 {
                     b.HasOne("Database.Models.Continent", "Continent")
                         .WithMany("Countries")
-                        .HasForeignKey("ContinentName", "Year")
+                        .HasForeignKey("ContinentName", "Season")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -454,7 +454,7 @@ namespace Database.Migrations
                 {
                     b.HasOne("Database.Models.Country", "Country")
                         .WithMany("Divisions")
-                        .HasForeignKey("CountryName", "Year")
+                        .HasForeignKey("CountryName", "Season")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -463,7 +463,7 @@ namespace Database.Migrations
                 {
                     b.HasOne("Database.Models.Division", "Division")
                         .WithMany("Leagues")
-                        .HasForeignKey("DivisionName", "Year")
+                        .HasForeignKey("DivisionName", "Season")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -472,19 +472,19 @@ namespace Database.Migrations
                 {
                     b.HasOne("Database.Models.Team", "AwayTeam")
                         .WithMany("AwayLeagueFixtures")
-                        .HasForeignKey("AwayTeamName", "Year")
+                        .HasForeignKey("AwayTeamName", "Season")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Database.Models.Team", "HomeTeam")
                         .WithMany("HomeLeagueFixtures")
-                        .HasForeignKey("HomeTeamName", "Year")
+                        .HasForeignKey("HomeTeamName", "Season")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Database.Models.LeagueGameDay", "GameDay")
                         .WithMany("Fixtures")
-                        .HasForeignKey("LeagueName", "Year", "GameDayNumber")
+                        .HasForeignKey("LeagueName", "Season", "GameDayNumber")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -493,7 +493,7 @@ namespace Database.Migrations
                 {
                     b.HasOne("Database.Models.League", "League")
                         .WithMany("LeagueGameDays")
-                        .HasForeignKey("LeagueName", "Year")
+                        .HasForeignKey("LeagueName", "Season")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -502,7 +502,7 @@ namespace Database.Migrations
                 {
                     b.HasOne("Database.Models.League", "League")
                         .WithMany("Teams")
-                        .HasForeignKey("LeagueName", "Year")
+                        .HasForeignKey("LeagueName", "Season")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

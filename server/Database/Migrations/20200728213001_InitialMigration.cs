@@ -10,19 +10,19 @@ namespace Database.Migrations
                 name: "Continents",
                 columns: table => new
                 {
-                    Year = table.Column<string>(maxLength: 10, nullable: false),
+                    Season = table.Column<string>(maxLength: 10, nullable: false),
                     Name = table.Column<string>(maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Continents", x => new { x.Name, x.Year });
+                    table.PrimaryKey("PK_Continents", x => new { x.Name, x.Season });
                 });
 
             migrationBuilder.CreateTable(
                 name: "Countries",
                 columns: table => new
                 {
-                    Year = table.Column<string>(maxLength: 10, nullable: false),
+                    Season = table.Column<string>(maxLength: 10, nullable: false),
                     Name = table.Column<string>(maxLength: 255, nullable: false),
                     Abbreviation = table.Column<string>(maxLength: 3, nullable: false),
                     AttackStrength = table.Column<double>(nullable: false, defaultValue: 600.0),
@@ -40,12 +40,12 @@ namespace Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Countries", x => new { x.Name, x.Year });
+                    table.PrimaryKey("PK_Countries", x => new { x.Name, x.Season });
                     table.ForeignKey(
-                        name: "FK_Countries_Continents_ContinentName_Year",
-                        columns: x => new { x.ContinentName, x.Year },
+                        name: "FK_Countries_Continents_ContinentName_Season",
+                        columns: x => new { x.ContinentName, x.Season },
                         principalTable: "Continents",
-                        principalColumns: new[] { "Name", "Year" },
+                        principalColumns: new[] { "Name", "Season" },
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -54,19 +54,19 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Name = table.Column<string>(maxLength: 255, nullable: false),
-                    Year = table.Column<string>(maxLength: 10, nullable: false),
+                    Season = table.Column<string>(maxLength: 10, nullable: false),
                     Abbreviation = table.Column<string>(maxLength: 10, nullable: true),
                     Level = table.Column<int>(nullable: false, defaultValue: 1),
                     CountryName = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Divisions", x => new { x.Name, x.Year });
+                    table.PrimaryKey("PK_Divisions", x => new { x.Name, x.Season });
                     table.ForeignKey(
-                        name: "FK_Divisions_Countries_CountryName_Year",
-                        columns: x => new { x.CountryName, x.Year },
+                        name: "FK_Divisions_Countries_CountryName_Season",
+                        columns: x => new { x.CountryName, x.Season },
                         principalTable: "Countries",
-                        principalColumns: new[] { "Name", "Year" },
+                        principalColumns: new[] { "Name", "Season" },
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -74,7 +74,7 @@ namespace Database.Migrations
                 name: "Leagues",
                 columns: table => new
                 {
-                    Year = table.Column<string>(maxLength: 10, nullable: false),
+                    Season = table.Column<string>(maxLength: 10, nullable: false),
                     Name = table.Column<string>(maxLength: 255, nullable: false),
                     Abbreviation = table.Column<string>(maxLength: 10, nullable: true),
                     ShotAccuracyModifier = table.Column<double>(nullable: false, defaultValue: 1.0),
@@ -86,12 +86,12 @@ namespace Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Leagues", x => new { x.Name, x.Year });
+                    table.PrimaryKey("PK_Leagues", x => new { x.Name, x.Season });
                     table.ForeignKey(
-                        name: "FK_Leagues_Divisions_DivisionName_Year",
-                        columns: x => new { x.DivisionName, x.Year },
+                        name: "FK_Leagues_Divisions_DivisionName_Season",
+                        columns: x => new { x.DivisionName, x.Season },
                         principalTable: "Divisions",
-                        principalColumns: new[] { "Name", "Year" },
+                        principalColumns: new[] { "Name", "Season" },
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -99,18 +99,18 @@ namespace Database.Migrations
                 name: "LeagueGameDays",
                 columns: table => new
                 {
-                    Year = table.Column<string>(maxLength: 10, nullable: false),
+                    Season = table.Column<string>(maxLength: 10, nullable: false),
                     LeagueName = table.Column<string>(maxLength: 255, nullable: false),
                     GameDayNumber = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LeagueGameDays", x => new { x.LeagueName, x.Year, x.GameDayNumber });
+                    table.PrimaryKey("PK_LeagueGameDays", x => new { x.LeagueName, x.Season, x.GameDayNumber });
                     table.ForeignKey(
-                        name: "FK_LeagueGameDays_Leagues_LeagueName_Year",
-                        columns: x => new { x.LeagueName, x.Year },
+                        name: "FK_LeagueGameDays_Leagues_LeagueName_Season",
+                        columns: x => new { x.LeagueName, x.Season },
                         principalTable: "Leagues",
-                        principalColumns: new[] { "Name", "Year" },
+                        principalColumns: new[] { "Name", "Season" },
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -118,7 +118,7 @@ namespace Database.Migrations
                 name: "Teams",
                 columns: table => new
                 {
-                    Year = table.Column<string>(maxLength: 10, nullable: false),
+                    Season = table.Column<string>(maxLength: 10, nullable: false),
                     Name = table.Column<string>(maxLength: 255, nullable: false),
                     ShortName = table.Column<string>(maxLength: 255, nullable: true),
                     Abbreviation = table.Column<string>(maxLength: 3, nullable: false),
@@ -136,12 +136,12 @@ namespace Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Teams", x => new { x.Name, x.Year });
+                    table.PrimaryKey("PK_Teams", x => new { x.Name, x.Season });
                     table.ForeignKey(
-                        name: "FK_Teams_Leagues_LeagueName_Year",
-                        columns: x => new { x.LeagueName, x.Year },
+                        name: "FK_Teams_Leagues_LeagueName_Season",
+                        columns: x => new { x.LeagueName, x.Season },
                         principalTable: "Leagues",
-                        principalColumns: new[] { "Name", "Year" },
+                        principalColumns: new[] { "Name", "Season" },
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -151,7 +151,7 @@ namespace Database.Migrations
                 {
                     HomeTeamName = table.Column<string>(maxLength: 255, nullable: false),
                     AwayTeamName = table.Column<string>(maxLength: 255, nullable: false),
-                    Year = table.Column<string>(maxLength: 10, nullable: false),
+                    Season = table.Column<string>(maxLength: 10, nullable: false),
                     LeagueName = table.Column<string>(maxLength: 255, nullable: false),
                     GameDayNumber = table.Column<int>(nullable: false),
                     HalfFieldLength = table.Column<int>(nullable: false, defaultValue: 100),
@@ -182,56 +182,56 @@ namespace Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LeagueFixtures", x => new { x.LeagueName, x.Year, x.GameDayNumber, x.HomeTeamName, x.AwayTeamName });
+                    table.PrimaryKey("PK_LeagueFixtures", x => new { x.LeagueName, x.Season, x.GameDayNumber, x.HomeTeamName, x.AwayTeamName });
                     table.ForeignKey(
-                        name: "FK_LeagueFixtures_Teams_AwayTeamName_Year",
-                        columns: x => new { x.AwayTeamName, x.Year },
+                        name: "FK_LeagueFixtures_Teams_AwayTeamName_Season",
+                        columns: x => new { x.AwayTeamName, x.Season },
                         principalTable: "Teams",
-                        principalColumns: new[] { "Name", "Year" },
+                        principalColumns: new[] { "Name", "Season" },
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_LeagueFixtures_Teams_HomeTeamName_Year",
-                        columns: x => new { x.HomeTeamName, x.Year },
+                        name: "FK_LeagueFixtures_Teams_HomeTeamName_Season",
+                        columns: x => new { x.HomeTeamName, x.Season },
                         principalTable: "Teams",
-                        principalColumns: new[] { "Name", "Year" },
+                        principalColumns: new[] { "Name", "Season" },
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_LeagueFixtures_LeagueGameDays_LeagueName_Year_GameDayNumber",
-                        columns: x => new { x.LeagueName, x.Year, x.GameDayNumber },
+                        name: "FK_LeagueFixtures_LeagueGameDays_LeagueName_Season_GameDayNumber",
+                        columns: x => new { x.LeagueName, x.Season, x.GameDayNumber },
                         principalTable: "LeagueGameDays",
-                        principalColumns: new[] { "LeagueName", "Year", "GameDayNumber" },
+                        principalColumns: new[] { "LeagueName", "Season", "GameDayNumber" },
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Countries_ContinentName_Year",
+                name: "IX_Countries_ContinentName_Season",
                 table: "Countries",
-                columns: new[] { "ContinentName", "Year" });
+                columns: new[] { "ContinentName", "Season" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Divisions_CountryName_Year",
+                name: "IX_Divisions_CountryName_Season",
                 table: "Divisions",
-                columns: new[] { "CountryName", "Year" });
+                columns: new[] { "CountryName", "Season" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_LeagueFixtures_AwayTeamName_Year",
+                name: "IX_LeagueFixtures_AwayTeamName_Season",
                 table: "LeagueFixtures",
-                columns: new[] { "AwayTeamName", "Year" });
+                columns: new[] { "AwayTeamName", "Season" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_LeagueFixtures_HomeTeamName_Year",
+                name: "IX_LeagueFixtures_HomeTeamName_Season",
                 table: "LeagueFixtures",
-                columns: new[] { "HomeTeamName", "Year" });
+                columns: new[] { "HomeTeamName", "Season" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Leagues_DivisionName_Year",
+                name: "IX_Leagues_DivisionName_Season",
                 table: "Leagues",
-                columns: new[] { "DivisionName", "Year" });
+                columns: new[] { "DivisionName", "Season" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Teams_LeagueName_Year",
+                name: "IX_Teams_LeagueName_Season",
                 table: "Teams",
-                columns: new[] { "LeagueName", "Year" });
+                columns: new[] { "LeagueName", "Season" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

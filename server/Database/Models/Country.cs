@@ -4,7 +4,7 @@ namespace Database.Models
 {
     public class Country
     {
-        public string Year { get; set; }
+        public string Season { get; set; }
         public string Name { get; set; }
         public string Abbreviation { get; set; }
         public double AttackStrength { get; set; }

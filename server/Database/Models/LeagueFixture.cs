@@ -4,7 +4,7 @@
     {
         public string HomeTeamName { get; set; }
         public string AwayTeamName { get; set; }
-        public string Year { get; set; }
+        public string Season { get; set; }
         public string LeagueName { get; set; }
         public int GameDayNumber { get; set; }
 
