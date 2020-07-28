@@ -10,7 +10,8 @@ module.exports = {
     extend: {},
   },
   variants: {
-    textColor: ['hover', 'focus', 'active']
+    textColor: ['hover', 'focus', 'active'],
+    backgroundColor: ['hover', 'focus', 'active']
   },
   plugins: [],
 }
