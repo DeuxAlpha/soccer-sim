@@ -17,29 +17,29 @@ namespace Fiddles
         {
             var homeTeam = new TeamLineUp
             {
-                AttackStrength = 1500,
-                DefenseStrength = 1300,
-                GoalKeeperStrength = 1350,
+                AttackStrength = 1200,
+                DefenseStrength = 1000,
+                GoalKeeperStrength = 1050,
                 ShotOnGoalRate = 0.4,
                 MaxPace = 35,
                 PotentialPositiveShift = 25,
                 PotentialPositiveShiftChance = 0.1,
                 PotentialNegativeShift = 25,
                 PotentialNegativeShiftChance = 0.125,
-                CurrentForm = -100
+                CurrentForm = -50
             };
             var awayTeam = new TeamLineUp
             {
                 AttackStrength = 350,
                 DefenseStrength = 400,
                 GoalKeeperStrength = 425,
-                ShotOnGoalRate = 0.35,
-                MaxPace = 45,
+                ShotOnGoalRate = 0.3,
+                MaxPace = 60,
                 PotentialPositiveShift = 30,
                 PotentialPositiveShiftChance = 0.1,
                 PotentialNegativeShift = 25,
-                PotentialNegativeShiftChance = 0.05,
-                CurrentForm = 100
+                PotentialNegativeShiftChance = 0.025,
+                CurrentForm = 125
             };
             var results = new List<GameResult>
             {
@@ -54,7 +54,9 @@ namespace Fiddles
                         ShotAccuracyModifier = 1,
                         PaceModifier = 1,
                         MaxHomeAdvantage = 50,
-                        MaxAwayDisadvantage = 100
+                        MaxAwayDisadvantage = 100,
+                        MaxProgressChance = 0.7,
+                        MinProgressChance = 0.3
                     }),
             };
             Console.WriteLine(results);

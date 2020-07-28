@@ -192,7 +192,12 @@ namespace Domain.Services
             var progressChance = gameStatus.Momentum == Team.Home
                 ? homeTeam.AttackStrength / (homeTeam.AttackStrength + awayTeam.DefenseStrength)
                 : awayTeam.AttackStrength / (awayTeam.AttackStrength + homeTeam.DefenseStrength);
-            if (RandomService.GetRandomBetweenOneAndZero() < progressChance)
+            // Cap chances. Otherwise it becomes impossible for teams to win against superior opponents
+            if (progressChance < gameProperties.MinProgressChance) progressChance = gameProperties.MinProgressChance;
+            if (progressChance > gameProperties.MaxProgressChance) progressChance = gameProperties.MaxProgressChance;
+            if (gameStatus.Momentum == Team.Home ?
+                RandomService.GetRandomBetweenOneAndZero() < progressChance :
+                RandomService.GetRandomBetweenOneAndZero() > progressChance)
             {
                 var maxPace = homeTeam.MaxPace * gameProperties.PaceModifier;
                 gameStatus.BallPosition += (int) RandomService.GetRandomNumber(0, maxPace);

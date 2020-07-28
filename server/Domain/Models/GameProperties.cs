@@ -12,6 +12,8 @@
         public double PaceModifier { get; set; }
         public double MaxHomeAdvantage { get; set; }
         public double MaxAwayDisadvantage { get; set; }
+        public double MaxProgressChance { get; set; }
+        public double MinProgressChance { get; set; }
 
         public GameProperties()
         {
@@ -20,6 +22,8 @@
             MaxOvertime = 8;
             ShotAccuracyModifier = 1;
             IsExtendedTime = false;
+            MaxProgressChance = 0.75;
+            MinProgressChance = 0.25;
         }
     }
 }
