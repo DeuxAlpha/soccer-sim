@@ -21,8 +21,7 @@ namespace API.Controllers
         [HttpGet]
         public IActionResult GetTeams(QueryRequest request)
         {
-            var response = QueryService.GetQueryResponse(_context.Teams.Select(t => new TeamDto(t)), request);
-            return Ok(response);
+            return Ok(QueryService.GetQueryResponse(_context.Teams.Select(t => new TeamDto(t)), request));
         }
     }
 }

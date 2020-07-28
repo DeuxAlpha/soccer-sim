@@ -5,7 +5,7 @@ namespace API.Dtos
 {
     public class TeamDto
     {
-        public string Year { get; set; }
+        public string Season { get; set; }
         public string Name { get; set; }
         public string ShortName { get; set; }
         public string Abbreviation { get; set; }
@@ -23,7 +23,7 @@ namespace API.Dtos
 
         public TeamDto(Team team)
         {
-            Year = team.Year;
+            Season = team.Season;
             Name = team.Name;
             ShortName = team.ShortName;
             Abbreviation = team.Abbreviation;
