@@ -337,7 +337,7 @@ namespace Database.Migrations
 
                     b.HasIndex("HomeTeamName", "Season");
 
-                    b.ToTable("Fixtures");
+                    b.ToTable("LeagueFixtures");
                 });
 
             modelBuilder.Entity("Database.Models.LeagueGameDay", b =>
@@ -355,7 +355,7 @@ namespace Database.Migrations
 
                     b.HasKey("LeagueName", "Season", "GameDayNumber");
 
-                    b.ToTable("GameDays");
+                    b.ToTable("LeagueGameDays");
                 });
 
             modelBuilder.Entity("Database.Models.Team", b =>
@@ -487,7 +487,7 @@ namespace Database.Migrations
             modelBuilder.Entity("Database.Models.LeagueGameDay", b =>
                 {
                     b.HasOne("Database.Models.League", "League")
-                        .WithMany("GameDays")
+                        .WithMany("LeagueGameDays")
                         .HasForeignKey("LeagueName", "Season")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();

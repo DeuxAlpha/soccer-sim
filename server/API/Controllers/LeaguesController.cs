@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
 using Database.Contexts;
+using Database.Models;
+using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Querying.Query.Models;
@@ -61,11 +64,42 @@ namespace API.Controllers
             var league = await _context.Leagues
                 .Include(l => l.Teams)
                 .Include(l => l.GameDays)
+                .ThenInclude(gd => gd.Fixtures)
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
             if (league.GameDays.Any())
             {
-                _context.GameDays
+                _context.LeagueGameDays.RemoveRange(league.GameDays);
             }
+
+            var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), true);
+            var gameDayNumber = 1;
+            var leagueGameDays = new List<LeagueGameDay>();
+            var leagueFixtures = new List<LeagueFixture>();
+            foreach (var gameDay in gameDays)
+            {
+                leagueGameDays.Add(new LeagueGameDay
+                {
+                    LeagueName = league.Name,
+                    Season = league.Season,
+                    GameDayNumber = gameDayNumber
+                });
+                leagueFixtures.AddRange(gameDay.Games.Select(game => new LeagueFixture
+                {
+                    LeagueName = league.Name,
+                    Season = league.Season,
+                    GameDayNumber = gameDayNumber,
+                    HomeTeamName = game.Home.Name,
+                    AwayTeamName = game.Away.Name
+                }));
+
+                gameDayNumber++;
+            }
+
+            await _context.LeagueGameDays.AddRangeAsync(leagueGameDays);
+            await _context.LeagueFixtures.AddRangeAsync(leagueFixtures);
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpPut("{name}/{season}")]
