@@ -61,5 +61,21 @@ namespace API.Dtos
                 Image = Image
             };
         }
+
+        public void MapUpdate(Country country)
+        {
+            country.Abbreviation = Abbreviation;
+            country.AttackStrength = AttackStrength;
+            country.DefenseStrength = DefenseStrength;
+            country.GoalieStrength = GoalieStrength;
+            country.PotentialPositiveShift = PotentialPositiveShift;
+            country.PotentialPositiveChance = PotentialPositiveChance;
+            country.PotentialNegativeShift = PotentialNegativeShift;
+            country.PotentialNegativeChance = PotentialNegativeChance;
+            country.MaxPace = MaxPace;
+            country.ShotOnGoalRate = ShotOnGoalRate;
+            country.ContinentName = ContinentName;
+            country.Image = Image;
+        }
     }
 }
