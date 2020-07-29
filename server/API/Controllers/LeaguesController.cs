@@ -55,6 +55,19 @@ namespace API.Controllers
             return Created(Url.Action("GetLeague", "Leagues", returnObject), new LeagueDto(newLeague.Entity));
         }
 
+        [HttpPost("/gameplan/{name}/{season}")]
+        public async Task<IActionResult> CreateGamePlan(string name, string season)
+        {
+            var league = await _context.Leagues
+                .Include(l => l.Teams)
+                .Include(l => l.GameDays)
+                .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
+            if (league.GameDays.Any())
+            {
+                _context.GameDays
+            }
+        }
+
         [HttpPut("{name}/{season}")]
         public async Task<IActionResult> UpdateLeague(string name, string season, [FromBody] LeagueDto leagueDto)
         {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Database.Contexts.Entities
 {
-    public class LeagueFixturesConfiguration : IEntityTypeConfiguration<LeagueFixture>
+    public class FixturesConfiguration : IEntityTypeConfiguration<LeagueFixture>
     {
         public void Configure(EntityTypeBuilder<LeagueFixture> builder)
         {

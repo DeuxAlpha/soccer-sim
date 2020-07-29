@@ -16,7 +16,7 @@ namespace Database.Models
         public string Image { get; set; }
 
         public ICollection<Team> Teams { get; set; }
-        public ICollection<LeagueGameDay> LeagueGameDays { get; set; }
+        public ICollection<LeagueGameDay> GameDays { get; set; }
         public Division Division { get; set; }
     }
 }

@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Database.Contexts.Entities
 {
-    public class LeagueGameDaysConfiguration : IEntityTypeConfiguration<LeagueGameDay>
+    public class GameDaysConfiguration : IEntityTypeConfiguration<LeagueGameDay>
     {
         public void Configure(EntityTypeBuilder<LeagueGameDay> builder)
         {
             builder.HasKey(d => new {d.LeagueName, d.Season, d.GameDayNumber});
 
             builder.HasOne(d => d.League)
-                .WithMany(l => l.LeagueGameDays)
+                .WithMany(l => l.GameDays)
                 .HasForeignKey(d => new {d.LeagueName, d.Season})
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
