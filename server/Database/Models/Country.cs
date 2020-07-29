@@ -16,7 +16,6 @@ namespace Database.Models
         public double PotentialNegativeChance { get; set; }
         public int MaxPace { get; set; }
         public double ShotOnGoalRate { get; set; }
-        public double CountryStrengthModifier { get; set; }
         public string ContinentName { get; set; }
         public string Image { get; set; }
 
