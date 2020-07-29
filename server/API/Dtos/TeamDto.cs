@@ -43,5 +43,44 @@ namespace API.Dtos
             LeagueName = team.LeagueName;
             Image = team.Image;
         }
+
+        public Team Map()
+        {
+            return new Team
+            {
+                Season = Season,
+                Name = Name,
+                ShortName = ShortName,
+                Abbreviation = Abbreviation,
+                AttackStrength = AttackStrength,
+                DefenseStrength = DefenseStrength,
+                GoalieStrength = GoalieStrength,
+                PotentialPositiveShift = PotentialPositiveShift,
+                PotentialPositiveChance = PotentialPositiveChance,
+                PotentialNegativeShift = PotentialNegativeShift,
+                PotentialNegativeChance = PotentialNegativeChance,
+                MaxPace = MaxPace,
+                ShotOnGoalRate = ShotOnGoalRate,
+                LeagueName = LeagueName,
+                Image = Image,
+            };
+        }
+
+        public void MapUpdate(Team team)
+        {
+            team.ShortName = ShortName;
+            team.Abbreviation = Abbreviation;
+            team.AttackStrength = AttackStrength;
+            team.DefenseStrength = DefenseStrength;
+            team.GoalieStrength = GoalieStrength;
+            team.PotentialPositiveShift = PotentialPositiveShift;
+            team.PotentialPositiveChance = PotentialPositiveChance;
+            team.PotentialNegativeShift = PotentialNegativeShift;
+            team.PotentialNegativeChance = PotentialNegativeChance;
+            team.MaxPace = MaxPace;
+            team.ShotOnGoalRate = ShotOnGoalRate;
+            team.LeagueName = LeagueName;
+            team.Image = Image;
+        }
     }
 }
