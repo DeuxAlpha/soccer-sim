@@ -17,29 +17,29 @@ namespace Fiddles
         {
             var homeTeam = new TeamLineUp
             {
-                AttackStrength = 1200,
-                DefenseStrength = 1000,
-                GoalKeeperStrength = 1050,
-                ShotOnGoalRate = 0.4,
-                MaxPace = 35,
-                PotentialPositiveShift = 25,
+                AttackStrength = 250,
+                DefenseStrength = 275,
+                GoalKeeperStrength = 200,
+                ShotOnGoalRate = 0.3,
+                MaxPace = 30,
+                PotentialPositiveShift = 10,
                 PotentialPositiveShiftChance = 0.1,
-                PotentialNegativeShift = 25,
+                PotentialNegativeShift = 10,
                 PotentialNegativeShiftChance = 0.125,
-                CurrentForm = -50
+                CurrentForm = -5
             };
             var awayTeam = new TeamLineUp
             {
-                AttackStrength = 350,
-                DefenseStrength = 400,
-                GoalKeeperStrength = 425,
-                ShotOnGoalRate = 0.3,
-                MaxPace = 60,
+                AttackStrength = 300,
+                DefenseStrength = 280,
+                GoalKeeperStrength = 220,
+                ShotOnGoalRate = 0.4,
+                MaxPace = 45,
                 PotentialPositiveShift = 30,
                 PotentialPositiveShiftChance = 0.1,
                 PotentialNegativeShift = 25,
                 PotentialNegativeShiftChance = 0.025,
-                CurrentForm = 125
+                CurrentForm = 20
             };
             var results = new List<GameResult>
             {
@@ -51,8 +51,8 @@ namespace Fiddles
                         ActionsPerMinute = 4,
                         MaxOvertime = 10,
                         HalfFieldLength = 100,
-                        ShotAccuracyModifier = 1,
-                        PaceModifier = 1,
+                        ShotAccuracyModifier = 1.2,
+                        PaceModifier = 1.2,
                         MaxHomeAdvantage = 50,
                         MaxAwayDisadvantage = 100,
                         MaxProgressChance = 0.7,
