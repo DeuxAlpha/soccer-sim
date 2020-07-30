@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Database.Contexts.Entities
 {
-    public class FixturesConfiguration : IEntityTypeConfiguration<LeagueFixture>
+    public class LeagueFixturesConfiguration : IEntityTypeConfiguration<LeagueFixture>
     {
         public void Configure(EntityTypeBuilder<LeagueFixture> builder)
         {
@@ -51,42 +51,6 @@ namespace Database.Contexts.Entities
             builder.Property(f => f.MaxHomeAdvantage).HasDefaultValue(0).IsRequired();
 
             builder.Property(f => f.MaxAwayDisadvantage).HasDefaultValue(0).IsRequired();
-
-            builder.Property(f => f.HomeAttackStrength).HasDefaultValue(600).IsRequired();
-
-            builder.Property(f => f.HomeDefenseStrength).HasDefaultValue(600).IsRequired();
-
-            builder.Property(f => f.HomeGoalKeeperStrength).HasDefaultValue(600).IsRequired();
-
-            builder.Property(f => f.HomePotentialPositiveShift).HasDefaultValue(0).IsRequired();
-
-            builder.Property(f => f.HomePotentialPositiveChance).HasDefaultValue(0).IsRequired();
-
-            builder.Property(f => f.HomePotentialNegativeShift).HasDefaultValue(0).IsRequired();
-
-            builder.Property(f => f.HomePotentialNegativeChance).HasDefaultValue(0).IsRequired();
-
-            builder.Property(f => f.HomeMaxPace).HasDefaultValue(40).IsRequired();
-
-            builder.Property(f => f.HomeShotOnGoalRate).HasDefaultValue(0.4).IsRequired();
-
-            builder.Property(f => f.AwayAttackStrength).HasDefaultValue(600).IsRequired();
-
-            builder.Property(f => f.AwayDefenseStrength).HasDefaultValue(600).IsRequired();
-
-            builder.Property(f => f.AwayGoalKeeperStrength).HasDefaultValue(600).IsRequired();
-
-            builder.Property(f => f.AwayPotentialPositiveShift).HasDefaultValue(0).IsRequired();
-
-            builder.Property(f => f.AwayPotentialPositiveChance).HasDefaultValue(0).IsRequired();
-
-            builder.Property(f => f.AwayPotentialNegativeShift).HasDefaultValue(0).IsRequired();
-
-            builder.Property(f => f.AwayPotentialNegativeChance).HasDefaultValue(0).IsRequired();
-
-            builder.Property(f => f.AwayMaxPace).HasDefaultValue(40).IsRequired();
-
-            builder.Property(f => f.AwayShotOnGoalRate).HasDefaultValue(0.4).IsRequired();
         }
     }
 }

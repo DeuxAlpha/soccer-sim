@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Database.Contexts.Entities
 {
-    public class GameDaysConfiguration : IEntityTypeConfiguration<LeagueGameDay>
+    public class LeagueGameDaysConfiguration : IEntityTypeConfiguration<LeagueGameDay>
     {
         public void Configure(EntityTypeBuilder<LeagueGameDay> builder)
         {
