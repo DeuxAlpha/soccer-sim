@@ -42,7 +42,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetDivision(string name, string season)
         {
             var division = await _context.Divisions.FirstOrDefaultAsync(d => d.Name == name && d.Season == season);
-            if (division == null) return NotFound(new {Name = name, Season = season});
+            if (division == null) return NotFound(new {name, season});
             return Ok(new DivisionDto(division));
         }
 
@@ -59,7 +59,7 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteDivision(string name, string season)
         {
             var division = await _context.Divisions.FirstOrDefaultAsync(d => d.Name == name && d.Season == season);
-            if (division == null) return NotFound(new {Name = name, Season = season});
+            if (division == null) return NotFound(new {name, season});
             _context.Divisions.Remove(division);
             await _context.SaveChangesAsync();
             return NoContent();

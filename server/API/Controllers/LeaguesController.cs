@@ -45,7 +45,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetLeague(string name, string season)
         {
             var country = await _context.Leagues.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
-            if (country == null) return NotFound(new {Name = name, Season = season});
+            if (country == null) return NotFound(new {name, season});
             return Ok(new LeagueDto(country));
         }
 
@@ -58,7 +58,7 @@ namespace API.Controllers
             return Created(Url.Action("GetLeague", "Leagues", returnObject), new LeagueDto(newLeague.Entity));
         }
 
-        [HttpPost("/gameplan/{name}/{season}")]
+        [HttpPost("gameplan/{name}/{season}")]
         public async Task<IActionResult> CreateGamePlan(string name, string season)
         {
             var league = await _context.Leagues
@@ -66,9 +66,12 @@ namespace API.Controllers
                 .Include(l => l.GameDays)
                 .ThenInclude(gd => gd.Fixtures)
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
+            if (league == null) return NotFound(new {name, season});
             if (league.GameDays.Any())
             {
+                _context.LeagueFixtures.RemoveRange(league.GameDays.SelectMany(gd => gd.Fixtures));
                 _context.LeagueGameDays.RemoveRange(league.GameDays);
+                await _context.SaveChangesAsync();
             }
 
             var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), true);
@@ -106,7 +109,7 @@ namespace API.Controllers
         public async Task<IActionResult> UpdateLeague(string name, string season, [FromBody] LeagueDto leagueDto)
         {
             var league = await _context.Leagues.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
-            if (league == null) return NotFound(new {Name = name, Season = season});
+            if (league == null) return NotFound(new {name, season});
             leagueDto.MapUpdate(league);
             await _context.SaveChangesAsync();
             return Ok(new LeagueDto(league));
@@ -116,7 +119,7 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteLeague(string name, string season)
         {
             var league = await _context.Countries.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
-            if (league == null) return NotFound(new {Name = name, Season = season});
+            if (league == null) return NotFound(new {name, season});
             _context.Countries.Remove(league);
             await _context.SaveChangesAsync();
             return NoContent();

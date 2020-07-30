@@ -44,7 +44,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetContinent(string name, string season)
         {
             var continent = await _context.Continents.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
-            if (continent == null) return NotFound(new {Name = name, Season = season});
+            if (continent == null) return NotFound(new {name, season});
             return Ok(new ContinentDto(continent));
         }
 
@@ -62,7 +62,7 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteContinent(string name, string season)
         {
             var continent = await _context.Continents.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
-            if (continent == null) return NotFound(new {Name = name, Season = season});
+            if (continent == null) return NotFound(new {name, season});
             _context.Continents.Remove(continent);
             await _context.SaveChangesAsync();
             return NoContent();

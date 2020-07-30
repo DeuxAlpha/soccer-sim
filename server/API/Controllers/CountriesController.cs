@@ -43,7 +43,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetCountry(string name, string season)
         {
             var country = await _context.Countries.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
-            if (country == null) return NotFound(new {Name = name, Season = season});
+            if (country == null) return NotFound(new {name, season});
             return Ok(new CountryDto(country));
         }
 
@@ -60,7 +60,7 @@ namespace API.Controllers
         public async Task<IActionResult> UpdateCountry(string name, string season, [FromBody] CountryDto countryDto)
         {
             var country = await _context.Countries.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
-            if (country == null) return NotFound(new {Name = name, Season = season});
+            if (country == null) return NotFound(new {name, season});
             countryDto.MapUpdate(country);
             await _context.SaveChangesAsync();
             return Ok(new CountryDto(country));
@@ -70,7 +70,7 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteCountry(string name, string season)
         {
             var country = await _context.Countries.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
-            if (country == null) return NotFound(new {Name = name, Season = season});
+            if (country == null) return NotFound(new {name, season});
             _context.Countries.Remove(country);
             await _context.SaveChangesAsync();
             return NoContent();
