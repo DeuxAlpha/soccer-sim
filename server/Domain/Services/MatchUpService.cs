@@ -12,16 +12,13 @@ namespace Domain.Services
             var participantCount = participants.Count;
             var overallGameDays = participantCount % 2 == 0 ? participantCount - 1 : participantCount;
             var sideToggle = true;
-            var teamIndices = new List<TeamIndex<T>>();
-            for (var teamIndex = 0; teamIndex < participantCount; teamIndex++)
-            {
-                var participant = participants[teamIndex];
-                teamIndices.Add(new TeamIndex<T>
+            var places = Enumerable.Range(1, participants.Count).ToList();
+            var teamIndices = participants
+                .Select(participant => new TeamIndex<T>
                 {
-                    Place = teamIndex + 1,
+                    Place = places.PopRandom(),
                     Team = participant
-                });
-            }
+                }).ToList();
 
             var gameDays = new List<GameDay<T>>();
             for (var gameDayIndex = 0; gameDayIndex < overallGameDays; gameDayIndex++)
