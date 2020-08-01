@@ -31,6 +31,12 @@ namespace Database.Contexts.Entities
             builder.Property(c => c.MaxHomeAdvantage).HasDefaultValue(0).IsRequired();
 
             builder.Property(c => c.MaxAwayDisadvantage).HasDefaultValue(0).IsRequired();
+
+            builder.Property(c => c.ActionsPerMinute).HasDefaultValue(4).IsRequired();
+
+            builder.Property(c => c.MaxProgressChance).HasDefaultValue(0.7).IsRequired();
+
+            builder.Property(c => c.MinProgressChance).HasDefaultValue(0.3).IsRequired();
         }
     }
 }

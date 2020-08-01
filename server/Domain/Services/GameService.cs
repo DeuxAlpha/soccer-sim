@@ -34,7 +34,7 @@ namespace Domain.Services
                     {
                         result.PenaltyEvents.Add(new PenaltyEvent
                         {
-                            Team = Team.Home,
+                            ActingTeam = ActingTeam.Home,
                             IsGoal = true
                         });
                         homeShoots = false;
@@ -43,7 +43,7 @@ namespace Domain.Services
                     {
                         result.PenaltyEvents.Add(new PenaltyEvent
                         {
-                            Team = Team.Away,
+                            ActingTeam = ActingTeam.Away,
                             IsGoal = true
                         });
                         homeShoots = true;
@@ -53,7 +53,7 @@ namespace Domain.Services
                 {
                     result.PenaltyEvents.Add(new PenaltyEvent
                     {
-                        Team = Team.Home,
+                        ActingTeam = ActingTeam.Home,
                         IsGoal = false
                     });
                     homeShoots = false;
@@ -62,7 +62,7 @@ namespace Domain.Services
                 {
                     result.PenaltyEvents.Add(new PenaltyEvent
                     {
-                        Team = Team.Away,
+                        ActingTeam = ActingTeam.Away,
                         IsGoal = false
                     });
                     homeShoots = true;
@@ -81,7 +81,11 @@ namespace Domain.Services
             TeamLineUp awayTeam,
             GameProperties gameProperties)
         {
-            var gameResult = new GameResult();
+            var gameResult = new GameResult
+            {
+                PreHomeTeam = homeTeam.Clone(),
+                PreAwayTeam = awayTeam.Clone()
+            };
             homeTeam.AttackStrength += RandomService.GetRandomNumber(0, gameProperties.MaxHomeAdvantage);
             homeTeam.DefenseStrength += RandomService.GetRandomNumber(0, gameProperties.MaxHomeAdvantage);
             homeTeam.GoalKeeperStrength += RandomService.GetRandomNumber(0, gameProperties.MaxHomeAdvantage);
@@ -128,8 +132,6 @@ namespace Domain.Services
                 }
 
                 AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
-                homeTeam.ApplyPotentialShift();
-                awayTeam.ApplyPotentialShift();
             }
 
             var overtime = RandomService.GetRandomNumber(0, gameProperties.MaxOvertime);
@@ -143,9 +145,9 @@ namespace Domain.Services
                 }
 
                 AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
-                homeTeam.ApplyPotentialShift();
-                awayTeam.ApplyPotentialShift();
             }
+            homeTeam.ApplyPotentialShift();
+            awayTeam.ApplyPotentialShift();
 
             gameStatus.AddedMinutes = 0;
 
@@ -160,8 +162,6 @@ namespace Domain.Services
                 }
 
                 AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
-                homeTeam.ApplyPotentialShift();
-                awayTeam.ApplyPotentialShift();
             }
 
             overtime = RandomService.GetRandomNumber(0, gameProperties.MaxOvertime);
@@ -176,10 +176,10 @@ namespace Domain.Services
                 }
 
                 AttackingOpportunity(gameResult, gameStatus, gameProperties, homeTeam, awayTeam);
-                homeTeam.ApplyPotentialShift();
-                awayTeam.ApplyPotentialShift();
             }
 
+            gameResult.PostHomeTeam = homeTeam.Clone();
+            gameResult.PostAwayTeam = homeTeam.Clone();
             return gameResult;
         }
 
@@ -189,26 +189,36 @@ namespace Domain.Services
             GameStatus gameStatus,
             GameProperties gameProperties)
         {
-            var progressChance = gameStatus.Momentum == Team.Home
-                ? homeTeam.AttackStrength / (homeTeam.AttackStrength + awayTeam.DefenseStrength)
-                : awayTeam.AttackStrength / (awayTeam.AttackStrength + homeTeam.DefenseStrength);
+            var progressChance = GetProgressChance(homeTeam, awayTeam, gameStatus);
             // Cap chances. Otherwise it becomes impossible for teams to win against superior opponents
             if (progressChance < gameProperties.MinProgressChance) progressChance = gameProperties.MinProgressChance;
             if (progressChance > gameProperties.MaxProgressChance) progressChance = gameProperties.MaxProgressChance;
-            if (gameStatus.Momentum == Team.Home ?
-                RandomService.GetRandomBetweenOneAndZero() < progressChance :
-                RandomService.GetRandomBetweenOneAndZero() > progressChance)
+            if (RandomService.GetRandomBetweenOneAndZero() < progressChance)
             {
                 var maxPace = homeTeam.MaxPace * gameProperties.PaceModifier;
                 gameStatus.BallPosition += (int) RandomService.GetRandomNumber(0, maxPace);
-                gameStatus.Momentum = Team.Home;
+                gameStatus.Momentum = ActingTeam.Home;
             }
             else
             {
                 var maxPace = awayTeam.MaxPace * gameProperties.PaceModifier;
                 gameStatus.BallPosition -= (int) RandomService.GetRandomNumber(0, maxPace);
-                gameStatus.Momentum = Team.Away;
+                gameStatus.Momentum = ActingTeam.Away;
             }
+        }
+
+        private static double GetProgressChance(TeamLineUp homeTeam, TeamLineUp awayTeam, GameStatus gameStatus)
+        {
+            if (gameStatus.BallPosition > 0)
+            {
+                return homeTeam.AttackStrength / (homeTeam.AttackStrength + awayTeam.DefenseStrength);
+            }
+            else if (gameStatus.BallPosition < 0)
+            {
+                return homeTeam.DefenseStrength / (homeTeam.DefenseStrength + awayTeam.AttackStrength);
+            }
+
+            return 0.5;
         }
 
         private static void AttackingOpportunity(
@@ -230,7 +240,7 @@ namespace Domain.Services
                     AddedTime = gameStatus.AddedMinutes,
                     IsShotOnGoal = isShotOnGoal,
                     IsGoal = isKeeperBeat && isShotOnGoal,
-                    Team = Team.Home
+                    ActingTeam = ActingTeam.Home
                 });
                 gameStatus.BallPosition = 0;
             }
@@ -246,7 +256,7 @@ namespace Domain.Services
                     AddedTime = gameStatus.AddedMinutes,
                     IsShotOnGoal = isShotOnGoal,
                     IsGoal = isKeeperBeat && isShotOnGoal,
-                    Team = Team.Away
+                    ActingTeam = ActingTeam.Away
                 });
                 gameStatus.BallPosition = 0;
             }

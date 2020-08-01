@@ -12,11 +12,15 @@ namespace Database.Models
         public double PaceModifier { get; set; }
         public double MaxHomeAdvantage { get; set; }
         public double MaxAwayDisadvantage { get; set; }
+        public int ActionsPerMinute { get; set; }
+        public double MaxProgressChance { get; set; }
+        public double MinProgressChance { get; set; }
         public string DivisionName { get; set; }
         public string Image { get; set; }
 
         public ICollection<Team> Teams { get; set; }
         public ICollection<LeagueGameDay> GameDays { get; set; }
+        public ICollection<LeagueFixture> LeagueFixtures { get; set; }
         public Division Division { get; set; }
     }
 }

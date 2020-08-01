@@ -7,7 +7,6 @@ namespace API.Dtos
     {
         public string Season { get; set; }
         public string Name { get; set; }
-        public string ShortName { get; set; }
         public string Abbreviation { get; set; }
         public double AttackStrength { get; set; }
         public double DefenseStrength { get; set; }
@@ -29,7 +28,6 @@ namespace API.Dtos
         {
             Season = team.Season;
             Name = team.Name;
-            ShortName = team.ShortName;
             Abbreviation = team.Abbreviation;
             AttackStrength = team.AttackStrength;
             DefenseStrength = team.DefenseStrength;
@@ -50,7 +48,6 @@ namespace API.Dtos
             {
                 Season = Season,
                 Name = Name,
-                ShortName = ShortName,
                 Abbreviation = Abbreviation,
                 AttackStrength = AttackStrength,
                 DefenseStrength = DefenseStrength,
@@ -68,7 +65,6 @@ namespace API.Dtos
 
         public void MapUpdate(Team team)
         {
-            team.ShortName = ShortName;
             team.Abbreviation = Abbreviation;
             team.AttackStrength = AttackStrength;
             team.DefenseStrength = DefenseStrength;

@@ -1,9 +1,20 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
+using API.Dtos.Views;
+using API.Services;
 using Database.Contexts;
+using Database.Models;
+using Domain.Enums;
+using Domain.Models;
+using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Query;
 using Querying.Query.Models;
 using Querying.Query.Services;
 
@@ -46,6 +57,41 @@ namespace API.Controllers
             return Ok(new TeamDto(country));
         }
 
+        [HttpGet("{name}/{season}/fixtures")]
+        public IActionResult GetTeamFixtures(string name, string season)
+        {
+            return Ok(_context.LeagueFixtures
+                .Include(f => f.Events)
+                .Where(f => (f.HomeTeamName == name || f.AwayTeamName == name) && f.Season == season)
+                .Select(f => new LeagueFixtureDto(f)));
+        }
+
+        [HttpGet("{name}/{season}/{league}/fixtures")]
+        public IActionResult GetTeamFixtures(string name, string season, string league)
+        {
+            return Ok(_context.LeagueFixtures
+                .Include(f => f.Events)
+                .Where(f =>
+                    (f.HomeTeamName == name || f.AwayTeamName == name) &&
+                    f.Season == season &&
+                    f.LeagueName == league)
+                .Select(f => new LeagueFixtureDto(f)));
+        }
+
+        [HttpGet("{name}/{season}/{league}/{gameDay}")]
+        public async Task<IActionResult> GetTeamFixture(string name, string season, string league, int gameDay)
+        {
+            var fixture = await _context.LeagueFixtures
+                .Include(f => f.Events)
+                .FirstOrDefaultAsync(f =>
+                    (f.HomeTeamName == name || f.AwayTeamName == name) &&
+                    f.Season == season &&
+                    f.LeagueName == league &&
+                    f.GameDayNumber == gameDay);
+            if (fixture == null) return NotFound(new {name, season, league, gameDay});
+            return Ok(new LeagueFixtureDto(fixture));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateTeam(TeamDto teamDto)
         {
@@ -53,6 +99,49 @@ namespace API.Controllers
             await _context.SaveChangesAsync();
             var returnObject = new {name = newTeam.Entity.Name, season = newTeam.Entity.Season};
             return Created(Url.Action("GetTeam", "Teams", returnObject), new TeamDto(newTeam.Entity));
+        }
+
+        [HttpPost("{name}/{season}/simulate")]
+        public async Task<IActionResult> SimulateTeamFixtures(string name, string season)
+        {
+            var leagueFixtures = await _context.LeagueFixtures
+                .Include(f => f.Events)
+                .Include(f => f.League)
+                .Include(f => f.HomeTeam)
+                .Include(f => f.AwayTeam)
+                .Where(f =>
+                    (f.HomeTeamName == name || f.AwayTeamName == name) &&
+                    f.Season == season)
+                .ToListAsync();
+            var results = new List<ResultDto>();
+            foreach (var fixture in leagueFixtures.Where(fixture => !fixture.Events.Any()))
+                results.Add(await GameFacilitator.StoreFixtureResult(fixture, _context));
+            await _context.SaveChangesAsync();
+
+            return Ok(results);
+        }
+
+        [HttpPost("{name}/{season}/simulate/override")]
+        public async Task<IActionResult> OverrideTeamFixtureSimulations(string name, string season)
+        {
+            var leagueFixtures = await _context.LeagueFixtures
+                .Include(f => f.Events)
+                .Include(f => f.League)
+                .Include(f => f.HomeTeam)
+                .Include(f => f.AwayTeam)
+                .Where(f =>
+                    (f.HomeTeamName == name || f.AwayTeamName == name) &&
+                    f.Season == season)
+                .ToListAsync();
+            _context.LeagueFixtureEvents.RemoveRange(leagueFixtures.SelectMany(f => f.Events));
+            await _context.SaveChangesAsync();
+            var results = new List<ResultDto>();
+            foreach (var fixture in leagueFixtures)
+                results.Add(await GameFacilitator.StoreFixtureResult(fixture, _context));
+
+            await _context.SaveChangesAsync();
+
+            return Ok(results);
         }
 
         [HttpPut("{name}/{season}")]

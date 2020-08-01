@@ -17,47 +17,48 @@ namespace Fiddles
         {
             var homeTeam = new TeamLineUp
             {
-                AttackStrength = 250,
-                DefenseStrength = 275,
-                GoalKeeperStrength = 200,
-                ShotOnGoalRate = 0.4,
-                MaxPace = 45,
-                PotentialPositiveShift = 10,
-                PotentialPositiveShiftChance = 0.1,
-                PotentialNegativeShift = 10,
-                PotentialNegativeShiftChance = 0.125,
-                CurrentForm = -5
+                AttackStrength = 750,
+                DefenseStrength = 675,
+                GoalKeeperStrength = 800,
+                ShotOnGoalRate = 0.3,
+                MaxPace = 30,
+                PotentialPositiveShift = 30,
+                PotentialPositiveShiftChance = 0.075,
+                PotentialNegativeShift = 40,
+                PotentialNegativeShiftChance = 0.08,
+                CurrentForm = 0
             };
             var awayTeam = new TeamLineUp
             {
-                AttackStrength = 300,
-                DefenseStrength = 280,
-                GoalKeeperStrength = 220,
-                ShotOnGoalRate = 0.4,
+                AttackStrength = 1050,
+                DefenseStrength = 875,
+                GoalKeeperStrength = 925,
+                ShotOnGoalRate = 0.425,
                 MaxPace = 45,
-                PotentialPositiveShift = 10,
-                PotentialPositiveShiftChance = 0.1,
-                PotentialNegativeShift = 25,
-                PotentialNegativeShiftChance = 0.025,
-                CurrentForm = 20
+                PotentialPositiveShift = 20,
+                PotentialPositiveShiftChance = 0.075,
+                PotentialNegativeShift = 35,
+                PotentialNegativeShiftChance = 0.115,
+                CurrentForm = 0
+            };
+            var gameProperties = new GameProperties
+            {
+                ActionsPerMinute = 4,
+                MaxOvertime = 10,
+                HalfFieldLength = 100,
+                ShotAccuracyModifier = 1.1,
+                PaceModifier = 1,
+                MaxHomeAdvantage = 50,
+                MaxAwayDisadvantage = 50,
+                MaxProgressChance = 0.7,
+                MinProgressChance = 0.3
             };
             var results = new List<GameResult>
             {
                 GameService.CalculateGame_v1(
                     homeTeam,
                     awayTeam,
-                    new GameProperties
-                    {
-                        ActionsPerMinute = 4,
-                        MaxOvertime = 10,
-                        HalfFieldLength = 100,
-                        ShotAccuracyModifier = 1.2,
-                        PaceModifier = 1.2,
-                        MaxHomeAdvantage = 50,
-                        MaxAwayDisadvantage = 100,
-                        MaxProgressChance = 0.7,
-                        MinProgressChance = 0.3
-                    }),
+                    gameProperties),
             };
             Console.WriteLine(results);
             foreach (var gameResult in results)
@@ -67,20 +68,20 @@ namespace Fiddles
                     if (goalEvent.IsGoal)
                     {
                         Console.WriteLine(goalEvent.AddedTime == null || goalEvent.AddedTime == 0
-                            ? $"{goalEvent.Team} scores! {goalEvent.Minute}. Minute - {gameResult.GetScoreAtMinute(goalEvent.Minute)}"
-                            : $"{goalEvent.Team} scores! {goalEvent.Minute}. + {goalEvent.AddedTime} Minute - {gameResult.GetScoreAtMinute(goalEvent.Minute, (int) goalEvent.AddedTime)}");
+                            ? $"{goalEvent.ActingTeam} scores! {goalEvent.Minute}. Minute - {gameResult.GetScoreAtMinute(goalEvent.Minute)}"
+                            : $"{goalEvent.ActingTeam} scores! {goalEvent.Minute}. + {goalEvent.AddedTime} Minute - {gameResult.GetScoreAtMinute(goalEvent.Minute, (int) goalEvent.AddedTime)}");
                     }
                     else if (goalEvent.IsShotOnGoal)
                     {
                         Console.WriteLine(goalEvent.AddedTime == null || goalEvent.AddedTime == 0
-                            ? $"{goalEvent.Team} shot saved! {goalEvent.Minute}. Minute"
-                            : $"{goalEvent.Team} shot saved! {goalEvent.Minute}. + {goalEvent.AddedTime} Minute");
+                            ? $"{goalEvent.ActingTeam} shot saved! {goalEvent.Minute}. Minute"
+                            : $"{goalEvent.ActingTeam} shot saved! {goalEvent.Minute}. + {goalEvent.AddedTime} Minute");
                     }
                     else
                     {
                         Console.WriteLine(goalEvent.AddedTime == null || goalEvent.AddedTime == 0
-                            ? $"{goalEvent.Team} misses! {goalEvent.Minute}. Minute"
-                            : $"{goalEvent.Team} misses! {goalEvent.Minute}. + {goalEvent.AddedTime} Minute");
+                            ? $"{goalEvent.ActingTeam} misses! {goalEvent.Minute}. Minute"
+                            : $"{goalEvent.ActingTeam} misses! {goalEvent.Minute}. + {goalEvent.AddedTime} Minute");
                     }
                 }
 

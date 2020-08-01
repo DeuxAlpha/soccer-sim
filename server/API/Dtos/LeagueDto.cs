@@ -11,6 +11,9 @@ namespace API.Dtos
         public double PaceModifier { get; set; }
         public double MaxHomeAdvantage { get; set; }
         public double MaxAwayDisadvantage { get; set; }
+        public int ActionsPerMinute { get; set; }
+        public double MaxProgressChance { get; set; }
+        public double MinProgressChance { get; set; }
         public string DivisionName { get; set; }
         public string Image { get; set; }
 
@@ -28,6 +31,9 @@ namespace API.Dtos
             PaceModifier = league.PaceModifier;
             MaxHomeAdvantage = league.MaxHomeAdvantage;
             MaxAwayDisadvantage = league.MaxAwayDisadvantage;
+            MaxProgressChance = league.MaxProgressChance;
+            MinProgressChance = league.MinProgressChance;
+            ActionsPerMinute = league.ActionsPerMinute;
             DivisionName = league.DivisionName;
             Image = league.Image;
         }
@@ -43,6 +49,9 @@ namespace API.Dtos
                 PaceModifier = PaceModifier,
                 MaxHomeAdvantage = MaxHomeAdvantage,
                 MaxAwayDisadvantage = MaxAwayDisadvantage,
+                MaxProgressChance = MaxProgressChance,
+                MinProgressChance = MinProgressChance,
+                ActionsPerMinute = ActionsPerMinute,
                 DivisionName = DivisionName,
                 Image = Image,
             };
@@ -55,6 +64,9 @@ namespace API.Dtos
             league.PaceModifier = PaceModifier;
             league.MaxHomeAdvantage = MaxHomeAdvantage;
             league.MaxAwayDisadvantage = MaxAwayDisadvantage;
+            league.MaxProgressChance = MaxProgressChance;
+            league.MinProgressChance = MinProgressChance;
+            league.ActionsPerMinute = ActionsPerMinute;
             league.DivisionName = DivisionName;
             league.Image = Image;
         }

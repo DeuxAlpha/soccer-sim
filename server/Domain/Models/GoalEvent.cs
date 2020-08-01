@@ -8,12 +8,12 @@ namespace Domain.Models
         public int? AddedTime { get; set; }
         public bool IsGoal { get; set; }
         public bool IsShotOnGoal { get; set; }
-        public Team Team { get; set; }
+        public ActingTeam ActingTeam { get; set; }
     }
 
     public class PenaltyEvent
     {
-        public Team Team { get; set; }
+        public ActingTeam ActingTeam { get; set; }
         public bool IsGoal { get; set; }
     }
 }

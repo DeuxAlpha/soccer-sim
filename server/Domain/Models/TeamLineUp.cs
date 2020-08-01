@@ -23,6 +23,7 @@ namespace Domain.Models
             {
                 AttackStrength += RandomService.GetRandomNumber(0, PotentialPositiveShift);
             }
+
             if (RandomService.GetRandomBetweenOneAndZero() <= PotentialPositiveShiftChance)
             {
                 DefenseStrength += RandomService.GetRandomNumber(0, PotentialPositiveShift);
@@ -32,10 +33,28 @@ namespace Domain.Models
             {
                 AttackStrength -= RandomService.GetRandomNumber(0, PotentialNegativeShift);
             }
+
             if (RandomService.GetRandomBetweenOneAndZero() <= PotentialNegativeShiftChance)
             {
                 DefenseStrength -= RandomService.GetRandomNumber(0, PotentialNegativeShift);
             }
+        }
+
+        public TeamLineUp Clone()
+        {
+            return new TeamLineUp
+            {
+                AttackStrength = AttackStrength,
+                DefenseStrength = DefenseStrength,
+                GoalKeeperStrength = GoalKeeperStrength,
+                PotentialPositiveShift = PotentialPositiveShift,
+                PotentialPositiveShiftChance = PotentialPositiveShiftChance,
+                PotentialNegativeShift = PotentialNegativeShift,
+                PotentialNegativeShiftChance = PotentialNegativeShiftChance,
+                CurrentForm = CurrentForm,
+                MaxPace = MaxPace,
+                ShotOnGoalRate = ShotOnGoalRate,
+            };
         }
     }
 }

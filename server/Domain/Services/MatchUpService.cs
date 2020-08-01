@@ -37,8 +37,8 @@ namespace Domain.Services
                     {
                         gameDay.Games.Add(new MatchUp<T>
                         {
-                            Home = sideToggle && teamIndex.Place == 2 ? firstTeam : teamIndex.Team,
-                            Away = sideToggle && teamIndex.Place == 2 ? teamIndex.Team : firstTeam
+                            Home = sideToggle ? firstTeam : teamIndex.Team,
+                            Away = sideToggle ? teamIndex.Team : firstTeam
                         });
                         firstTeamAssigned = false;
                     }
@@ -47,7 +47,7 @@ namespace Domain.Services
                 gameDay.Games = gameDay.Games.Shuffle().ToList();
                 gameDays.Add(gameDay);
                 sideToggle = !sideToggle;
-                Rotate(teamIndices);
+                Rotate(teamIndices, participantCount % 2 == 0);
             }
 
             if (!reverseFixtures) return gameDays;
@@ -73,13 +73,27 @@ namespace Domain.Services
             return gameDays;
         }
 
-        private static void Rotate<T>(IReadOnlyCollection<TeamIndex<T>> teamIndices)
+        private static void Rotate<T>(ICollection<TeamIndex<T>> teamIndices, bool even)
         {
+            // round-robin
             var maxPlace = teamIndices.Count;
-            foreach (var teamIndex in teamIndices.Where(teamIndex => teamIndex.Place != 1))
+            foreach (var teamIndex in teamIndices)
             {
-                if (teamIndex.Place == maxPlace) teamIndex.Place = 2;
-                else teamIndex.Place++;
+                if (teamIndex.Place == 1) continue;
+                if (teamIndex.Place % 2 != 0)
+                {
+                    if (teamIndex.Place + 2 > maxPlace)
+                        teamIndex.Place += even ? 1 : -1;
+                    else
+                        teamIndex.Place += 2;
+                }
+                else
+                {
+                    if (teamIndex.Place - 2 <= 0)
+                        teamIndex.Place = 3;
+                    else
+                        teamIndex.Place -= 2;
+                }
             }
         }
 

@@ -3,4 +3,5 @@
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::DA8CF6F7-196B-47FA-8005-8C7B0404F24E::.NETCoreApp,Version=v3.1::Tests.Domain.ServiceTests.MatchUpServiceTests.MatchUpServiceTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
+&lt;/SessionState&gt;</s:String>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Gameplan/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

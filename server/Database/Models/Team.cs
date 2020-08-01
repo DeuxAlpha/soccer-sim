@@ -6,7 +6,6 @@ namespace Database.Models
     {
         public string Season { get; set; }
         public string Name { get; set; }
-        public string ShortName { get; set; }
         public string Abbreviation { get; set; }
         public double AttackStrength { get; set; }
         public double DefenseStrength { get; set; }
@@ -23,5 +22,6 @@ namespace Database.Models
         public League League { get; set; }
         public ICollection<LeagueFixture> HomeLeagueFixtures { get; set; }
         public ICollection<LeagueFixture> AwayLeagueFixtures { get; set; }
+        public ICollection<LeagueFixtureEvent> LeagueFixtureEvents { get; set; }
     }
 }

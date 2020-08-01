@@ -8,12 +8,18 @@ namespace Database.Contexts.Entities
     {
         public void Configure(EntityTypeBuilder<LeagueFixture> builder)
         {
-            builder.HasKey(f => new {f.LeagueName, f.Season, f.GameDayNumber, HomeTeam = f.HomeTeamName, AwayTeam = f.AwayTeamName});
+            builder.HasKey(f => new {f.LeagueName, f.Season, f.GameDayNumber, f.HomeTeamName, f.AwayTeamName});
+
+            builder.HasOne(f => f.League)
+                .WithMany(l => l.LeagueFixtures)
+                .HasForeignKey(f => new {f.LeagueName, f.Season})
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
 
             builder.HasOne(f => f.GameDay)
                 .WithMany(d => d.Fixtures)
                 .HasForeignKey(f => new {f.LeagueName, f.Season, f.GameDayNumber})
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
             builder.HasOne(f => f.HomeTeam)

@@ -20,8 +20,6 @@ namespace Database.Contexts.Entities
 
             builder.Property(t => t.Name).HasMaxLength(255).IsRequired();
 
-            builder.Property(t => t.ShortName).HasMaxLength(255);
-
             builder.Property(t => t.Abbreviation).HasMaxLength(3).IsRequired();
 
             builder.Property(t => t.AttackStrength).HasDefaultValue(600).IsRequired();

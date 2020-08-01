@@ -2,6 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
+using API.Dtos.Responses;
+using API.Dtos.Views;
+using API.Dtos.Views.Table;
+using API.Services;
 using Database.Contexts;
 using Database.Models;
 using Domain.Services;
@@ -49,6 +53,57 @@ namespace API.Controllers
             return Ok(new LeagueDto(country));
         }
 
+        [HttpGet("{name}/{season}/fixtures/{gameDay}")]
+        public async Task<IActionResult> GetLeagueFixture(string name, string season, int gameDay)
+        {
+            var fixtures = await _context.LeagueFixtures
+                .Include(f => f.Events)
+                .Where(gd => gd.LeagueName == name && gd.Season == season && gd.GameDayNumber == gameDay)
+                .ToListAsync();
+            var results = fixtures.Select(fixture => new ResultDto(fixture)).ToList();
+
+            return Ok(results);
+        }
+
+        [HttpGet("{name}/{season}/table")]
+        public async Task<IActionResult> GetLeagueTable(string name, string season)
+        {
+            var league = await _context.Leagues
+                .Include(l => l.Teams)
+                .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
+            if (league == null) return NotFound(new {name, season});
+            var teams = league.Teams.ToList();
+            var table = new TableDto
+            {
+                // Need to be done thrice because each need to be different tables.
+                Positions = teams.Select(t => new TablePositionDto
+                {
+                    TeamName = t.Name
+                }).ToList(),
+                HomePositions = teams.Select(t => new TablePositionDto
+                {
+                    TeamName = t.Name
+                }).ToList(),
+                AwayPositions = teams.Select(t => new TablePositionDto
+                {
+                    TeamName = t.Name
+                }).ToList()
+            };
+            var fixtures = await _context.LeagueFixtures
+                .Include(f => f.Events)
+                .Include(f => f.HomeTeam)
+                .Include(f => f.AwayTeam)
+                .Where(f => f.LeagueName == name && f.Season == season)
+                .ToListAsync();
+            foreach (var fixture in fixtures)
+            {
+                table.AddFixture(new ResultDto(fixture));
+            }
+            table.ApplyPositions();
+
+            return Ok(table);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateLeague(LeagueDto leagueDto)
         {
@@ -58,8 +113,47 @@ namespace API.Controllers
             return Created(Url.Action("GetLeague", "Leagues", returnObject), new LeagueDto(newLeague.Entity));
         }
 
-        [HttpPost("gameplan/{name}/{season}")]
-        public async Task<IActionResult> CreateGamePlan(string name, string season)
+        [HttpPost("{name}/{season}/simulate")]
+        public async Task<IActionResult> SimulateLeague(string name, string season)
+        {
+            var leagueFixtures = await _context.LeagueFixtures
+                .Include(f => f.Events)
+                .Include(f => f.League)
+                .Include(f => f.HomeTeam)
+                .Include(f => f.AwayTeam)
+                .Where(f => f.LeagueName == name && f.Season == season)
+                .ToListAsync();
+            var results = new List<ResultDto>();
+            foreach (var fixture in leagueFixtures.Where(fixture => !fixture.Events.Any()))
+                results.Add(await GameFacilitator.StoreFixtureResult(fixture, _context));
+            await _context.SaveChangesAsync();
+
+            return Ok(results);
+        }
+
+        [HttpPost("{name}/{season}/simulate/override")]
+        public async Task<IActionResult> OverrideLeagueSimulation(string name, string season)
+        {
+            var leagueFixtures = await _context.LeagueFixtures
+                .Include(f => f.Events)
+                .Include(f => f.League)
+                .Include(f => f.HomeTeam)
+                .Include(f => f.AwayTeam)
+                .Where(f => f.LeagueName == name && f.Season == season)
+                .ToListAsync();
+            _context.LeagueFixtureEvents.RemoveRange(leagueFixtures.SelectMany(f => f.Events));
+            await _context.SaveChangesAsync();
+            var results = new List<ResultDto>();
+            foreach (var fixture in leagueFixtures)
+                results.Add(await GameFacilitator.StoreFixtureResult(fixture, _context));
+
+            await _context.SaveChangesAsync();
+
+            return Ok(results);
+        }
+
+        [HttpPost("gameplan/{name}/{season}/override")]
+        public async Task<IActionResult> OverrideGamePlan(string name, string season)
         {
             var league = await _context.Leagues
                 .Include(l => l.Teams)
@@ -69,7 +163,6 @@ namespace API.Controllers
             if (league == null) return NotFound(new {name, season});
             if (league.GameDays.Any())
             {
-                _context.LeagueFixtures.RemoveRange(league.GameDays.SelectMany(gd => gd.Fixtures));
                 _context.LeagueGameDays.RemoveRange(league.GameDays);
                 await _context.SaveChangesAsync();
             }
@@ -92,7 +185,64 @@ namespace API.Controllers
                     Season = league.Season,
                     GameDayNumber = gameDayNumber,
                     HomeTeamName = game.Home.Name,
-                    AwayTeamName = game.Away.Name
+                    AwayTeamName = game.Away.Name,
+                    ShotAccuracyModifier = league.ShotAccuracyModifier,
+                    PaceModifier = league.PaceModifier,
+                    MaxHomeAdvantage = league.MaxHomeAdvantage,
+                    MaxAwayDisadvantage = league.MaxAwayDisadvantage,
+                    ActionsPerMinute = league.ActionsPerMinute,
+                }));
+
+                gameDayNumber++;
+            }
+
+            await _context.LeagueGameDays.AddRangeAsync(leagueGameDays);
+            await _context.LeagueFixtures.AddRangeAsync(leagueFixtures);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost("gameplan/{name}/{season}")]
+        public async Task<IActionResult> CreateGamePlan(string name, string season)
+        {
+            var league = await _context.Leagues
+                .Include(l => l.Teams)
+                .Include(l => l.GameDays)
+                .ThenInclude(gd => gd.Fixtures)
+                .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
+            if (league == null) return NotFound(new {name, season});
+            if (league.GameDays.Any())
+                return BadRequest(new BadRequestResponse
+                {
+                    Message = $"Gameplan for league and season already created. Use {Url.Action("OverrideGamePlan", "Leagues", new {name, season})} instead.",
+                    Object = new {name, season}
+                });
+
+            var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), true);
+            var gameDayNumber = 1;
+            var leagueGameDays = new List<LeagueGameDay>();
+            var leagueFixtures = new List<LeagueFixture>();
+            foreach (var gameDay in gameDays)
+            {
+                leagueGameDays.Add(new LeagueGameDay
+                {
+                    LeagueName = league.Name,
+                    Season = league.Season,
+                    GameDayNumber = gameDayNumber
+                });
+                leagueFixtures.AddRange(gameDay.Games.Select(game => new LeagueFixture
+                {
+                    LeagueName = league.Name,
+                    Season = league.Season,
+                    GameDayNumber = gameDayNumber,
+                    HomeTeamName = game.Home.Name,
+                    AwayTeamName = game.Away.Name,
+                    ShotAccuracyModifier = league.ShotAccuracyModifier,
+                    PaceModifier = league.PaceModifier,
+                    MaxHomeAdvantage = league.MaxHomeAdvantage,
+                    MaxAwayDisadvantage = league.MaxAwayDisadvantage,
+                    ActionsPerMinute = league.ActionsPerMinute,
                 }));
 
                 gameDayNumber++;

@@ -20,6 +20,7 @@ namespace Database.Contexts
         public DbSet<Division> Divisions { get; set; }
         public DbSet<LeagueGameDay> LeagueGameDays { get; set; }
         public DbSet<LeagueFixture> LeagueFixtures { get; set; }
+        public DbSet<LeagueFixtureEvent> LeagueFixtureEvents { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

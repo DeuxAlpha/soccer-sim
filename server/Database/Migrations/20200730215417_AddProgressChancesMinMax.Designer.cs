@@ -4,14 +4,16 @@ using Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Database.Migrations
 {
     [DbContext(typeof(SoccerSimContext))]
-    partial class SoccerSimContextModelSnapshot : ModelSnapshot
+    [Migration("20200730215417_AddProgressChancesMinMax")]
+    partial class AddProgressChancesMinMax
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,12 +179,12 @@ namespace Database.Migrations
                     b.Property<double>("MaxProgressChance")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("float")
-                        .HasDefaultValue(0.69999999999999996);
+                        .HasDefaultValue(70.0);
 
                     b.Property<double>("MinProgressChance")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("float")
-                        .HasDefaultValue(0.29999999999999999);
+                        .HasDefaultValue(30.0);
 
                     b.Property<double>("PaceModifier")
                         .ValueGeneratedOnAdd()
@@ -227,16 +229,70 @@ namespace Database.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(4);
 
+                    b.Property<double?>("AwayAttackStrength")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("AwayDefenseStrength")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("AwayGoalKeeperStrength")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("AwayMaxPace")
+                        .HasColumnType("int");
+
                     b.Property<int?>("AwayPossession")
                         .HasColumnType("int");
+
+                    b.Property<double?>("AwayPotentialNegativeChance")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("AwayPotentialNegativeShift")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("AwayPotentialPositiveChance")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("AwayPotentialPositiveShift")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("AwayShotOnGoalRate")
+                        .HasColumnType("float");
 
                     b.Property<int>("HalfFieldLength")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(100);
 
+                    b.Property<double?>("HomeAttackStrength")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("HomeDefenseStrength")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("HomeGoalKeeperStrength")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("HomeMaxPace")
+                        .HasColumnType("int");
+
                     b.Property<int?>("HomePossession")
                         .HasColumnType("int");
+
+                    b.Property<double?>("HomePotentialNegativeChance")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("HomePotentialNegativeShift")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("HomePotentialPositiveChance")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("HomePotentialPositiveShift")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("HomeShotOnGoalRate")
+                        .HasColumnType("float");
 
                     b.Property<double>("MaxAwayDisadvantage")
                         .ValueGeneratedOnAdd()
@@ -293,9 +349,6 @@ namespace Database.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
-                    b.Property<int>("Minute")
-                        .HasColumnType("int");
-
                     b.Property<int?>("AddedMinute")
                         .HasColumnType("int");
 
@@ -310,7 +363,10 @@ namespace Database.Migrations
                     b.Property<bool>("IsShotOnGoal")
                         .HasColumnType("bit");
 
-                    b.HasKey("LeagueName", "Season", "GameDayNumber", "HomeTeamName", "AwayTeamName", "Minute", "AddedMinute");
+                    b.Property<int>("Minute")
+                        .HasColumnType("int");
+
+                    b.HasKey("LeagueName", "Season", "GameDayNumber", "HomeTeamName", "AwayTeamName");
 
                     b.HasIndex("EventTeamName", "Season");
 
@@ -397,6 +453,10 @@ namespace Database.Migrations
                         .HasColumnType("float")
                         .HasDefaultValue(0.0);
 
+                    b.Property<string>("ShortName")
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
                     b.Property<double>("ShotOnGoalRate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("float")
@@ -459,7 +519,7 @@ namespace Database.Migrations
                     b.HasOne("Database.Models.LeagueGameDay", "GameDay")
                         .WithMany("Fixtures")
                         .HasForeignKey("LeagueName", "Season", "GameDayNumber")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 

@@ -1,6 +1,6 @@
 ﻿namespace Domain.Enums
 {
-    public enum Team
+    public enum ActingTeam
     {
         Home,
         Away
