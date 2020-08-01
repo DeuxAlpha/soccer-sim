@@ -22,9 +22,17 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCountries(QueryRequest queryRequest)
+        public IActionResult GetCountries([FromQuery] QueryRequest queryRequest)
         {
             return Ok(QueryService.GetQueryResponse(_context.Countries.Select(c => new CountryDto(c)), queryRequest));
+        }
+
+        [HttpGet("continents/{continent}/{season}")]
+        public IActionResult GetCountriesOnContinent(string continent, string season)
+        {
+            return Ok(_context.Countries
+                .Where(c => c.ContinentName == continent && c.Season == season)
+                .Select(c => new CountryDto(c)));
         }
 
         [HttpGet("{name}")]

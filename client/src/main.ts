@@ -8,6 +8,8 @@ import "@/assets/main.scss";
 
 Vue.config.productionTip = false
 
+Axios.defaults.baseURL = 'https://localhost:5001';
+
 Vue.use(VueAxios, Axios);
 
 new Vue({

@@ -28,9 +28,17 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetLeagues(QueryRequest queryRequest)
+        public IActionResult GetLeagues([FromQuery] QueryRequest queryRequest)
         {
             return Ok(QueryService.GetQueryResponse(_context.Leagues.Select(c => new LeagueDto(c)), queryRequest));
+        }
+
+        [HttpGet("divisions/{division}/{season}")]
+        public IActionResult GetLeaguesInDivision(string division, string season)
+        {
+            return Ok(_context.Leagues
+                .Where(l => l.DivisionName == division && l.Season == season)
+                .Select(l => new LeagueDto(l)));
         }
 
         [HttpGet("{name}")]
@@ -68,6 +76,7 @@ namespace API.Controllers
         [HttpGet("{name}/{season}/table")]
         public async Task<IActionResult> GetLeagueTable(string name, string season)
         {
+            // TODO: Get previous table position
             var league = await _context.Leagues
                 .Include(l => l.Teams)
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);

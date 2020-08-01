@@ -21,9 +21,17 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetDivisions(QueryRequest queryRequest)
+        public IActionResult GetDivisions([FromQuery] QueryRequest queryRequest)
         {
             return Ok(QueryService.GetQueryResponse(_context.Divisions.Select(d => new DivisionDto(d)), queryRequest));
+        }
+
+        [HttpGet("countries/{country}/{season}")]
+        public IActionResult GetDivisionsInCountry(string country, string season)
+        {
+            return Ok(_context.Divisions
+                .Where(c => c.CountryName == country && c.Season == season)
+                .Select(d => new DivisionDto(d)));
         }
 
         [HttpGet("{name}")]

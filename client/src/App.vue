@@ -8,11 +8,6 @@
                      :exact-active-class="ActiveClass">
           Home
         </router-link>
-        <router-link class="transition duration-100 bg-blue-100 py-2 px-2 text-xl text-gray-800 hover:underline hover:shadow-md"
-                     to="/administration"
-                     :exact-active-class="ActiveClass">
-          Administration
-        </router-link>
       </div>
     </transition>
     <button @click="sideBarExpanded = !sideBarExpanded"

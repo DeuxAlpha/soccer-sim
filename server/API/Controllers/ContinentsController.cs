@@ -1,10 +1,10 @@
-﻿
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
 using Database.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Querying.Query.Models;
 using Querying.Query.Services;
 
@@ -22,10 +22,16 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetContinents(QueryRequest queryRequest)
+        public IActionResult GetContinents([FromQuery] QueryRequest queryRequest)
         {
             return Ok(QueryService.GetQueryResponse(_context.Continents.Select(c => new ContinentDto(c)),
                 queryRequest));
+        }
+
+        [HttpGet("seasons")]
+        public async Task<IActionResult> GetSeasons()
+        {
+            return Ok(await _context.Continents.Select(c => c.Season).Distinct().ToListAsync());
         }
 
         [HttpGet("{name}")]

@@ -32,7 +32,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetTeams(QueryRequest request)
+        public IActionResult GetTeams([FromQuery] QueryRequest request)
         {
             return Ok(QueryService.GetQueryResponse(_context.Teams.Select(t => new TeamDto(t)), request));
         }
