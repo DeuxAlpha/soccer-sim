@@ -104,6 +104,45 @@ namespace API.Controllers
             return Ok(table);
         }
 
+        [HttpGet("{name}/{season}/table/{gameDay}")]
+        public async Task<IActionResult> GetLeagueTable(string name, string season, int gameDay)
+        {
+            var league = await _context.Leagues
+                .Include(l => l.Teams)
+                .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
+            if (league == null) return NotFound(new {name, season});
+            var teams = league.Teams.ToList();
+            var table = new TableDto
+            {
+                // Need to be done thrice because each need to be different tables.
+                Positions = teams.Select(t => new TablePositionDto
+                {
+                    TeamName = t.Name
+                }).ToList(),
+                HomePositions = teams.Select(t => new TablePositionDto
+                {
+                    TeamName = t.Name
+                }).ToList(),
+                AwayPositions = teams.Select(t => new TablePositionDto
+                {
+                    TeamName = t.Name
+                }).ToList()
+            };
+            var fixtures = await _context.LeagueFixtures
+                .Include(f => f.Events)
+                .Include(f => f.HomeTeam)
+                .Include(f => f.AwayTeam)
+                .Where(f => f.LeagueName == name && f.Season == season && f.GameDayNumber == gameDay)
+                .ToListAsync();
+            foreach (var fixture in fixtures)
+            {
+                table.AddFixture(new ResultDto(fixture));
+            }
+            table.ApplyPositions();
+
+            return Ok(table);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateLeague(LeagueDto leagueDto)
         {
