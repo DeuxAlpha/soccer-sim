@@ -25,14 +25,18 @@
         {{ league.name }}
       </span>
     </div>
+    <CGamePlan :games="leagueGames"/>
   </div>
 </template>
 
 <script lang="ts">
 import {Vue, Component} from "vue-property-decorator";
+import {LeagueGame} from "@/models/LeagueGame";
+import CGamePlan from "@/components/structure/CGamePlan.vue";
 
 @Component({
-  name: 'Home'
+  name: 'Home',
+  components: {CGamePlan}
 })
 export default class Home extends Vue {
   seasons: string[] = [];
@@ -48,6 +52,8 @@ export default class Home extends Vue {
   selectedLeague = '';
 
   selectedGameDay = 1;
+
+  leagueGames: LeagueGame[] = [];
 
   async mounted() {
     await this.axios.get('continents/seasons')
@@ -86,7 +92,7 @@ export default class Home extends Vue {
   async onLeagueClicked(league: string) {
     this.selectedLeague = league;
     await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/fixtures/${this.selectedGameDay}`)
-        .then(response => console.dir(response))
+        .then(response => this.leagueGames = response.data)
         .catch(error => console.dir(error));
     await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/table/${this.selectedGameDay}`)
         .then(response => console.dir(response))

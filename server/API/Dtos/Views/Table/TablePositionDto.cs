@@ -16,5 +16,23 @@
         public int ShotsOnGoal { get; set; }
         public int ShotsAgainst { get; set; }
         public int ShotsAgainstGoal { get; set; }
+
+        public TablePositionDto Clone()
+        {
+            return new TablePositionDto
+            {
+                TeamName = TeamName,
+                Position = Position,
+                GoalsFor = GoalsFor,
+                GoalsAgainst = GoalsAgainst,
+                Wins = Wins,
+                Draws = Draws,
+                Losses = Losses,
+                Shots = Shots,
+                ShotsOnGoal = ShotsOnGoal,
+                ShotsAgainst = ShotsAgainst,
+                ShotsAgainstGoal = ShotsAgainstGoal,
+            };
+        }
     }
 }

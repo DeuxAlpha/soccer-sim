@@ -9,10 +9,37 @@ namespace API.Dtos.Views.Table
         public List<TablePositionDto> Positions { get; set; }
         public List<TablePositionDto> HomePositions { get; set; }
         public List<TablePositionDto> AwayPositions { get; set; }
+        public List<TablePositionDto> PreviousPositions { get; set; }
+        public List<TablePositionDto> PreviousHomePositions { get; set; }
+        public List<TablePositionDto> PreviousAwayPositions { get; set; }
 
-        public TableDto()
+        public TableDto(IReadOnlyCollection<string> teamNames)
         {
-            Positions = new List<TablePositionDto>();
+            // Need to be done thrice because each need to be different tables.
+            Positions = teamNames.Select(name => new TablePositionDto
+            {
+                TeamName = name
+            }).ToList();
+            HomePositions = teamNames.Select(name => new TablePositionDto
+            {
+                TeamName = name
+            }).ToList();
+            AwayPositions = teamNames.Select(name => new TablePositionDto
+            {
+                TeamName = name
+            }).ToList();
+            PreviousPositions = teamNames.Select(name => new TablePositionDto
+            {
+                TeamName = name
+            }).ToList();
+            PreviousHomePositions = teamNames.Select(name => new TablePositionDto
+            {
+                TeamName = name
+            }).ToList();
+            PreviousAwayPositions = teamNames.Select(name => new TablePositionDto
+            {
+                TeamName = name
+            }).ToList();
         }
 
         public void AddFixture(ResultDto result)
@@ -21,6 +48,14 @@ namespace API.Dtos.Views.Table
             var secondPosition = Positions.First(p => p.TeamName == result.AwayTeamName);
             var homePosition = HomePositions.First(p => p.TeamName == result.HomeTeamName);
             var awayPosition = AwayPositions.First(p => p.TeamName == result.AwayTeamName);
+            PreviousPositions[PreviousPositions.FindIndex(p => p.TeamName == firstPosition.TeamName)] =
+                firstPosition.Clone();
+            PreviousPositions[PreviousPositions.FindIndex(p => p.TeamName == secondPosition.TeamName)] =
+                secondPosition.Clone();
+            PreviousHomePositions[PreviousHomePositions.FindIndex(p => p.TeamName == homePosition.TeamName)] =
+                homePosition.Clone();
+            PreviousAwayPositions[PreviousAwayPositions.FindIndex(p => p.TeamName == awayPosition.TeamName)] =
+                awayPosition.Clone();
             if (result.HomeGoals == result.AwayGoals)
             {
                 firstPosition.Draws++;
@@ -71,42 +106,33 @@ namespace API.Dtos.Views.Table
 
         public void ApplyPositions()
         {
-            var currentPosition = 1;
-            foreach (var position in Positions
-                .OrderByDescending(p => p.Points)
-                .ThenByDescending(p => p.GoalDifference)
-                .ThenByDescending(p => p.GoalsFor)
-                .ThenByDescending(p => p.Wins))
-            {
-                position.Position = currentPosition;
-                currentPosition++;
-            }
-
-            currentPosition = 1;
-            foreach (var position in HomePositions
-                .OrderByDescending(p => p.Points)
-                .ThenByDescending(p => p.GoalDifference)
-                .ThenByDescending(p => p.GoalsFor)
-                .ThenByDescending(p => p.Wins))
-            {
-                position.Position = currentPosition;
-                currentPosition++;
-            }
-
-            currentPosition = 1;
-            foreach (var position in AwayPositions
-                .OrderByDescending(p => p.Points)
-                .ThenByDescending(p => p.GoalDifference)
-                .ThenByDescending(p => p.GoalsFor)
-                .ThenByDescending(p => p.Wins))
-            {
-                position.Position = currentPosition;
-                currentPosition++;
-            }
+            StorePosition(Positions);
+            StorePosition(HomePositions);
+            StorePosition(AwayPositions);
+            StorePosition(PreviousPositions);
+            StorePosition(PreviousHomePositions);
+            StorePosition(PreviousAwayPositions);
 
             Positions = Positions.OrderBy(p => p.Position).ToList();
             HomePositions = HomePositions.OrderBy(p => p.Position).ToList();
             AwayPositions = AwayPositions.OrderBy(p => p.Position).ToList();
+            PreviousPositions = PreviousPositions.OrderBy(p => p.Position).ToList();
+            PreviousHomePositions = PreviousHomePositions.OrderBy(p => p.Position).ToList();
+            PreviousAwayPositions = PreviousAwayPositions.OrderBy(p => p.Position).ToList();
+        }
+
+        private static void StorePosition(IEnumerable<TablePositionDto> positions)
+        {
+            var currentPosition = 1;
+            foreach (var position in positions
+                .OrderByDescending(p => p.Points)
+                .ThenByDescending(p => p.GoalDifference)
+                .ThenByDescending(p => p.GoalsFor)
+                .ThenByDescending(p => p.Wins))
+            {
+                position.Position = currentPosition;
+                currentPosition++;
+            }
         }
     }
 }

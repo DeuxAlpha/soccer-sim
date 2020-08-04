@@ -82,22 +82,7 @@ namespace API.Controllers
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
             if (league == null) return NotFound(new {name, season});
             var teams = league.Teams.ToList();
-            var table = new TableDto
-            {
-                // Need to be done thrice because each need to be different tables.
-                Positions = teams.Select(t => new TablePositionDto
-                {
-                    TeamName = t.Name
-                }).ToList(),
-                HomePositions = teams.Select(t => new TablePositionDto
-                {
-                    TeamName = t.Name
-                }).ToList(),
-                AwayPositions = teams.Select(t => new TablePositionDto
-                {
-                    TeamName = t.Name
-                }).ToList()
-            };
+            var table = new TableDto(teams.Select(t => t.Name).ToList());
             var fixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
                 .Include(f => f.HomeTeam)
@@ -121,27 +106,12 @@ namespace API.Controllers
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
             if (league == null) return NotFound(new {name, season});
             var teams = league.Teams.ToList();
-            var table = new TableDto
-            {
-                // Need to be done thrice because each need to be different tables.
-                Positions = teams.Select(t => new TablePositionDto
-                {
-                    TeamName = t.Name
-                }).ToList(),
-                HomePositions = teams.Select(t => new TablePositionDto
-                {
-                    TeamName = t.Name
-                }).ToList(),
-                AwayPositions = teams.Select(t => new TablePositionDto
-                {
-                    TeamName = t.Name
-                }).ToList()
-            };
+            var table = new TableDto(teams.Select(t => t.Name).ToList());
             var fixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
                 .Include(f => f.HomeTeam)
                 .Include(f => f.AwayTeam)
-                .Where(f => f.LeagueName == name && f.Season == season && f.GameDayNumber == gameDay)
+                .Where(f => f.LeagueName == name && f.Season == season && f.GameDayNumber <= gameDay)
                 .ToListAsync();
             foreach (var fixture in fixtures)
             {
