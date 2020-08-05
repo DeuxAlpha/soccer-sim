@@ -1,8 +1,21 @@
 <template>
   <div id="home-page" class="flex-1">
     <div class="flex flex-row justify-start text-sm">
-      {{ selectedSeason }} > {{ selectedContinent }} > {{ selectedCountry }} > {{ selectedDivision }} >
-      {{ selectedLeague }}
+      <span v-if="selectedSeason" @click="onResetSeasonClicked">
+        > {{ selectedSeason }}
+      </span>
+      <span v-if="selectedContinent" @click="onResetContinentClicked">
+        > {{ selectedContinent }}
+      </span>
+      <span v-if="selectedCountry" @click="onResetCountryClicked">
+        > {{ selectedCountry }}
+      </span>
+      <span v-if="selectedDivision" @click="onResetDivisionClicked">
+        > {{ selectedDivision }}
+      </span>
+      <span v-if="selectedLeague" @click="onResetLeagueClicked">
+        > {{ selectedLeague }}
+      </span>
     </div>
     <div class="text-lg">
       <span v-if="!selectedSeason" v-for="season of seasons" :key="season"
@@ -124,6 +137,59 @@ export default class Home extends Vue {
     await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/table/${gameDay}`)
         .then(response => this.leagueTable = response.data)
         .catch(error => console.dir(error));
+  }
+
+  onResetSeasonClicked() {
+    this.selectedSeason = '';
+    this.selectedContinent = '';
+    this.selectedCountry = '';
+    this.selectedDivision = '';
+    this.selectedLeague = '';
+    this.continents = [];
+    this.countries = [];
+    this.divisions = [];
+    this.leagues = [];
+    this.resetSelection();
+  }
+
+  onResetContinentClicked() {
+    this.selectedContinent = '';
+    this.selectedCountry = '';
+    this.selectedDivision = '';
+    this.selectedLeague = '';
+    this.countries = [];
+    this.divisions = [];
+    this.leagues = [];
+    this.resetSelection();
+  }
+
+  onResetCountryClicked() {
+    this.selectedCountry = '';
+    this.selectedDivision = '';
+    this.selectedLeague = '';
+    this.divisions = [];
+    this.leagues = [];
+    this.resetSelection();
+  }
+
+  onResetDivisionClicked() {
+    this.selectedDivision = '';
+    this.selectedLeague = '';
+    this.leagues = [];
+    this.resetSelection();
+  }
+
+  onResetLeagueClicked() {
+    this.selectedLeague = '';
+    this.resetSelection();
+  }
+
+  resetSelection() {
+    this.leagueGames = [];
+    this.leagueTable = null;
+    this.selectedGameDay = 1;
+    this.lastMatchDay = 0;
+    this.lastCompletedMatchDay = 0;
   }
 }
 </script>
