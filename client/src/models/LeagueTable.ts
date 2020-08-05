@@ -5,6 +5,14 @@ export type LeagueTable = {
   previousPositions: LeagueTablePosition[];
   previousHomePositions: LeagueTablePosition[];
   previousAwayPositions: LeagueTablePosition[];
+  promotedTeamsStart: number;
+  promotedTeamsEnd: number;
+  promotionPlayOffTeamsStart: number;
+  promotionPlayOffTeamsEnd: number;
+  relegatedTeamsStart: number;
+  relegatedTeamsEnd: number;
+  relegationPlayOffTeamsStart: number;
+  relegationPlayOffTeamsEnd: number;
 }
 
 export type LeagueTablePosition = {
