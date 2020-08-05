@@ -12,34 +12,50 @@ namespace API.Dtos.Views.Table
         public List<TablePositionDto> PreviousPositions { get; set; }
         public List<TablePositionDto> PreviousHomePositions { get; set; }
         public List<TablePositionDto> PreviousAwayPositions { get; set; }
+        public int PromotedTeamsStart { get; set; }
+        public int PromotedTeamsEnd { get; set; }
+        public int PromotionPlayOffTeamsStart { get; set; }
+        public int PromotionPlayOffTeamsEnd { get; set; }
+        public int RelegatedTeamsStart { get; set; }
+        public int RelegatedTeamsEnd { get; set; }
+        public int RelegationPlayOffTeamsStart { get; set; }
+        public int RelegationPlayOffTeamsEnd { get; set; }
 
-        public TableDto(IReadOnlyCollection<string> teamNames)
+        public TableDto(League league)
         {
             // Need to be done thrice because each need to be different tables.
-            Positions = teamNames.Select(name => new TablePositionDto
+            Positions = league.Teams.Select(team => new TablePositionDto
             {
-                TeamName = name
+                TeamName = team.Name
             }).ToList();
-            HomePositions = teamNames.Select(name => new TablePositionDto
+            HomePositions = league.Teams.Select(team => new TablePositionDto
             {
-                TeamName = name
+                TeamName = team.Name
             }).ToList();
-            AwayPositions = teamNames.Select(name => new TablePositionDto
+            AwayPositions = league.Teams.Select(team => new TablePositionDto
             {
-                TeamName = name
+                TeamName = team.Name
             }).ToList();
-            PreviousPositions = teamNames.Select(name => new TablePositionDto
+            PreviousPositions = league.Teams.Select(team => new TablePositionDto
             {
-                TeamName = name
+                TeamName = team.Name
             }).ToList();
-            PreviousHomePositions = teamNames.Select(name => new TablePositionDto
+            PreviousHomePositions = league.Teams.Select(team => new TablePositionDto
             {
-                TeamName = name
+                TeamName = team.Name
             }).ToList();
-            PreviousAwayPositions = teamNames.Select(name => new TablePositionDto
+            PreviousAwayPositions = league.Teams.Select(team => new TablePositionDto
             {
-                TeamName = name
+                TeamName = team.Name
             }).ToList();
+            PromotedTeamsStart = league.PromotionSystem?.PromotedTeamsStart ?? 0;
+            PromotedTeamsEnd = league.PromotionSystem?.PromotedTeamsEnd ?? 0;
+            PromotionPlayOffTeamsStart = league.PromotionSystem?.PromotionPlayOffTeamsStart ?? 0;
+            PromotionPlayOffTeamsEnd = league.PromotionSystem?.PromotionPlayOffTeamsEnd ?? 0;
+            RelegatedTeamsStart = league.PromotionSystem?.RelegatedTeamsStart ?? 0;
+            RelegatedTeamsEnd = league.PromotionSystem?.RelegatedTeamsEnd ?? 0;
+            RelegationPlayOffTeamsStart = league.PromotionSystem?.RelegationPlayOffTeamsStart ?? 0;
+            RelegationPlayOffTeamsEnd = league.PromotionSystem?.RelegationPlayOffTeamsEnd ?? 0;
         }
 
         public void AddFixture(ResultDto result)

@@ -95,17 +95,15 @@ namespace API.Controllers
             return Ok(results);
         }
 
-        // TODO: Update table with promotion data.
         [HttpGet("{name}/{season}/table")]
         public async Task<IActionResult> GetLeagueTable(string name, string season)
         {
-            // TODO: Get previous table position
             var league = await _context.Leagues
                 .Include(l => l.Teams)
+                .Include(l => l.PromotionSystem)
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
             if (league == null) return NotFound(new {name, season});
-            var teams = league.Teams.ToList();
-            var table = new TableDto(teams.Select(t => t.Name).ToList());
+            var table = new TableDto(league);
             var fixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
                 .Include(f => f.HomeTeam)
@@ -126,11 +124,11 @@ namespace API.Controllers
         public async Task<IActionResult> GetLeagueTable(string name, string season, int gameDay)
         {
             var league = await _context.Leagues
+                .Include(l => l.PromotionSystem)
                 .Include(l => l.Teams)
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
             if (league == null) return NotFound(new {name, season});
-            var teams = league.Teams.ToList();
-            var table = new TableDto(teams.Select(t => t.Name).ToList());
+            var table = new TableDto(league);
             var fixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
                 .Include(f => f.HomeTeam)
@@ -168,22 +166,23 @@ namespace API.Controllers
             return Created(Url.Action("GetLeague", "Leagues", returnObject), new LeagueDto(newLeague.Entity));
         }
 
-        [HttpPost("{name}/{season}/promotion-system")]
-        public async Task<IActionResult> ProvidePromotionSystem(
-            string name,
-            string season,
-            [FromBody] PromotionSystemDto promotionSystemDto)
+        [HttpPost("promotion-system")]
+        public async Task<IActionResult> ProvidePromotionSystem(PromotionSystemDto promotionSystemDto)
         {
             var league = await _context.Leagues
                 .Include(l => l.PromotionSystem)
-                .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
-            if (league == null) return NotFound(new {name, season});
-            _context.PromotionSystems.Remove(league.PromotionSystem);
-            await _context.SaveChangesAsync();
+                .FirstOrDefaultAsync(l => l.Name == promotionSystemDto.LeagueName && l.Season == promotionSystemDto.Season);
+            if (league == null) return NotFound(new {name = promotionSystemDto.LeagueName, promotionSystemDto.Season});
+            if (league.PromotionSystem != null)
+            {
+                _context.PromotionSystems.Remove(league.PromotionSystem);
+                await _context.SaveChangesAsync();
+            }
+
             var promotionSystem = await _context.PromotionSystems.AddAsync(promotionSystemDto.Map());
             await _context.SaveChangesAsync();
             return Created(
-                Url.Action("GetPromotionSystem", "Leagues", new {name, season}),
+                Url.Action("GetPromotionSystem", "Leagues", new {name = promotionSystem.Entity.LeagueName, season = promotionSystem.Entity.Season}),
                 new PromotionSystemDto(promotionSystem.Entity));
         }
 
