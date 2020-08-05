@@ -27,11 +27,12 @@
     </div>
     <label for="game-day" v-show="lastMatchDay !== 0">
       <span>Game Day</span>
-      <select v-model="selectedGameDay" id="game-day" @input="onGameDayChanged">
+      <select v-model="selectedGameDay" id="game-day" @change="onGameDayChanged">
         <option v-for="gameDay of lastMatchDay" :value="gameDay">{{ gameDay }}</option>
       </select>
     </label>
     <CGamePlan :games="leagueGames"/>
+    <CTable :table="leagueTable"/>
   </div>
 </template>
 
@@ -39,10 +40,12 @@
 import {Vue, Component} from "vue-property-decorator";
 import {LeagueGame} from "@/models/LeagueGame";
 import CGamePlan from "@/components/structure/CGamePlan.vue";
+import {LeagueTable} from "@/models/LeagueTable";
+import CTable from "@/components/structure/CTable.vue";
 
 @Component({
   name: 'Home',
-  components: {CGamePlan}
+  components: {CTable, CGamePlan}
 })
 export default class Home extends Vue {
   seasons: string[] = [];
@@ -58,6 +61,7 @@ export default class Home extends Vue {
   selectedLeague = '';
 
   leagueGames: LeagueGame[] = [];
+  leagueTable: LeagueTable | null = null;
 
   selectedGameDay = 1;
   lastMatchDay = 0;
@@ -118,7 +122,7 @@ export default class Home extends Vue {
         .then(response => this.leagueGames = response.data)
         .catch(error => console.dir(error));
     await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/table/${gameDay}`)
-        .then(response => console.dir(response))
+        .then(response => this.leagueTable = response.data)
         .catch(error => console.dir(error));
   }
 }
