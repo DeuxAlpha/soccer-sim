@@ -1,20 +1,20 @@
 <template>
   <div class="border border-gray-200 p-2">
-    <div class="bg-gray-300 flex flex-row" v-for="game of games" :key="game.homeTeamName + game.awayTeamName">
-      <div class="">{{game.homeTeamName}}</div>
-      <div class="flex flex-col">
-        <div class="flex flex-row">
-          <div class="">{{game.homeGoals}}</div>
-          <div class="">-</div>
-          <div class="">{{game.awayGoals}}</div>
+    <div class="bg-gray-300 flex items-center justify-between my-1" v-for="game of games" :key="game.homeTeamName + game.awayTeamName">
+      <div class="w-5/12 text-right">{{game.homeTeamName}}</div>
+      <div class="w-2/12 flex flex-col">
+        <div class="flex flex-row justify-center">
+          <span>{{game.homeGoals}}</span>
+          <span>-</span>
+          <span>{{game.awayGoals}}</span>
         </div>
-        <div class="flex flex-row">
-          <div class="">({{game.homeHalfGoals}}</div>
-          <div class="">-</div>
-          <div class="">{{game.awayHalfGoals}})</div>
+        <div class="flex flex-row justify-center text-gray-600">
+          <span>({{game.homeHalfGoals}}</span>
+          <span>-</span>
+          <span>{{game.awayHalfGoals}})</span>
         </div>
       </div>
-      <div class="">{{game.awayTeamName}}</div>
+      <div class="w-5/12">{{game.awayTeamName}}</div>
     </div>
   </div>
 </template>

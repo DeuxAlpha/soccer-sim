@@ -56,9 +56,31 @@ namespace API.Controllers
         [HttpGet("{name}/{season}")]
         public async Task<IActionResult> GetLeague(string name, string season)
         {
-            var country = await _context.Leagues.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
-            if (country == null) return NotFound(new {name, season});
-            return Ok(new LeagueDto(country));
+            var league = await _context.Leagues.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
+            if (league == null) return NotFound(new {name, season});
+            return Ok(new LeagueDto(league));
+        }
+
+        [HttpGet("{name}/{season}/matches")]
+        public async Task<IActionResult> GetMatches(string name, string season)
+        {
+            var gameDays = await _context.LeagueGameDays
+                .Include(l => l.Fixtures)
+                .Where(l => l.LeagueName == name && l.Season == season)
+                .ToListAsync();
+            return Ok(new MatchInfoDto
+            {
+                LastMatchDay = gameDays.Max(gd => gd.GameDayNumber),
+                LastCompletedMatchDay = gameDays
+                    .SelectMany(gd => gd.Fixtures
+                        .Where(f =>
+                            f.HomePossession != 0 &&
+                            f.HomePossession != null &&
+                            f.AwayPossession != 0 &&
+                            f.AwayPossession != null)
+                        .Select(f => f.GameDayNumber))
+                    .Max(n => n)
+            });
         }
 
         [HttpGet("{name}/{season}/fixtures/{gameDay}")]
@@ -93,6 +115,7 @@ namespace API.Controllers
             {
                 table.AddFixture(new ResultDto(fixture));
             }
+
             table.ApplyPositions();
 
             return Ok(table);
@@ -117,6 +140,7 @@ namespace API.Controllers
             {
                 table.AddFixture(new ResultDto(fixture));
             }
+
             table.ApplyPositions();
 
             return Ok(table);
@@ -233,7 +257,8 @@ namespace API.Controllers
             if (league.GameDays.Any())
                 return BadRequest(new BadRequestResponse
                 {
-                    Message = $"Gameplan for league and season already created. Use {Url.Action("OverrideGamePlan", "Leagues", new {name, season})} instead.",
+                    Message =
+                        $"Gameplan for league and season already created. Use {Url.Action("OverrideGamePlan", "Leagues", new {name, season})} instead.",
                     Object = new {name, season}
                 });
 

@@ -1,5 +1,5 @@
 <template>
-  <div id="home-page">
+  <div id="home-page" class="flex-1">
     <div class="flex flex-row justify-start text-sm">
       {{ selectedSeason }} > {{ selectedContinent }} > {{ selectedCountry }} > {{ selectedDivision }} >
       {{ selectedLeague }}
@@ -25,6 +25,12 @@
         {{ league.name }}
       </span>
     </div>
+    <label for="game-day" v-show="lastMatchDay !== 0">
+      <span>Game Day</span>
+      <select v-model="selectedGameDay" id="game-day" @input="onGameDayChanged">
+        <option v-for="gameDay of lastMatchDay" :value="gameDay">{{ gameDay }}</option>
+      </select>
+    </label>
     <CGamePlan :games="leagueGames"/>
   </div>
 </template>
@@ -51,9 +57,11 @@ export default class Home extends Vue {
   selectedDivision = '';
   selectedLeague = '';
 
-  selectedGameDay = 1;
-
   leagueGames: LeagueGame[] = [];
+
+  selectedGameDay = 1;
+  lastMatchDay = 0;
+  lastCompletedMatchDay = 0;
 
   async mounted() {
     await this.axios.get('continents/seasons')
@@ -91,10 +99,25 @@ export default class Home extends Vue {
 
   async onLeagueClicked(league: string) {
     this.selectedLeague = league;
-    await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/fixtures/${this.selectedGameDay}`)
+    await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/matches`)
+        .then(async response => {
+          this.lastMatchDay = response.data.lastMatchDay;
+          this.lastCompletedMatchDay = response.data.lastCompletedMatchDay;
+          this.selectedGameDay = this.lastMatchDay;
+          await this.loadMatchDay(this.selectedGameDay);
+        })
+        .catch(error => console.dir(error));
+  }
+
+  async onGameDayChanged() {
+    await this.loadMatchDay(this.selectedGameDay);
+  }
+
+  async loadMatchDay(gameDay: number) {
+    await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/fixtures/${gameDay}`)
         .then(response => this.leagueGames = response.data)
         .catch(error => console.dir(error));
-    await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/table/${this.selectedGameDay}`)
+    await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/table/${gameDay}`)
         .then(response => console.dir(response))
         .catch(error => console.dir(error));
   }
