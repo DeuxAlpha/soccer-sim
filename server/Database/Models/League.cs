@@ -22,5 +22,6 @@ namespace Database.Models
         public ICollection<LeagueGameDay> GameDays { get; set; }
         public ICollection<LeagueFixture> LeagueFixtures { get; set; }
         public Division Division { get; set; }
+        public PromotionSystem PromotionSystem { get; set; }
     }
 }
