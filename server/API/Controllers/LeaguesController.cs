@@ -95,6 +95,7 @@ namespace API.Controllers
             return Ok(results);
         }
 
+        // TODO: Update table with promotion data.
         [HttpGet("{name}/{season}/table")]
         public async Task<IActionResult> GetLeagueTable(string name, string season)
         {
