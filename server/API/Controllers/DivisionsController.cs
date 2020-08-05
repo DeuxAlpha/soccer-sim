@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using API.Dtos;
 using Database.Contexts;
+using Database.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Querying.Query.Models;
@@ -61,6 +62,16 @@ namespace API.Controllers
             await _context.SaveChangesAsync();
             var returnObject = new {name = newDivision.Entity.Name, season = newDivision.Entity.Season};
             return Created(Url.Action("GetDivision", "Divisions", returnObject), new DivisionDto(newDivision.Entity));
+        }
+
+        [HttpPut("{name}/{season}")]
+        public async Task<IActionResult> UpdateDivision(string name, string season, [FromBody] DivisionDto divisionDto)
+        {
+            var division = await _context.Divisions.FirstOrDefaultAsync(d => d.Name == name && d.Season == season);
+            if (division == null) return NotFound(new {name, season});
+            divisionDto.MapUpdate(division);
+            await _context.SaveChangesAsync();
+            return Ok(new DivisionDto(division));
         }
 
         [HttpDelete("{name}/{season}")]

@@ -36,5 +36,12 @@ namespace API.Dtos
                 CountryName = CountryName
             };
         }
+
+        public void MapUpdate(Division division)
+        {
+            division.Abbreviation = Abbreviation;
+            division.Level = Level;
+            division.CountryName = CountryName;
+        }
     }
 }
