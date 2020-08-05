@@ -146,6 +146,18 @@ namespace API.Controllers
             return Ok(table);
         }
 
+        [HttpGet("{name}/{season}/promotion-system")]
+        public async Task<IActionResult> GetPromotionSystem(string name, string season)
+        {
+            var league = await _context.Leagues
+                .Include(l => l.PromotionSystem)
+                .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
+            if (league == null) return NotFound(new {name, season});
+            if (league.PromotionSystem == null)
+                return BadRequest(new {error = "League does not have a promotion system", name, season});
+            return Ok(new PromotionSystemDto(league.PromotionSystem));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateLeague(LeagueDto leagueDto)
         {
@@ -153,6 +165,25 @@ namespace API.Controllers
             await _context.SaveChangesAsync();
             var returnObject = new {name = newLeague.Entity.Name, season = newLeague.Entity.Season};
             return Created(Url.Action("GetLeague", "Leagues", returnObject), new LeagueDto(newLeague.Entity));
+        }
+
+        [HttpPost("{name}/{season}/promotion-system")]
+        public async Task<IActionResult> ProvidePromotionSystem(
+            string name,
+            string season,
+            [FromBody] PromotionSystemDto promotionSystemDto)
+        {
+            var league = await _context.Leagues
+                .Include(l => l.PromotionSystem)
+                .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
+            if (league == null) return NotFound(new {name, season});
+            _context.PromotionSystems.Remove(league.PromotionSystem);
+            await _context.SaveChangesAsync();
+            var promotionSystem = await _context.PromotionSystems.AddAsync(promotionSystemDto.Map());
+            await _context.SaveChangesAsync();
+            return Created(
+                Url.Action("GetPromotionSystem", "Leagues", new {name, season}),
+                new PromotionSystemDto(promotionSystem.Entity));
         }
 
         [HttpPost("{name}/{season}/simulate")]
