@@ -14,6 +14,7 @@ namespace API.Dtos
         public int ActionsPerMinute { get; set; }
         public double MaxProgressChance { get; set; }
         public double MinProgressChance { get; set; }
+        public int Rounds { get; set; }
         public string DivisionName { get; set; }
         public string Image { get; set; }
 
@@ -34,6 +35,7 @@ namespace API.Dtos
             MaxProgressChance = league.MaxProgressChance;
             MinProgressChance = league.MinProgressChance;
             ActionsPerMinute = league.ActionsPerMinute;
+            Rounds = league.Rounds;
             DivisionName = league.DivisionName;
             Image = league.Image;
         }
@@ -52,6 +54,7 @@ namespace API.Dtos
                 MaxProgressChance = MaxProgressChance,
                 MinProgressChance = MinProgressChance,
                 ActionsPerMinute = ActionsPerMinute,
+                Rounds = Rounds,
                 DivisionName = DivisionName,
                 Image = Image,
             };
@@ -67,6 +70,7 @@ namespace API.Dtos
             league.MaxProgressChance = MaxProgressChance;
             league.MinProgressChance = MinProgressChance;
             league.ActionsPerMinute = ActionsPerMinute;
+            league.Rounds = Rounds;
             league.DivisionName = DivisionName;
             league.Image = Image;
         }

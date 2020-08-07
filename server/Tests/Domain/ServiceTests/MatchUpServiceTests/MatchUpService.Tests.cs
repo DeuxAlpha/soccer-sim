@@ -13,7 +13,7 @@ namespace Tests.Domain.ServiceTests.MatchUpServiceTests
             var roundRobin = MatchUpService.CreateRoundRobin(new List<int>
             {
                 1, 2, 3, 4, 5, 6
-            }, false);
+            }, 1);
             Assert.That(roundRobin, Has.Count.EqualTo(5));
         }
 
@@ -23,7 +23,7 @@ namespace Tests.Domain.ServiceTests.MatchUpServiceTests
             var roundRobin = MatchUpService.CreateRoundRobin(new List<int>
             {
                 1, 2, 3, 4, 5
-            }, false);
+            }, 1);
             Assert.That(roundRobin, Has.Count.EqualTo(5));
         }
 
@@ -33,7 +33,7 @@ namespace Tests.Domain.ServiceTests.MatchUpServiceTests
             var roundRobin = MatchUpService.CreateRoundRobin(new List<int>
             {
                 1, 2, 3, 4, 5, 6
-            }, true);
+            }, 2);
             Assert.That(roundRobin, Has.Count.EqualTo(10));
         }
 
@@ -43,7 +43,7 @@ namespace Tests.Domain.ServiceTests.MatchUpServiceTests
             var roundRobin = MatchUpService.CreateRoundRobin(new List<int>
             {
                 1, 2, 3, 4, 5
-            }, true);
+            }, 2);
             Assert.That(roundRobin, Has.Count.EqualTo(10));
         }
     }

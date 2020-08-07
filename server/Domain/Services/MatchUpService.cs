@@ -7,7 +7,7 @@ namespace Domain.Services
 {
     public static class MatchUpService
     {
-        public static IEnumerable<GameDay<T>> CreateRoundRobin<T>(List<T> participants, bool reverseFixtures)
+        public static IEnumerable<GameDay<T>> CreateRoundRobin<T>(List<T> participants, int rounds)
         {
             var participantCount = participants.Count;
             var overallGameDays = participantCount % 2 == 0 ? participantCount - 1 : participantCount;
@@ -50,26 +50,32 @@ namespace Domain.Services
                 Rotate(teamIndices, participantCount % 2 == 0);
             }
 
-            if (!reverseFixtures) return gameDays;
+            var roundsToAdd = new List<GameDay<T>>();
+
+            for (var round = 1; round < rounds; round++)
             {
-                var reverseGames = new List<GameDay<T>>();
+                var nextRoundGames = new List<GameDay<T>>();
                 foreach (var gameDay in gameDays)
                 {
-                    var reverseGameDay = new GameDay<T>();
+                    var nextRoundGameDay = new GameDay<T>();
                     foreach (var game in gameDay.Games)
                     {
-                        reverseGameDay.Games.Add(new MatchUp<T>
+                        var switchHome = round % 2 != 0;
+                        nextRoundGameDay.Games.Add(new MatchUp<T>
                         {
-                            Home = game.Away,
-                            Away = game.Home
+                            Home = switchHome ? game.Away : game.Home,
+                            Away = switchHome ? game.Home : game.Away
                         });
                     }
 
-                    reverseGames.Add(reverseGameDay);
+                    nextRoundGames.Add(nextRoundGameDay);
                 }
 
-                gameDays.AddRange(reverseGames);
+                roundsToAdd.AddRange(nextRoundGames);
             }
+
+            gameDays.AddRange(roundsToAdd);
+
             return gameDays;
         }
 

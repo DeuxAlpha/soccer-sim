@@ -10,33 +10,35 @@ namespace Database.Contexts.Entities
     {
         public void Configure(EntityTypeBuilder<League> builder)
         {
-            builder.HasKey(c => new {c.Name, c.Season});
+            builder.HasKey(l => new {l.Name, l.Season});
 
-            builder.HasOne(c => c.Division)
-                .WithMany(c => c.Leagues)
-                .HasForeignKey(c => new {c.DivisionName, c.Season})
+            builder.HasOne(d => d.Division)
+                .WithMany(l => l.Leagues)
+                .HasForeignKey(l => new {l.DivisionName, l.Season})
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
-            builder.Property(c => c.Season).HasMaxLength(10).IsRequired();
+            builder.Property(l => l.Season).HasMaxLength(10).IsRequired();
 
-            builder.Property(c => c.Name).HasMaxLength(255).IsRequired();
+            builder.Property(l => l.Name).HasMaxLength(255).IsRequired();
 
-            builder.Property(c => c.Abbreviation).HasMaxLength(10);
+            builder.Property(l => l.Abbreviation).HasMaxLength(10);
 
-            builder.Property(c => c.PaceModifier).HasDefaultValue(1).IsRequired();
+            builder.Property(l => l.PaceModifier).HasDefaultValue(1).IsRequired();
 
-            builder.Property(c => c.ShotAccuracyModifier).HasDefaultValue(1).IsRequired();
+            builder.Property(l => l.ShotAccuracyModifier).HasDefaultValue(1).IsRequired();
 
-            builder.Property(c => c.MaxHomeAdvantage).HasDefaultValue(0).IsRequired();
+            builder.Property(l => l.MaxHomeAdvantage).HasDefaultValue(0).IsRequired();
 
-            builder.Property(c => c.MaxAwayDisadvantage).HasDefaultValue(0).IsRequired();
+            builder.Property(l => l.MaxAwayDisadvantage).HasDefaultValue(0).IsRequired();
 
-            builder.Property(c => c.ActionsPerMinute).HasDefaultValue(4).IsRequired();
+            builder.Property(l => l.ActionsPerMinute).HasDefaultValue(4).IsRequired();
 
-            builder.Property(c => c.MaxProgressChance).HasDefaultValue(0.7).IsRequired();
+            builder.Property(l => l.MaxProgressChance).HasDefaultValue(0.7).IsRequired();
 
-            builder.Property(c => c.MinProgressChance).HasDefaultValue(0.3).IsRequired();
+            builder.Property(l => l.MinProgressChance).HasDefaultValue(0.3).IsRequired();
+
+            builder.Property(l => l.Rounds).HasDefaultValue(2).IsRequired();
         }
     }
 }

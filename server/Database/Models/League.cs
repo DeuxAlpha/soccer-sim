@@ -15,6 +15,7 @@ namespace Database.Models
         public int ActionsPerMinute { get; set; }
         public double MaxProgressChance { get; set; }
         public double MinProgressChance { get; set; }
+        public int Rounds { get; set; }
         public string DivisionName { get; set; }
         public string Image { get; set; }
 
