@@ -1,7 +1,7 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=b2a82fbe_002Daeb8_002D4a14_002D976c_002D599401081a93/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="MatchUpServiceTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::DA8CF6F7-196B-47FA-8005-8C7B0404F24E::.NETCoreApp,Version=v3.1::Tests.Domain.ServiceTests.MatchUpServiceTests.MatchUpServiceTests&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ed88a671_002D6463_002D4117_002D8b5b_002D4cb1e6c9b61b/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;Tests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Project Location="C:\Users\Aaron\Documents\Coding\Soccer-Sim\server\Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
+	
+	
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Gameplan/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
