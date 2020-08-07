@@ -17,7 +17,7 @@ namespace Database.Contexts.Entities
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
-            builder.HasOne(e => e.LeagueFixture)
+            builder.HasOne(e => e.Fixture)
                 .WithMany(f => f.Events)
                 .HasForeignKey(e => new {e.LeagueName, e.Season, e.GameDayNumber, e.HomeTeamName, e.AwayTeamName})
                 .OnDelete(DeleteBehavior.Cascade)
