@@ -120,7 +120,6 @@ export default class Home extends Vue {
         .then(async response => {
           this.lastMatchDay = response.data.lastMatchDay;
           this.lastCompletedMatchDay = response.data.lastCompletedMatchDay;
-          this.selectedGameDay = this.lastMatchDay;
           await this.loadMatchDay(this.selectedGameDay);
         })
         .catch(error => console.dir(error));
