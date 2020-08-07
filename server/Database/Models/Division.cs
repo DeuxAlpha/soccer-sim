@@ -10,6 +10,7 @@ namespace Database.Models
         public string Abbreviation { get; set; }
         public int Level { get; set; }
         public string CountryName { get; set; }
+        public bool OnlyFirstTeams { get; set; }
 
         public Country Country { get; set; }
         public ICollection<League> Leagues { get; set; }

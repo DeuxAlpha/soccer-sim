@@ -23,6 +23,8 @@ namespace Database.Contexts.Entities
             builder.Property(d => d.Abbreviation).HasMaxLength(10);
 
             builder.Property(d => d.Level).HasDefaultValue(1).IsRequired();
+
+            builder.Property(d => d.OnlyFirstTeams).HasDefaultValue(true).IsRequired();
         }
     }
 }

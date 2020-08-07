@@ -17,6 +17,7 @@ namespace Database.Models
         public double PotentialNegativeChance { get; set; }
         public int MaxPace { get; set; }
         public double ShotOnGoalRate { get; set; }
+        public bool NotFirstTeam { get; set; }
         public string LeagueName { get; set; }
         public string Image { get; set; }
 
