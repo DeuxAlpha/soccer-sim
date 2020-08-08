@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace Database.Models
 {
@@ -20,6 +21,7 @@ namespace Database.Models
         public string Image { get; set; }
 
         public ICollection<Division> Divisions { get; set; }
+        public ICollection<Competition> Competitions { get; set; }
         public Continent Continent { get; set; }
     }
 }

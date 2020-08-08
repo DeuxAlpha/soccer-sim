@@ -14,5 +14,6 @@ namespace Database.Models
 
         public Country Country { get; set; }
         public ICollection<League> Leagues { get; set; }
+        public ICollection<Competition> Competitions { get; set; }
     }
 }

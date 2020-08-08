@@ -22,6 +22,12 @@ namespace Database.Contexts
         public DbSet<LeagueFixture> LeagueFixtures { get; set; }
         public DbSet<LeagueFixtureEvent> LeagueFixtureEvents { get; set; }
         public DbSet<PromotionSystem> PromotionSystems { get; set; }
+        public DbSet<Competition> Competitions { get; set; }
+        public DbSet<CompetitionRound> CompetitionRounds { get; set; }
+        public DbSet<CompetitionRoundFixture> CompetitionFixtures { get; set; }
+        public DbSet<CompetitionRoundFixtureEvent> CompetitionFixtureEvents { get; set; }
+        public DbSet<CompetitionRoundGameDay> CompetitionGameDays { get; set; }
+        public DbSet<CompetitionRoundGroup> CompetitionGroups { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

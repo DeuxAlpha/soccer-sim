@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Database.Enums;
 using Database.Models.Shared;
 
@@ -16,6 +17,7 @@ namespace Database.Models
         public ICollection<Team> Teams { get; set; }
         public ICollection<LeagueGameDay> GameDays { get; set; }
         public ICollection<LeagueFixture> LeagueFixtures { get; set; }
+        public ICollection<Competition> Competitions { get; set; }
         public Division Division { get; set; }
         public PromotionSystem PromotionSystem { get; set; }
     }

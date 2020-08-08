@@ -25,5 +25,8 @@ namespace Database.Models
         public ICollection<LeagueFixture> HomeLeagueFixtures { get; set; }
         public ICollection<LeagueFixture> AwayLeagueFixtures { get; set; }
         public ICollection<LeagueFixtureEvent> LeagueFixtureEvents { get; set; }
+        public ICollection<CompetitionRoundFixture> HomeCompetitionFixtures { get; set; }
+        public ICollection<CompetitionRoundFixture> AwayCompetitionFixtures { get; set; }
+        public ICollection<CompetitionRoundFixtureEvent> CompetitionFixtureEvents { get; set; }
     }
 }
