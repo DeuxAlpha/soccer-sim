@@ -35,7 +35,7 @@ import {LeagueTable, LeagueTablePosition} from "@/models/LeagueTable";
 
 @Component
 export default class CTable extends Vue {
-  @Prop([Object]) readonly table!: LeagueTable;
+  @Prop() readonly table!: LeagueTable;
 
   getPreviousPosition(teamName: string): number {
     return this.table.previousPositions.find(p => p.teamName == teamName)!.position;

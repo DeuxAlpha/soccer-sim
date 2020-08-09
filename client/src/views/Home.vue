@@ -44,7 +44,7 @@
         <option v-for="gameDay of lastMatchDay" :value="gameDay">{{ gameDay }}</option>
       </select>
     </label>
-    <CGamePlan :games="leagueGames"/>
+    <CGamePlan :games="leagueGames" :table="leagueTable"/>
     <CTable :table="leagueTable"/>
   </div>
 </template>
