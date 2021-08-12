@@ -17,36 +17,36 @@ namespace Fiddles
         {
             var homeTeam = new TeamLineUp
             {
-                AttackStrength = 750,
-                DefenseStrength = 675,
+                AttackStrength = 800,
+                DefenseStrength = 800,
                 GoalKeeperStrength = 800,
                 ShotOnGoalRate = 0.3,
-                MaxPace = 30,
+                MaxPace = 20,
                 PotentialPositiveShift = 30,
                 PotentialPositiveShiftChance = 0.075,
-                PotentialNegativeShift = 40,
-                PotentialNegativeShiftChance = 0.08,
+                PotentialNegativeShift = 30,
+                PotentialNegativeShiftChance = 0.075,
                 CurrentForm = 0
             };
             var awayTeam = new TeamLineUp
             {
-                AttackStrength = 1050,
-                DefenseStrength = 875,
-                GoalKeeperStrength = 925,
-                ShotOnGoalRate = 0.425,
-                MaxPace = 45,
-                PotentialPositiveShift = 20,
+                AttackStrength = 900,
+                DefenseStrength = 900,
+                GoalKeeperStrength = 900,
+                ShotOnGoalRate = 0.3,
+                MaxPace = 20,
+                PotentialPositiveShift = 30,
                 PotentialPositiveShiftChance = 0.075,
-                PotentialNegativeShift = 35,
-                PotentialNegativeShiftChance = 0.115,
+                PotentialNegativeShift = 30,
+                PotentialNegativeShiftChance = 0.075,
                 CurrentForm = 0
             };
             var gameProperties = new GameProperties
             {
                 ActionsPerMinute = 4,
                 MaxOvertime = 10,
-                HalfFieldLength = 100,
-                ShotAccuracyModifier = 1.1,
+                HalfFieldLength = 50,
+                ShotAccuracyModifier = 1,
                 PaceModifier = 1,
                 MaxHomeAdvantage = 50,
                 MaxAwayDisadvantage = 50,
