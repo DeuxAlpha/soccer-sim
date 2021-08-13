@@ -2,6 +2,7 @@
 using System.Reflection;
 using Database.Models;
 using Microsoft.EntityFrameworkCore;
+using BISSELL.Configuration;
 
 namespace Database.Contexts
 {
@@ -26,7 +27,7 @@ namespace Database.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (optionsBuilder.IsConfigured) return;
-            optionsBuilder.UseSqlServer(Configuration.StaticConfig.GetValue<string>("ConnectionStrings:Development"));
+            optionsBuilder.UseSqlServer(StaticConfig.GetValue<string>("ConnectionStrings:Development"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

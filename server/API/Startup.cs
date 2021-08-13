@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using BISSELL.Configuration;
 
 namespace API
 {
@@ -23,7 +24,7 @@ namespace API
             });
 
             services.AddDbContext<SoccerSimContext>(options =>
-                options.UseSqlServer(Configuration.StaticConfig.GetValue<string>("ConnectionStrings:Development")));
+                options.UseSqlServer(StaticConfig.GetValue<string>("ConnectionStrings:Development")));
 
             services.AddControllers();
         }
@@ -45,6 +46,14 @@ namespace API
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            
+            app.UseSpa(spa =>
+            {
+                if (env.IsDevelopment())
+                {
+                    spa.UseProxyToSpaDevelopmentServer("https://localhost:3000");
+                }
+            });
         }
     }
 }
