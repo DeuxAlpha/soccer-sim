@@ -6,7 +6,10 @@
 import {defineComponent} from "vue";
 
 export default defineComponent({
-  name: "Administration"
+  name: "ContinentEditor",
+  async setup(props, context) {
+
+  }
 });
 </script>
 

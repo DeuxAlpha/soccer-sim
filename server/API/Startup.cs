@@ -46,14 +46,6 @@ namespace API
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-            
-            app.UseSpa(spa =>
-            {
-                if (env.IsDevelopment())
-                {
-                    spa.UseProxyToSpaDevelopmentServer("https://localhost:3000");
-                }
-            });
         }
     }
 }

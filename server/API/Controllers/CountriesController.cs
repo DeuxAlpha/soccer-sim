@@ -11,7 +11,7 @@ using BISSELL.Querying.Query.Services;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class CountriesController : ControllerBase
     {
         private readonly SoccerSimContext _context;
