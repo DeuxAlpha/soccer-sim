@@ -5,8 +5,8 @@ using Database.Contexts;
 using Database.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Querying.Query.Models;
-using Querying.Query.Services;
+using BISSELL.Querying.Query.Models;
+using BISSELL.Querying.Query.Services;
 
 namespace API.Controllers
 {

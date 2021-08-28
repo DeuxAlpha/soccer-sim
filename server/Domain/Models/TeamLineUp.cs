@@ -6,16 +6,16 @@ namespace Domain.Models
     public class TeamLineUp
     {
         public List<PlayerPosition> Formation { get; set; }
-        public double AttackStrength { get; set; }
-        public double DefenseStrength { get; set; }
-        public double GoalKeeperStrength { get; set; }
-        public double PotentialPositiveShift { get; set; }
-        public double PotentialPositiveShiftChance { get; set; }
-        public double PotentialNegativeShift { get; set; }
-        public double PotentialNegativeShiftChance { get; set; }
-        public double CurrentForm { get; set; }
-        public int MaxPace { get; set; }
-        public double ShotOnGoalRate { get; set; }
+        public double AttackStrength { get; set; } = 600;
+        public double DefenseStrength { get; set; } = 600;
+        public double GoalKeeperStrength { get; set; } = 600;
+        public double PotentialPositiveShift { get; set; } = 10;
+        public double PotentialPositiveShiftChance { get; set; } = 0.1;
+        public double PotentialNegativeShift { get; set; } = 10;
+        public double PotentialNegativeShiftChance { get; set; } = 0.1;
+        public double CurrentForm { get; set; } = 0;
+        public int MaxPace { get; set; } = 30;
+        public double ShotOnGoalRate { get; set; } = 0.3;
 
         public void ApplyPotentialShift()
         {

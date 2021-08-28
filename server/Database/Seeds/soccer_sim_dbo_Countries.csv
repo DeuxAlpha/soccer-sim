@@ -1,0 +1,2 @@
+Season,Name,Abbreviation,AttackStrength,DefenseStrength,GoalieStrength,PotentialPositiveShift,PotentialPositiveChance,PotentialNegativeShift,PotentialNegativeChance,MaxPace,ShotOnGoalRate,ContinentName,Image
+2020-2021,Germany,gER,800,1100,1200,50,0.05,40,0.075,25,0.3,Europe,
