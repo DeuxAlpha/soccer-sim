@@ -17,6 +17,7 @@
     "axios": "0.19.2",
     "core-js": "3.6.5",
     "gsap": "3.4.2",
+    "papaparse": "^5.3.2",
     "tailwindcss": "1.6.2",
     "vue": "2.6.11",
     "vue-axios": "2.1.5",
@@ -28,6 +29,7 @@
   "devDependencies": {
     "@types/jest": "26.0.8",
     "@types/node": "12.12.6",
+    "@types/papaparse": "^5.3.2",
     "@vue/cli-plugin-babel": "4.4.6",
     "@vue/cli-plugin-router": "4.4.6",
     "@vue/cli-plugin-typescript": "4.4.6",

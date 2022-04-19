@@ -27,7 +27,11 @@ namespace Database.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (optionsBuilder.IsConfigured) return;
-            optionsBuilder.UseSqlServer(StaticConfig.GetValue<string>("ConnectionStrings:Development"));
+            const string fallbackConnectionString =
+                "Server=localhost,20240;Database=SoccerSim;User Id=sa;Password=Your_password123";
+            var connectionString = StaticConfig.GetValue<string>("ConnectionStrings:Development");
+            if (string.IsNullOrWhiteSpace(connectionString)) connectionString = fallbackConnectionString;
+            optionsBuilder.UseSqlServer(connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
