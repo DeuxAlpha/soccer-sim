@@ -108,7 +108,7 @@ export default class LeagueImport<T> extends Vue {
 
   async sendImportData() {
     console.log('prepped data', this.preppedData);
-    await Axios.post('https://localhost:5001/importers', this.preppedData);
+    await Axios.post('https://localhost:5001/importers', this.preppedData)
     // await fetch('https://localhost:5001/importers', {
     //   body: JSON.stringify(this.preppedData),
     //   method: 'POST',

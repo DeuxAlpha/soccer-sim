@@ -5,7 +5,9 @@ using API.Dtos.Requests;
 using Database.Contexts;
 using Database.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace API.Controllers
 {
@@ -113,19 +115,44 @@ namespace API.Controllers
                     });
             }
 
-            foreach (var result in results)
+            var currentMatchDay = 1;
+            var resultsPerMatchDay = clubsCount / 2;
+
+            await PrunePreExistingEvents(existingLeague.Name, season);
+            for (var resultIndex = 0; resultIndex < results.Count; resultIndex++)
             {
+                if (resultIndex != 0 && resultIndex % resultsPerMatchDay == 0) currentMatchDay++;
+                var result = results[resultIndex];
                 var fixture = new LeagueFixture
                 {
                     // TODO: Fix missing game day property
+                    GameDayNumber = currentMatchDay,
                     Season = season,
                     LeagueName = existingLeague.Name,
                     HomeTeamName = result.HomeTeamName,
                     AwayTeamName = result.AwayTeamName
                 };
-                await CreateNewFixture(fixture);
+                var existingFixture = await _soccerSimContext.LeagueFixtures
+                    .FirstOrDefaultAsync(leagueFixture => leagueFixture.Season == season &&
+                                                    leagueFixture.LeagueName == existingLeague.Name &&
+                                                    leagueFixture.GameDayNumber == currentMatchDay &&
+                                                    leagueFixture.HomeTeamName == result.HomeTeamName &&
+                                                    leagueFixture.AwayTeamName == result.AwayTeamName);
+                if (existingFixture == null)
+                    await CreateNewFixture(fixture);
                 var rand = new Random();
                 
+                // Prune all preexisting events
+                // var preExistingEvents = await _soccerSimContext.LeagueFixtureEvents
+                    // .Where(fixtureEvent => fixtureEvent.LeagueName == existingLeague.Name &&
+                                           // fixtureEvent.Season == season &&
+                                           // fixtureEvent.GameDayNumber == currentMatchDay &&
+                                           // fixtureEvent.HomeTeamName == result.HomeTeamName &&
+                                           // fixtureEvent.AwayTeamName == result.AwayTeamName)
+                    // .ToListAsync();
+                // _soccerSimContext.LeagueFixtureEvents.RemoveRange(preExistingEvents);
+                // await _soccerSimContext.SaveChangesAsync();
+
                 for (var scoredGoals = 0; scoredGoals < result.HomeHalfTimeGoals; scoredGoals++)
                 {
                     await CreateNewFixtureEvent(new LeagueFixtureEvent
@@ -133,6 +160,8 @@ namespace API.Controllers
                         Minute = rand.Next(0, 45),
                         Season = season,
                         IsGoal = true,
+                        AddedMinute = 0,
+                        GameDayNumber = currentMatchDay,
                         LeagueName = existingLeague.Name,
                         EventTeamName = result.HomeTeamName,
                         HomeTeamName = result.HomeTeamName,
@@ -144,9 +173,11 @@ namespace API.Controllers
                 {
                     await CreateNewFixtureEvent(new LeagueFixtureEvent
                     {
-                        Minute= rand.Next(0,45),
+                        Minute = rand.Next(0, 45),
                         Season = season,
                         IsGoal = true,
+                        AddedMinute = 0,
+                        GameDayNumber = currentMatchDay,
                         LeagueName = existingLeague.Name,
                         EventTeamName = result.AwayTeamName,
                         HomeTeamName = result.HomeTeamName,
@@ -161,6 +192,8 @@ namespace API.Controllers
                         Minute = rand.Next(45, 90),
                         Season = season,
                         IsGoal = true,
+                        AddedMinute = 0,
+                        GameDayNumber = currentMatchDay,
                         LeagueName = existingLeague.Name,
                         EventTeamName = result.HomeTeamName,
                         HomeTeamName = result.HomeTeamName,
@@ -168,13 +201,15 @@ namespace API.Controllers
                     });
                 }
 
-                for (var scoredGoals = result.AwayHalfTimeGoals; scoredGoals < result.HomeFullTimeGoals; scoredGoals++)
+                for (var scoredGoals = result.AwayHalfTimeGoals; scoredGoals < result.AwayFullTimeGoals; scoredGoals++)
                 {
                     await CreateNewFixtureEvent(new LeagueFixtureEvent
                     {
                         Minute = rand.Next(45, 90),
                         Season = season,
                         IsGoal = true,
+                        AddedMinute = 0,
+                        GameDayNumber = currentMatchDay,
                         LeagueName = existingLeague.Name,
                         EventTeamName = result.AwayTeamName,
                         HomeTeamName = result.HomeTeamName,
@@ -186,12 +221,41 @@ namespace API.Controllers
             return Ok();
         }
 
+        private async Task PrunePreExistingEvents(string leagueName, string season)
+        {
+            var preExistingEvents = await _soccerSimContext.LeagueFixtureEvents
+                .Where(fixtureEvent => fixtureEvent.LeagueName == leagueName &&
+                                       fixtureEvent.Season == season)
+                .ToListAsync();
+            _soccerSimContext.LeagueFixtureEvents.RemoveRange(preExistingEvents);
+            await _soccerSimContext.SaveChangesAsync();
+        }
+
 
         private async Task<LeagueFixtureEvent> CreateNewFixtureEvent(LeagueFixtureEvent fixtureEvent)
         {
-            var addedEvent = await _soccerSimContext.LeagueFixtureEvents.AddAsync(fixtureEvent);
-            await _soccerSimContext.SaveChangesAsync();
-            return addedEvent.Entity;
+            async Task<LeagueFixtureEvent> RetryThisEvent()
+            {
+                fixtureEvent.Minute -= 1;
+                return await CreateNewFixtureEvent(fixtureEvent);
+            }
+
+            try
+            {
+                var addedEvent = await _soccerSimContext.LeagueFixtureEvents.AddAsync(fixtureEvent);
+                await _soccerSimContext.SaveChangesAsync();
+                return addedEvent.Entity;
+            }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                Log.Warning(invalidOperationException, "Exception occurred. Reducing Minute and retrying");
+                return await RetryThisEvent();
+            }
+            catch (SqlException sqlException)
+            {
+                Log.Warning(sqlException, "Exception occurred. Reducing minute and retrying");
+                return await RetryThisEvent();
+            }
         }
 
         private async Task<LeagueFixture> CreateNewFixture(LeagueFixture fixture)

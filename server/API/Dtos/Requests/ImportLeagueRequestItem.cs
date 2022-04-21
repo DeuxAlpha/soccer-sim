@@ -26,6 +26,7 @@ namespace API.Dtos.Requests
         public int AwayHalfTimeGoals { get; set; }
 
         public int HomeFullTimeGoals { get; set; }
+        public int AwayFullTimeGoals { get; set; }
 
         public string Timestamp { get; set; }
     }
