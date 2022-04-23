@@ -49,6 +49,8 @@ export default class CTable extends Vue {
   @Prop(String) readonly season!: string;
   @Prop(String) readonly league!: string;
 
+
+
   getPreviousPosition(teamName: string): number {
     return this.table.previousPositions.find(p => p.teamName == teamName)!.position;
   }

@@ -5,8 +5,13 @@
       bg-blue-300 hover:bg-blue-400 active:bg-blue-500 focus:bg-blue-500
       text-black
       px-4 py-2 rounded"
-      to="/game/admin/import">
+                   to="/game/admin/import">
         Import League
+      </router-link>
+      <router-link class="
+      bg-blue-300 hover:bg-blue-400 active:bg-blue-500 focus:bg-blue-500
+      text-black px-4 py-2 rounded"
+                   to="/game/admin/scrape">Scraper
       </router-link>
     </div>
   </div>
