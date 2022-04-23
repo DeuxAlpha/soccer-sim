@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.ML.Probabilistic.Distributions;
 using Microsoft.ML.Probabilistic.Models;
@@ -18,16 +19,18 @@ namespace Domain.Infer
 
             var playerSkills = Variable.Array<double>(player);
             playerSkills[player] = Variable.GaussianFromMeanAndVariance(
-                strengthRequest.AverageStrength, 
-                strengthRequest.StrengthVariance);
+                    strengthRequest.AverageStrength,
+                    strengthRequest.StrengthVariance * 100.0)
+                .ForEach(player);
 
             var winners = Variable.Array<int>(game);
             var losers = Variable.Array<int>(game);
             
             using (Variable.ForEach(game))
             {
-                var winnerPerformance = Variable.GaussianFromMeanAndVariance(playerSkills[winners[game]], 1.0);
-                var loserPerformance = Variable.GaussianFromMeanAndVariance(playerSkills[losers[game]], 1.0);
+                var impact = strengthRequest.StrengthVariance * 10.0;
+                var winnerPerformance = Variable.GaussianFromMeanAndVariance(playerSkills[winners[game]], impact);
+                var loserPerformance = Variable.GaussianFromMeanAndVariance(playerSkills[losers[game]], impact);
 
                 Variable.ConstrainTrue(winnerPerformance > loserPerformance);
             }
@@ -39,12 +42,18 @@ namespace Domain.Infer
             var inferredSkills = inferenceEngine.Infer<Gaussian[]>(playerSkills);
 
             var orderedSkills = inferredSkills
-                .Select((skill, index) => new { Team = index, Skill = skill.GetMean() })
-                .OrderByDescending(teamSkill => teamSkill.Skill);
+                .Select((skill, index) => new { TeamId = index, Skill = skill })
+                .OrderByDescending(teamSkill => teamSkill.Skill.GetMean())
+                .ToList();
+
+            foreach (var orderedSkill in orderedSkills)
+            {
+                Console.WriteLine($"Team {orderedSkill.TeamId} with skill {orderedSkill.Skill}");
+            }
 
             var dictionary = orderedSkills
                 .ToDictionary(
-                    orderedSkill => orderedSkill.Team, 
+                    orderedSkill => orderedSkill.TeamId, 
                     orderedSkill => orderedSkill.Skill);
             return new StrengthResponse{
                 IdToStrengthsDictionary = dictionary
@@ -52,16 +61,16 @@ namespace Domain.Infer
         }
     }
 
-    public struct StrengthRequest
+    public class StrengthRequest
     {
-        public double AverageStrength;
-        public double StrengthVariance;
+        public double AverageStrength { get; set; } = 600.0;
+        public double StrengthVariance { get; set; } = 100.0;
         public IEnumerable<int> WinnerIds;
         public IEnumerable<int> LoserIds;
     }
 
     public struct StrengthResponse
     {
-        public Dictionary<int, double> IdToStrengthsDictionary;
+        public Dictionary<int, Gaussian> IdToStrengthsDictionary;
     }
 }

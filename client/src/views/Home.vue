@@ -1,21 +1,34 @@
 <template>
   <div id="home-page" class="flex-1">
-    <div class="flex flex-row justify-start text-sm">
+    <div class="flex flex-row justify-between">
+      <div class="flex flex-row justify-start text-sm">
       <span v-if="selectedSeason" @click="onResetSeasonClicked">
         > {{ selectedSeason }}
       </span>
-      <span v-if="selectedContinent" @click="onResetContinentClicked">
+        <span v-if="selectedContinent" @click="onResetContinentClicked">
         > {{ selectedContinent }}
       </span>
-      <span v-if="selectedCountry" @click="onResetCountryClicked">
+        <span v-if="selectedCountry" @click="onResetCountryClicked">
         > {{ selectedCountry }}
       </span>
-      <span v-if="selectedDivision" @click="onResetDivisionClicked">
+        <span v-if="selectedDivision" @click="onResetDivisionClicked">
         > {{ selectedDivision }}
       </span>
-      <span v-if="selectedLeague" @click="onResetLeagueClicked">
+        <span v-if="selectedLeague" @click="onResetLeagueClicked">
         > {{ selectedLeague }}
       </span>
+      </div>
+      <div v-show="leagueTable != null" class="flex flex-row justify-end text-sm">
+        <div class="flex flex-col">
+          <label for="average-strength">Avg. Strength</label>
+          <input id="average-strength" type="number" step=".1" v-model="avgStrength">
+        </div>
+        <div class="flex flex-col">
+          <label for="strength-variance">Var. Strength</label>
+          <input id="strength-variance" type="number" step=".1" v-model="varStrength">
+        </div>
+        <button @click="getStrengthsToThisGameDay">Get Strengths up to this game day</button>
+      </div>
     </div>
     <div class="text-lg">
       <span v-if="!selectedSeason" v-for="season of seasons" :key="season"
@@ -49,7 +62,30 @@
         <CGamePlan :games="leagueGames"/>
       </div>
       <div class="md:w-3/4 w-full">
-        <CTable :table="leagueTable"/>
+        <CTable league="leagueName" :season="selectedSeason" :table="leagueTable"/>
+      </div>
+    </div>
+    <div v-show="leagueTable" class="flex h-8 flex-col space-y-4 my-8 justify-around">
+      <div class="flex flex-row">
+        <div class="w-full h-full flex-1 flex flex-row justify-center items-center">
+          <div class="w-full border-b border-red-300"></div>
+        </div>
+        <div class="text-red-600 text-lg font-bold">Danger Zone</div>
+        <div class="w-full h-full flex-1 flex flex-row justify-center items-center">
+          <div class="w-full border-b border-red-300"></div>
+        </div>
+      </div>
+      <div class="flex flex-row space-x-2">
+        <button
+            @click="onRecreateGamePlanClicked"
+            class="py-2 px-4 bg-blue-300 text-white hover:bg-blue-400 focus:bg-blue-500 active:bg-blue-500">
+          Create new gameplan
+        </button>
+        <button
+            @click="onResimulateGamesClicked"
+            class="py-2 px-4 bg-blue-300 text-white hover:bg-blue-400 focus:bg-blue-500 active:bg-blue-500">
+          Resimulate games
+        </button>
       </div>
     </div>
   </div>
@@ -61,6 +97,7 @@ import {LeagueGame} from "@/models/LeagueGame";
 import CGamePlan from "@/components/structure/CGamePlan.vue";
 import {LeagueTable} from "@/models/LeagueTable";
 import CTable from "@/components/structure/CTable.vue";
+import {StrengthResponse} from "@/models/responses/StrengthResponse";
 
 @Component({
   name: 'Home',
@@ -85,6 +122,9 @@ export default class Home extends Vue {
   selectedGameDay = 1;
   lastMatchDay = 0;
   lastCompletedMatchDay = 0;
+
+  avgStrength = 900;
+  varStrength = 500;
 
   async mounted() {
     await this.axios.get('continents/seasons')
@@ -141,8 +181,38 @@ export default class Home extends Vue {
         .then(response => this.leagueGames = response.data)
         .catch(error => console.dir(error));
     await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/table/${gameDay}`)
-        .then(response => this.leagueTable = response.data)
+        .then(response => {
+          this.leagueTable = response.data
+        })
         .catch(error => console.dir(error));
+  }
+
+  async onRecreateGamePlanClicked() {
+    await this.axios.post(`leagues/gameplan/{this.selectedLeague}/{this.selectedSeason}/override`)
+        .then(() => window.location.reload());
+  }
+
+  async onResimulateGamesClicked() {
+    await this.axios.post(`leagues/${this.selectedLeague}/${this.selectedSeason}/simulate/override`)
+        .then(() => window.location.reload());
+  }
+
+  async getStrengthsToThisGameDay() {
+    const gameDay = this.selectedGameDay;
+    await this.axios.post(`leagues/${this.selectedLeague}/${this.selectedSeason}/rank/${gameDay}`, {
+      averageStrength: this.avgStrength,
+      strengthVariance: this.varStrength
+    })
+        .then(response => {
+          const inferredStrengths = response.data as StrengthResponse[];
+          if (!this.leagueTable) return;
+          // Planting inferred strengths in current positions view.
+          this.leagueTable.positions = this.leagueTable.positions.map(p => {
+            p.inferredStrength = inferredStrengths.find(s => s.teamName === p.teamName)!.strength
+            return p
+          });
+          // TODO: Analyze home and away performance.
+        }).catch(error => console.dir(error));
   }
 
   onResetSeasonClicked() {

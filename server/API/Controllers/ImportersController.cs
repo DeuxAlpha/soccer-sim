@@ -22,6 +22,8 @@ namespace API.Controllers
             _soccerSimContext = soccerSimContext;
         }
 
+        // TODO: Cloning existing leagues
+        
         [HttpPost]
         public async Task<IActionResult> ImportLeague([FromBody] ImportLeagueRequest request)
         {
@@ -254,6 +256,11 @@ namespace API.Controllers
             catch (SqlException sqlException)
             {
                 Log.Warning(sqlException, "Exception occurred. Reducing minute and retrying");
+                return await RetryThisEvent();
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                Log.Warning(dbUpdateException, "Exception occurred. Reducing minute and retrying");
                 return await RetryThisEvent();
             }
         }

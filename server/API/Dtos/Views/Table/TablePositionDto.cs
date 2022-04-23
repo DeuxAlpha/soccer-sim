@@ -1,4 +1,6 @@
-﻿namespace API.Dtos.Views.Table
+﻿using System;
+
+namespace API.Dtos.Views.Table
 {
     public class TablePositionDto
     {
@@ -16,6 +18,10 @@
         public int ShotsOnGoal { get; set; }
         public int ShotsAgainst { get; set; }
         public int ShotsAgainstGoal { get; set; }
+        public double AttackStrength { get; set; }
+        public double DefenseStrength { get; set; }
+        public double GoalieStrength { get; set; }
+        public double AverageStrength => (AttackStrength + DefenseStrength + GoalDifference) / 3;
 
         public TablePositionDto Clone()
         {
@@ -32,6 +38,9 @@
                 ShotsOnGoal = ShotsOnGoal,
                 ShotsAgainst = ShotsAgainst,
                 ShotsAgainstGoal = ShotsAgainstGoal,
+                AttackStrength = AttackStrength,
+                DefenseStrength = DefenseStrength,
+                GoalieStrength = GoalieStrength
             };
         }
     }

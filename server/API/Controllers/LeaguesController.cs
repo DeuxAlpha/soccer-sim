@@ -95,13 +95,12 @@ namespace API.Controllers
         [HttpGet("{name}/{season}/table")]
         public async Task<IActionResult> GetLeagueTable(string name, string season)
         {
-            // TODO: Get previous table position
             var league = await _context.Leagues
                 .Include(l => l.Teams)
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
             if (league == null) return NotFound(new { name, season });
             var teams = league.Teams.ToList();
-            var table = new TableDto(teams.Select(t => t.Name).ToList());
+            var table = new TableDto(teams);
             var fixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
                 .Include(f => f.HomeTeam)
@@ -118,23 +117,61 @@ namespace API.Controllers
             return Ok(table);
         }
 
-        [HttpGet("{name}/{season}/rank/{gameDay:int}")]
-        public async Task<IActionResult> GetLeagueRanks(string name, string season, int gameDay)
+        [HttpPost("{name}/{season}/rank/{gameDay:int}")]
+        public async Task<IActionResult> GetLeagueRanks(
+            string name,
+            string season,
+            int gameDay,
+            [FromBody] StrengthRequest strengthRequest)
         {
             var league = await _context.Leagues.SingleOrDefaultAsync(league => league.Name == name &&
                                                                                league.Season == season);
             if (league == null)
                 return NotFound
-                    (new
-                    {Messsage = "No league exists by that name or season.", Ref = new { name, season }});
-            var leagueDivision = league.Division.Level;
+                (new
+                    { Messsage = "No league exists by that name or season.", Ref = new { name, season } });
             var fixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
                 .Where(gd => gd.LeagueName == name && gd.Season == season && gd.GameDayNumber <= gameDay)
                 .ToListAsync();
-            var results = StrengthAssigner.AssignStrengths(new StrengthRequest
+            var results = fixtures.Select(fixture => new ResultDto(fixture)).ToList();
+            var homeTeams = results.Select(result => result.HomeTeamName).ToList();
+            var awayTeams = results.Select(result => result.AwayTeamName).ToList();
+            var teamsWithIds = homeTeams.Concat(awayTeams).Distinct().Select((team, teamId) => new
             {
+                TeamName = team,
+                TeamId = teamId
+            }).ToList();
+            var resultsWithIds = results.Select(result => new
+            {
+                Result = result,
+                HomeId = teamsWithIds.First(t => t.TeamName == result.HomeTeamName).TeamId,
+                AwayId = teamsWithIds.First(t => t.TeamName == result.AwayTeamName).TeamId,
+            }).ToList();
+            var winnerIds = resultsWithIds.Select(r =>
+                r.Result.HomeGoals > r.Result.AwayGoals ? r.HomeId :
+                r.Result.AwayGoals > r.Result.HomeGoals ? r.AwayId :
+                -1).Where(id => id >= 0).ToList();
+            var loserIds = resultsWithIds.Select(r =>
+                r.Result.HomeGoals < r.Result.AwayGoals ? r.HomeId :
+                r.Result.AwayGoals < r.Result.HomeGoals ? r.AwayId :
+                -1).Where(id => id >= 0).ToList();
+            var strengths = StrengthAssigner.AssignStrengths(new StrengthRequest
+            {
+                AverageStrength = strengthRequest.AverageStrength,
+                StrengthVariance = strengthRequest.StrengthVariance,
+                WinnerIds = winnerIds,
+                LoserIds = loserIds
             });
+            var strengthsAndTeams = strengths.IdToStrengthsDictionary.Select(idAndStrength => new
+            {
+                teamsWithIds.First(t => t.TeamId == idAndStrength.Key).TeamName,
+                Strength = double.Parse(idAndStrength.Value.ToString()
+                    .Split("(").Last()
+                    .Split(",").First())
+            });
+
+            return Ok(strengthsAndTeams);
         }
 
         [HttpGet("{name}/{season}/table/{gameDay}")]
@@ -145,7 +182,7 @@ namespace API.Controllers
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
             if (league == null) return NotFound(new { name, season });
             var teams = league.Teams.ToList();
-            var table = new TableDto(teams.Select(t => t.Name).ToList());
+            var table = new TableDto(teams);
             var fixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
                 .Include(f => f.HomeTeam)

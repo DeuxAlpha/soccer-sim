@@ -16,7 +16,17 @@
     <div class="flex flex-row" v-for="position of table.positions">
       <span class="position">{{ position.position }}</span>
       <span class="prev-position">{{ getPreviousPosition(position.teamName) }}</span>
-      <span class="team-column">{{ position.teamName }}</span>
+      <span class="team-column">
+        <span class="flex flex-row justify-start items-baseline">
+          <span>{{ position.teamName }}</span>
+          <span class="ml-2 text-xs">{{ position.attackStrength.toFixed(1) }}</span>
+          <button @click="overrideInferredTeamStrength(position.teamName, position.inferredStrength)"
+                class="ml-2 text-xs text-gray-600 hover:text-gray-700"
+                v-if="position.inferredStrength">
+            {{ position.inferredStrength.toFixed(1) }}
+          </button>
+        </span>
+      </span>
       <span class="games">{{ position.games }}</span>
       <span class="wins">{{ position.wins }}</span>
       <span class="draws">{{ position.draws }}</span>
@@ -36,9 +46,15 @@ import {LeagueTable} from "@/models/LeagueTable";
 @Component
 export default class CTable extends Vue {
   @Prop([Object]) readonly table!: LeagueTable;
+  @Prop(String) readonly season!: string;
+  @Prop(String) readonly league!: string;
 
   getPreviousPosition(teamName: string): number {
     return this.table.previousPositions.find(p => p.teamName == teamName)!.position;
+  }
+
+  async overrideInferredTeamStrength(teamName: string, inferredStrength: number) {
+    await this.axios.put(`teams/${teamName}/${this.season}/strengths/${inferredStrength}`);
   }
 }
 </script>

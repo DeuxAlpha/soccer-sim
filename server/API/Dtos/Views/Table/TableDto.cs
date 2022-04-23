@@ -13,32 +13,50 @@ namespace API.Dtos.Views.Table
         public List<TablePositionDto> PreviousHomePositions { get; set; }
         public List<TablePositionDto> PreviousAwayPositions { get; set; }
 
-        public TableDto(IReadOnlyCollection<string> teamNames)
+        public TableDto(IReadOnlyCollection<Team> teams)
         {
             // Need to be done thrice because each need to be different tables.
-            Positions = teamNames.Select(name => new TablePositionDto
+            Positions = teams.Select(team => new TablePositionDto
             {
-                TeamName = name
+                TeamName = team.Name,
+                AttackStrength = team.AttackStrength,
+                DefenseStrength = team.DefenseStrength,
+                GoalieStrength = team.GoalieStrength
             }).ToList();
-            HomePositions = teamNames.Select(name => new TablePositionDto
+            HomePositions = teams.Select(team => new TablePositionDto
             {
-                TeamName = name
+                TeamName = team.Name,
+                AttackStrength = team.AttackStrength,
+                DefenseStrength =team.DefenseStrength,
+                GoalieStrength = team.GoalieStrength
             }).ToList();
-            AwayPositions = teamNames.Select(name => new TablePositionDto
+            AwayPositions = teams.Select(team => new TablePositionDto
             {
-                TeamName = name
+                TeamName = team.Name,
+                AttackStrength = team.AttackStrength,
+                DefenseStrength = team.DefenseStrength,
+                GoalieStrength = team.GoalieStrength
             }).ToList();
-            PreviousPositions = teamNames.Select(name => new TablePositionDto
+            PreviousPositions = teams.Select(team => new TablePositionDto
             {
-                TeamName = name
+                TeamName = team.Name,
+                AttackStrength = team.AttackStrength,
+                DefenseStrength = team.DefenseStrength,
+                GoalieStrength = team.GoalieStrength
             }).ToList();
-            PreviousHomePositions = teamNames.Select(name => new TablePositionDto
+            PreviousHomePositions = teams.Select(team => new TablePositionDto
             {
-                TeamName = name
+                TeamName = team.Name,
+                AttackStrength = team.AttackStrength,
+                DefenseStrength = team.DefenseStrength,
+                GoalieStrength = team.GoalieStrength
             }).ToList();
-            PreviousAwayPositions = teamNames.Select(name => new TablePositionDto
+            PreviousAwayPositions = teams.Select(team => new TablePositionDto
             {
-                TeamName = name
+                TeamName = team.Name,
+                AttackStrength = team.AttackStrength,
+                DefenseStrength = team.DefenseStrength,
+                GoalieStrength = team.GoalieStrength
             }).ToList();
         }
 
