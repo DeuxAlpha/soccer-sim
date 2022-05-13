@@ -188,7 +188,7 @@ export default class Home extends Vue {
   }
 
   async onRecreateGamePlanClicked() {
-    await this.axios.post(`leagues/gameplan/{this.selectedLeague}/{this.selectedSeason}/override`)
+    await this.axios.post(`leagues/gameplan/${this.selectedLeague}/${this.selectedSeason}/override`)
         .then(() => window.location.reload());
   }
 

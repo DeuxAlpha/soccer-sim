@@ -7,6 +7,7 @@ using Database.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using RestSharp;
 using Serilog;
 
 namespace API.Controllers
@@ -22,6 +23,17 @@ namespace API.Controllers
             _soccerSimContext = soccerSimContext;
         }
 
+        [HttpPost("scrape")]
+        public async Task<IActionResult> ScrapeLeagues()
+        {
+            var restClient = new RestClient("https://www.football-data.co.uk");
+            var englandDashRequest = new RestRequest("englandm.php");
+            englandDashRequest.Method = Method.Get;
+            var response = await restClient.ExecuteAsync(englandDashRequest);
+
+            return BadRequest(new {Message = "This endpoint is not yet functional." });
+        }
+        
         // TODO: Cloning existing leagues
         
         [HttpPost]

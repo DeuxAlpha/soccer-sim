@@ -15,7 +15,7 @@
           <input class="ml-2" id="league-as-division" type="checkbox" @input="onLeagueAsDivisionCheckClicked">
         </div>
         <input class="border" id="league" type="text" :disabled="leagueSameAsDivision" v-model="league">
-        <button type="submit">Submit</button>
+        <button type="submit">Submit<span v-if="loading">ting...</span></button>
       </form>
     </template>
   </div>
@@ -36,6 +36,7 @@ export default class LeagueImport<T> extends Vue {
   listView: any[] = [];
   allowLocalFile = true;
   csvUrl = '';
+  loading = false;
 
   preppedData?: ImportRequest
 
@@ -108,7 +109,8 @@ export default class LeagueImport<T> extends Vue {
 
   async sendImportData() {
     console.log('prepped data', this.preppedData);
-    await Axios.post('https://localhost:5001/importers', this.preppedData)
+    this.loading = true;
+    await Axios.post('https://localhost:5001/importers', this.preppedData).finally(() => this.loading = false);
     // await fetch('https://localhost:5001/importers', {
     //   body: JSON.stringify(this.preppedData),
     //   method: 'POST',

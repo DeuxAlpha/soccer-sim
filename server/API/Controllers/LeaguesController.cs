@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
+using API.Dtos.Requests;
 using API.Dtos.Responses;
 using API.Dtos.Views;
 using API.Dtos.Views.Table;
@@ -326,6 +327,65 @@ namespace API.Controllers
             await _context.LeagueFixtures.AddRangeAsync(leagueFixtures);
             await _context.SaveChangesAsync();
 
+            return Ok();
+        }
+
+        [HttpPut("{name}/{season}/{gameDay:int}/fixture")]
+        public async Task<IActionResult> UpdateGameResult(
+            string name,
+            string season,
+            int gameDay,
+            [FromBody] LeagueGameUpdateRequest request)
+        {
+            var leagueGameDay = await _context.LeagueGameDays
+                .Include(lgd => lgd.Fixtures)
+                .ThenInclude(f => f.Events)
+                .FirstOrDefaultAsync(lgd =>
+                    lgd.LeagueName == name &&
+                    lgd.Season == season &&
+                    lgd.GameDayNumber == gameDay);
+            if (leagueGameDay == null) return NotFound(new {Message = "Could not find game day.", Ref = new {name, season, gameDay}});
+            var game = leagueGameDay.Fixtures.FirstOrDefault(f =>
+                f.HomeTeamName == request.HomeTeamName &&
+                f.AwayTeamName == request.AwayTeamName);
+            if (game == null)
+                return NotFound(new
+                {
+                    Message = "Could not find fixture",
+                    Ref = new { Ref = name, season, gameDay, request.HomeTeamName, request.AwayTeamName }
+                });
+            var events = game.Events;
+            _context.LeagueFixtureEvents.RemoveRange(events);
+            await _context.SaveChangesAsync();
+            var newEvents = request.HomeScoreEvents.Select(homeScoreEvent => new LeagueFixtureEvent
+                {
+                    Season = season,
+                    LeagueName = name,
+                    IsGoal = true,
+                    AddedMinute = homeScoreEvent.OvertimeMinute,
+                    Minute = homeScoreEvent.Minute,
+                    AwayTeamName = request.AwayTeamName,
+                    HomeTeamName = request.HomeTeamName,
+                    EventTeamName = request.HomeTeamName,
+                    GameDayNumber = gameDay,
+                    IsShotOnGoal = true
+                })
+                .ToList();
+            newEvents.AddRange(request.AwayScoreEvents.Select(awayScoreEvent => new LeagueFixtureEvent
+            {
+                Season = season,
+                LeagueName = name,
+                IsGoal = true,
+                AddedMinute = awayScoreEvent.OvertimeMinute,
+                Minute = awayScoreEvent.Minute,
+                AwayTeamName = request.AwayTeamName,
+                HomeTeamName = request.HomeTeamName,
+                EventTeamName = request.AwayTeamName,
+                GameDayNumber = gameDay,
+                IsShotOnGoal = true
+            }));
+            await _context.LeagueFixtureEvents.AddRangeAsync(newEvents);
+            await _context.SaveChangesAsync();
             return Ok();
         }
 
