@@ -2,21 +2,21 @@
   <div id="home-page" class="flex-1">
     <div class="flex flex-row justify-between">
       <div class="flex flex-row justify-start text-sm">
-      <span v-if="selectedSeason" @click="onResetSeasonClicked">
-        > {{ selectedSeason }}
-      </span>
+        <span v-if="selectedSeason" @click="onResetSeasonClicked">
+          > {{ selectedSeason }}
+        </span>
         <span v-if="selectedContinent" @click="onResetContinentClicked">
-        > {{ selectedContinent }}
-      </span>
+          > {{ selectedContinent }}
+        </span>
         <span v-if="selectedCountry" @click="onResetCountryClicked">
-        > {{ selectedCountry }}
-      </span>
+          > {{ selectedCountry }}
+        </span>
         <span v-if="selectedDivision" @click="onResetDivisionClicked">
-        > {{ selectedDivision }}
-      </span>
+          > {{ selectedDivision }}
+        </span>
         <span v-if="selectedLeague" @click="onResetLeagueClicked">
-        > {{ selectedLeague }}
-      </span>
+          > {{ selectedLeague }}
+        </span>
       </div>
       <div v-show="leagueTable != null" class="flex flex-row justify-end text-sm">
         <div class="flex flex-col">
@@ -98,6 +98,7 @@ import CGamePlan from "@/components/structure/CGamePlan.vue";
 import {LeagueTable} from "@/models/LeagueTable";
 import CTable from "@/components/structure/CTable.vue";
 import {StrengthResponse} from "@/models/responses/StrengthResponse";
+import {GameQuery} from "@/types/GameQuery";
 
 @Component({
   name: 'Home',
@@ -127,6 +128,41 @@ export default class Home extends Vue {
   varStrength = 500;
 
   async mounted() {
+    const querySeason = this.$route.query.season;
+    if (querySeason) this.selectedSeason = querySeason as string;
+    const queryContinent = this.$route.query.continent;
+    if (queryContinent) this.selectedContinent = queryContinent as string;
+    const queryCountry = this.$route.query.country;
+    if (queryCountry) this.selectedCountry = queryCountry as string;
+    const queryDivision = this.$route.query.division;
+    if (queryDivision) this.selectedDivision = queryDivision as string;
+    const queryLeague = this.$route.query.league;
+    if (queryLeague) this.selectedLeague = queryLeague as string;
+    const queryGameDay = this.$route.query.gameDay;
+    if (queryGameDay) this.selectedGameDay = parseInt(queryGameDay as string);
+    await this.getAppropriateNextCollection();
+  }
+
+  async getAppropriateNextCollection(): Promise<void> {
+    if (this.selectedLeague) {
+      if (this.selectedGameDay)
+        await this.getGames(this.selectedGameDay);
+      else
+        await this.getGames(1);
+    } else if (this.selectedDivision) {
+      await this.getLeagues();
+    } else if (this.selectedCountry) {
+      await this.getDivisions();
+    } else if (this.selectedContinent) {
+      await this.getCountries();
+    } else if (this.selectedSeason) {
+      await this.getContinents();
+    } else {
+      await this.getSeasons();
+    }
+  }
+
+  async getSeasons(): Promise<void> {
     await this.axios.get('continents/seasons')
         .then(response => this.seasons = response.data)
         .catch(error => console.dir(error));
@@ -134,46 +170,97 @@ export default class Home extends Vue {
 
   async onSeasonClicked(season: string) {
     this.selectedSeason = season;
+    await this.updateRoute();
+    await this.getContinents();
+  }
+
+  async getContinents(): Promise<void> {
     await this.axios.get(`continents/seasons/${this.selectedSeason}`)
-        .then(response => this.continents = response.data)
+        .then(response => {
+          this.continents = response.data
+          console.log('continents', this.continents);
+        })
         .catch(error => console.dir(error));
   }
 
   async onContinentClicked(continent: string) {
     this.selectedContinent = continent;
+    await this.updateRoute();
+    await this.getCountries();
+  }
+
+  async getCountries(): Promise<void> {
     await this.axios.get(`countries/continents/${this.selectedContinent}/${this.selectedSeason}`)
-        .then(response => this.countries = response.data)
+        .then(response => {
+          this.countries = response.data
+          console.log('countries', this.countries);
+        })
         .catch(error => console.dir(error));
   }
 
   async onCountryClicked(country: string) {
     this.selectedCountry = country;
+    await this.updateRoute();
+    await this.getDivisions();
+  }
+
+  async getDivisions(): Promise<void> {
     await this.axios.get(`divisions/countries/${this.selectedCountry}/${this.selectedSeason}`)
-        .then(response => this.divisions = response.data)
+        .then(response => {
+          this.divisions = response.data
+          console.log('divisions', this.divisions);
+        })
         .catch(error => console.dir(error));
   }
 
   async onDivisionClicked(division: string) {
     this.selectedDivision = division;
+    await this.updateRoute();
+    await this.getLeagues();
+  }
+
+  async updateRoute(): Promise<void> {
+    const query: GameQuery = {};
+    if (this.selectedSeason) query.season = this.selectedSeason;
+    if (this.selectedContinent) query.continent = this.selectedContinent;
+    if (this.selectedCountry) query.country = this.selectedCountry;
+    if (this.selectedDivision) query.division = this.selectedDivision;
+    if (this.selectedLeague) query.league = this.selectedLeague;
+    if (this.selectedGameDay) query.gameDay = this.selectedGameDay;
+    await this.$router.push({
+      path: '/',
+      query
+    })
+  }
+
+  async getLeagues(): Promise<void> {
     await this.axios.get(`leagues/divisions/${this.selectedDivision}/${this.selectedSeason}`)
-        .then(response => this.leagues = response.data)
+        .then(response => {
+          this.leagues = response.data
+          console.log('leagues', this.leagues);
+        })
         .catch(error => console.dir(error));
   }
 
   async onLeagueClicked(league: string) {
     this.selectedLeague = league;
+    await this.updateRoute();
+    await this.getGames(this.selectedGameDay);
+  }
+
+  async getGames(matchDay: number): Promise<void> {
     await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/matches`)
         .then(async response => {
           this.lastMatchDay = response.data.lastMatchDay;
           this.lastCompletedMatchDay = response.data.lastCompletedMatchDay;
-          this.selectedGameDay = this.lastMatchDay;
-          await this.loadMatchDay(this.selectedGameDay);
+          this.selectedGameDay = matchDay;
+          await this.loadMatchDay(matchDay);
         })
         .catch(error => console.dir(error));
   }
 
   async onGameDayChanged() {
-    await this.loadMatchDay(this.selectedGameDay);
+    await this.getGames(this.selectedGameDay);
   }
 
   async loadMatchDay(gameDay: number) {
@@ -215,7 +302,7 @@ export default class Home extends Vue {
         }).catch(error => console.dir(error));
   }
 
-  onResetSeasonClicked() {
+  async onResetSeasonClicked() {
     this.selectedSeason = '';
     this.selectedContinent = '';
     this.selectedCountry = '';
@@ -226,9 +313,10 @@ export default class Home extends Vue {
     this.divisions = [];
     this.leagues = [];
     this.resetSelection();
+    await this.updateRoute()
   }
 
-  onResetContinentClicked() {
+  async onResetContinentClicked() {
     this.selectedContinent = '';
     this.selectedCountry = '';
     this.selectedDivision = '';
@@ -237,27 +325,31 @@ export default class Home extends Vue {
     this.divisions = [];
     this.leagues = [];
     this.resetSelection();
+    await this.updateRoute();
   }
 
-  onResetCountryClicked() {
+  async onResetCountryClicked() {
     this.selectedCountry = '';
     this.selectedDivision = '';
     this.selectedLeague = '';
     this.divisions = [];
     this.leagues = [];
     this.resetSelection();
+    await this.updateRoute();
   }
 
-  onResetDivisionClicked() {
+  async onResetDivisionClicked() {
     this.selectedDivision = '';
     this.selectedLeague = '';
     this.leagues = [];
     this.resetSelection();
+    await this.updateRoute();
   }
 
-  onResetLeagueClicked() {
+  async onResetLeagueClicked() {
     this.selectedLeague = '';
     this.resetSelection();
+    await this.updateRoute();
   }
 
   resetSelection() {
