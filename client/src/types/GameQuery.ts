@@ -4,4 +4,5 @@ export type GameQuery = {
   country?: string;
   division?: string;
   league?: string;
+  gameDay?: string;
 }

@@ -226,7 +226,7 @@ export default class Home extends Vue {
     if (this.selectedCountry) query.country = this.selectedCountry;
     if (this.selectedDivision) query.division = this.selectedDivision;
     if (this.selectedLeague) query.league = this.selectedLeague;
-    if (this.selectedGameDay) query.gameDay = this.selectedGameDay;
+    if (this.selectedGameDay) query.gameDay = this.selectedGameDay.toString();
     await this.$router.push({
       path: '/',
       query
@@ -261,6 +261,7 @@ export default class Home extends Vue {
 
   async onGameDayChanged() {
     await this.getGames(this.selectedGameDay);
+    await this.updateRoute();
   }
 
   async loadMatchDay(gameDay: number) {
