@@ -26,10 +26,9 @@
 </template>
 
 <script lang="ts">
-import {Vue, Component, Ref} from "vue-property-decorator";
+import {Vue, Component, Ref, Inject} from "vue-property-decorator";
 import AArrowAltSolid from "@/components/functionality/icons/AArrowAltSolid.vue";
 import GSAP from 'gsap';
-import {QueryManager, StaticQueryManager} from "@/managers/StaticQueryManager";
 
 @Component({
   components: {AArrowAltSolid}
@@ -40,8 +39,11 @@ export default class App extends Vue {
   @Ref('SideBarToggle') readonly SideBarToggle!: HTMLButtonElement;
 
   async mounted() {
-    const queryExpanded = this.$route.query.expanded;
-    if (queryExpanded) this.sideBarExpanded = queryExpanded as string === 'true'
+    // const queryExpanded = this.$route.query.sidepanel;
+    // if (queryExpanded === 'true' || queryExpanded === 'false') {
+    //   this.sideBarExpanded = queryExpanded as string === 'true'
+    //   this.queryManager.AppQuery.sidepanel = queryExpanded;
+    // }
   }
 
   get ActiveClass(): string {
@@ -50,13 +52,6 @@ export default class App extends Vue {
 
   onToggleSideBarClicked() {
     this.sideBarExpanded = !this.sideBarExpanded;
-    const path = this.$route.path;
-    StaticQueryManager.AppQuery.sidepanel = this.sideBarExpanded ? 'true' : 'false';
-    const query = StaticQueryManager.BuildFinalQuery();
-    this.$router.push({
-      path,
-      query
-    })
   }
 
   onEnter(element: HTMLElement, done: Function) {

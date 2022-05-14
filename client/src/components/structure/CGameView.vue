@@ -12,11 +12,19 @@
           <div class="flex flex-row">
             <div class="flex flex-col">
               <label for="home-score-first-half" class="text-xs font-thin">Home Team Goals 1st Half</label>
-              <input @update="homeScoreSecondHalf < homeScoreFirstHalf ? homeScoreSecondHalf = homeScoreFirstHalf : null" type="number" class="w-12 font-sm" id="home-score-first-half" v-model="homeScoreFirstHalf">
+              <input @input="homeScoreSecondHalf < homeScoreFirstHalf ? homeScoreSecondHalf = homeScoreFirstHalf : null"
+                     type="number"
+                     class="w-12 font-sm"
+                     id="home-score-first-half"
+                     v-model="homeScoreFirstHalf">
             </div>
             <div class="flex flex-col">
               <label for="away-score-first-half" class="text-xs font-thin">Away Team Goals 1st Half</label>
-              <input @update="awayScoreSecondHalf < awayScoreFirstHalf ? awayScoreSecondHalf = awayScoreFirstHalf : null" type="number" class="w-12 font-sm" id="away-score-first-half" v-model="awayScoreFirstHalf">
+              <input @input="awayScoreSecondHalf < awayScoreFirstHalf ? awayScoreSecondHalf = awayScoreFirstHalf : null"
+                     type="number"
+                     class="w-12 font-sm"
+                     id="away-score-first-half"
+                     v-model="awayScoreFirstHalf">
             </div>
           </div>
           <div class="flex flex-row">
@@ -132,7 +140,7 @@ export default class CGameView extends Vue {
     console.log('home score events', homeScoreEvents);
     const awayScoreEvents: GameScoreEvent[] = GameService.CreateRangeOfEvents(
         this.awayScoreFirstHalf, 0, 45, 8);
-    awayScoreEvents.concat(GameService.CreateRangeOfEvents(
+    awayScoreEvents.push(...GameService.CreateRangeOfEvents(
         this.awayScoreSecondHalf - this.awayScoreFirstHalf, 45, 90, 8));
     console.log('away score events', awayScoreEvents);
 

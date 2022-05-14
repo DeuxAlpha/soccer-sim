@@ -93,18 +93,18 @@
 </template>
 
 <script lang="ts">
-import {Vue, Component} from "vue-property-decorator";
+import {Vue, Component, Provide} from "vue-property-decorator";
 import {LeagueGame} from "@/models/LeagueGame";
 import CGamePlan from "@/components/structure/CGamePlan.vue";
 import {LeagueTable} from "@/models/LeagueTable";
 import CTable from "@/components/structure/CTable.vue";
 import {StrengthResponse} from "@/models/responses/StrengthResponse";
-import {GameQuery} from "@/types/GameQuery";
+import {GameQuery} from "@/types/queries/GameQuery";
 import CGameView from "@/components/structure/CGameView.vue";
 import ADialog from '@/components/functionality/dialog/ADialog.vue';
 import ASeparator from "@/components/functionality/separator/ASeparator.vue"
 import {GameScore} from "@/types/GameScore";
-import {StaticQueryManager} from "@/managers/StaticQueryManager";
+import {QueryManager} from "@/managers/QueryManager";
 
 @Component({
   name: 'Home',
@@ -135,6 +135,7 @@ export default class Home extends Vue {
 
   selectedGame?: LeagueGame;
   openGameDialog = false;
+
 
   async mounted() {
     const querySeason = this.$route.query.season;
@@ -229,18 +230,16 @@ export default class Home extends Vue {
   }
 
   async updateRoute(): Promise<void> {
-    StaticQueryManager.GameQuery = {};
-    const query = StaticQueryManager.GameQuery;
+    const query: GameQuery = {};
     if (this.selectedSeason) query.season = this.selectedSeason;
     if (this.selectedContinent) query.continent = this.selectedContinent;
     if (this.selectedCountry) query.country = this.selectedCountry;
     if (this.selectedDivision) query.division = this.selectedDivision;
     if (this.selectedLeague) query.league = this.selectedLeague;
     if (this.selectedGameDay) query.gameDay = this.selectedGameDay.toString();
-    const finalQuery = StaticQueryManager.BuildFinalQuery();
     await this.$router.push({
       path: '/',
-      query: finalQuery
+      query
     })
   }
 
