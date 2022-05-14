@@ -67,7 +67,11 @@
     </div>
     <transition name="game-view-transition">
       <ADialog v-if="openGameDialog" @close-request="openGameDialog = $event">
-        <CGameView :game="selectedGame" :league="selectedLeague" @exit-request="openGameDialog=false"/>
+        <CGameView :game="selectedGame"
+                   :league="selectedLeague"
+                   :season="selectedSeason"
+                   @update-results="onResultsUpdated"
+                   @exit-request="openGameDialog=false"/>
       </ADialog>
     </transition>
     <div v-show="leagueTable" class="flex h-8 flex-col space-y-4 my-8 justify-around">
@@ -99,6 +103,8 @@ import {GameQuery} from "@/types/GameQuery";
 import CGameView from "@/components/structure/CGameView.vue";
 import ADialog from '@/components/functionality/dialog/ADialog.vue';
 import ASeparator from "@/components/functionality/separator/ASeparator.vue"
+import {GameScore} from "@/types/GameScore";
+import {StaticQueryManager} from "@/managers/StaticQueryManager";
 
 @Component({
   name: 'Home',
@@ -223,16 +229,18 @@ export default class Home extends Vue {
   }
 
   async updateRoute(): Promise<void> {
-    const query: GameQuery = {};
+    StaticQueryManager.GameQuery = {};
+    const query = StaticQueryManager.GameQuery;
     if (this.selectedSeason) query.season = this.selectedSeason;
     if (this.selectedContinent) query.continent = this.selectedContinent;
     if (this.selectedCountry) query.country = this.selectedCountry;
     if (this.selectedDivision) query.division = this.selectedDivision;
     if (this.selectedLeague) query.league = this.selectedLeague;
     if (this.selectedGameDay) query.gameDay = this.selectedGameDay.toString();
+    const finalQuery = StaticQueryManager.BuildFinalQuery();
     await this.$router.push({
       path: '/',
-      query
+      query: finalQuery
     })
   }
 
@@ -367,6 +375,11 @@ export default class Home extends Vue {
     this.selectedGameDay = 1;
     this.lastMatchDay = 0;
     this.lastCompletedMatchDay = 0;
+  }
+
+  onResultsUpdated(results: GameScore) {
+    console.log('new score line', results);
+    window.location.reload();
   }
 }
 </script>

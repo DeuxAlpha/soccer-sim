@@ -22,7 +22,6 @@ export default class ADialog extends Vue {
 
   @Emit('close-request')
   onOutsideComponentClicked() {
-    console.log('outside');
     if (!this.clickedInsideEvent) {
       return false;
     }
@@ -31,7 +30,6 @@ export default class ADialog extends Vue {
   }
 
   onInsideComponentClicked() {
-    console.log('inside');
     this.clickedInsideEvent = true;
   }
 }
@@ -41,5 +39,10 @@ export default class ADialog extends Vue {
 .backdrop-blur {
   backdrop-filter: blur(8px);
   background-color: rgba(255, 240, 230, 0.25);
+}
+
+#dialog-inner-wrapper {
+  height: 100%;
+  overflow-y: auto;
 }
 </style>

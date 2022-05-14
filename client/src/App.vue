@@ -15,7 +15,7 @@
         </router-link>
       </div>
     </transition>
-    <button @click="sideBarExpanded = !sideBarExpanded"
+    <button @click="onToggleSideBarClicked"
             ref="SideBarToggle"
             id="side-bar-toggle"
             class="absolute bottom-0 mb-2 mr-2 text-blue-700 hover:text-blue-600 focus:text-blue-600 active:text-blue-800">
@@ -29,6 +29,7 @@
 import {Vue, Component, Ref} from "vue-property-decorator";
 import AArrowAltSolid from "@/components/functionality/icons/AArrowAltSolid.vue";
 import GSAP from 'gsap';
+import {QueryManager, StaticQueryManager} from "@/managers/StaticQueryManager";
 
 @Component({
   components: {AArrowAltSolid}
@@ -38,8 +39,24 @@ export default class App extends Vue {
 
   @Ref('SideBarToggle') readonly SideBarToggle!: HTMLButtonElement;
 
+  async mounted() {
+    const queryExpanded = this.$route.query.expanded;
+    if (queryExpanded) this.sideBarExpanded = queryExpanded as string === 'true'
+  }
+
   get ActiveClass(): string {
     return 'bg-blue-200';
+  }
+
+  onToggleSideBarClicked() {
+    this.sideBarExpanded = !this.sideBarExpanded;
+    const path = this.$route.path;
+    StaticQueryManager.AppQuery.sidepanel = this.sideBarExpanded ? 'true' : 'false';
+    const query = StaticQueryManager.BuildFinalQuery();
+    this.$router.push({
+      path,
+      query
+    })
   }
 
   onEnter(element: HTMLElement, done: Function) {

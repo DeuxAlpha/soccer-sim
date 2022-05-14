@@ -359,11 +359,13 @@ namespace API.Controllers
                         Message = "Could not find fixture",
                         Ref = new { Ref = name, season, gameDay, request.HomeTeamName, request.AwayTeamName }
                     });
-                var events = game.Events;
-                _context.LeagueFixtureEvents.RemoveRange(events);
+                var goalEvents = game.Events.Where(e => e.IsGoal).ToList();
+                var eventCount = goalEvents.Count.ToString();
+                _context.LeagueFixtureEvents.RemoveRange(goalEvents);
                 await _context.SaveChangesAsync();
                 Log.Information(
-                    "Removed events for game between {@HomeTeam} and {@AwayTeam}",
+                    "Removed all {@Events} goal events for game between {@HomeTeam} and {@AwayTeam}",
+                    eventCount,
                     request.HomeTeamName,
                     request.AwayTeamName);
                 var newEvents = request.HomeScoreEvents.Select(homeScoreEvent => new LeagueFixtureEvent
@@ -397,7 +399,7 @@ namespace API.Controllers
                 await _context.SaveChangesAsync();
                 Log.Information("Added {@EventCount} events", newEvents.Count);
                 Log.Debug("Added events:\r\n\t{@Events}", newEvents);
-                return Ok(newEvents);
+                return Ok();
             }
             catch (Exception exception)
             {

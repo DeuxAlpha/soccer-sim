@@ -13,6 +13,6 @@ namespace API.Dtos.Requests
     public class TeamScoreEvent
     {
         public int Minute { get; set; }
-        public int? OvertimeMinute { get; set; }
+        public int OvertimeMinute { get; set; }
     }
 }

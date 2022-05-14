@@ -6,3 +6,4 @@ export type GameQuery = {
   league?: string;
   gameDay?: string;
 }
+
