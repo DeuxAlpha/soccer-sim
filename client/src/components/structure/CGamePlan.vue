@@ -1,11 +1,11 @@
 <template>
-  <div class="border border-gray-200 p-2">
+  <div class="border border-gray-200 p-2 cursor-pointer">
     <CFixture :key="`${game.homeTeamName}-${game.awayTeamName}`" :game="game" @click="onFixtureClicked" v-for="game of games" />
   </div>
 </template>
 
 <script lang="ts">
-import {Vue, Component, Prop} from 'vue-property-decorator';
+import {Vue, Component, Prop, Emit} from 'vue-property-decorator';
 import {LeagueGame} from "@/models/LeagueGame";
 import CFixture from "@/components/structure/CFixture.vue";
 
@@ -16,8 +16,9 @@ import CFixture from "@/components/structure/CFixture.vue";
 export default class CGamePlan extends Vue {
   @Prop({type: Array, required: true}) readonly games!: LeagueGame[];
 
+  @Emit('game-selected')
   onFixtureClicked(game: LeagueGame) {
-
+    return game;
   }
 }
 </script>

@@ -59,22 +59,19 @@
     </label>
     <div class="flex md:flex-row flex-col space-x-2">
       <div class="md:w-1/4 w-full">
-        <CGamePlan :games="leagueGames"/>
+        <CGamePlan @game-selected="onGameSelected" :games="leagueGames"/>
       </div>
       <div class="md:w-3/4 w-full">
         <CTable league="leagueName" :season="selectedSeason" :table="leagueTable"/>
       </div>
     </div>
+    <transition name="game-view-transition">
+      <ADialog v-if="openGameDialog" @close-request="openGameDialog = $event">
+        <CGameView :game="selectedGame" :league="selectedLeague" @exit-request="openGameDialog=false"/>
+      </ADialog>
+    </transition>
     <div v-show="leagueTable" class="flex h-8 flex-col space-y-4 my-8 justify-around">
-      <div class="flex flex-row">
-        <div class="w-full h-full flex-1 flex flex-row justify-center items-center">
-          <div class="w-full border-b border-red-300"></div>
-        </div>
-        <div class="text-red-600 text-lg font-bold">Danger Zone</div>
-        <div class="w-full h-full flex-1 flex flex-row justify-center items-center">
-          <div class="w-full border-b border-red-300"></div>
-        </div>
-      </div>
+      <ASeparator x-margin="2" color="red">Danger Zone</ASeparator>
       <div class="flex flex-row space-x-2">
         <button
             @click="onRecreateGamePlanClicked"
@@ -99,17 +96,20 @@ import {LeagueTable} from "@/models/LeagueTable";
 import CTable from "@/components/structure/CTable.vue";
 import {StrengthResponse} from "@/models/responses/StrengthResponse";
 import {GameQuery} from "@/types/GameQuery";
+import CGameView from "@/components/structure/CGameView.vue";
+import ADialog from '@/components/functionality/dialog/ADialog.vue';
+import ASeparator from "@/components/functionality/separator/ASeparator.vue"
 
 @Component({
   name: 'Home',
-  components: {CTable, CGamePlan}
+  components: {CTable, CGamePlan, CGameView, ADialog, ASeparator}
 })
 export default class Home extends Vue {
   seasons: string[] = [];
-  continents: object[] = [];
-  countries: object[] = [];
-  divisions: object[] = [];
-  leagues: object[] = [];
+  continents: any[] = [];
+  countries: any[] = [];
+  divisions: any[] = [];
+  leagues: any[] = [];
 
   selectedSeason = '';
   selectedContinent = '';
@@ -126,6 +126,9 @@ export default class Home extends Vue {
 
   avgStrength = 900;
   varStrength = 500;
+
+  selectedGame?: LeagueGame;
+  openGameDialog = false;
 
   async mounted() {
     const querySeason = this.$route.query.season;
@@ -303,6 +306,11 @@ export default class Home extends Vue {
         }).catch(error => console.dir(error));
   }
 
+  async onGameSelected(game: LeagueGame) {
+    this.selectedGame = game;
+    this.openGameDialog = true;
+  }
+
   async onResetSeasonClicked() {
     this.selectedSeason = '';
     this.selectedContinent = '';
@@ -362,3 +370,24 @@ export default class Home extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.game-view-transition-enter-active, .game-view-transition-leave-active {
+  transition: opacity .4s ease;
+}
+
+.game-view-transition-enter-from, .game-view-transition-leave-to {
+  opacity: 0;
+}
+
+/* we will explain what these classes do next! */
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>
