@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
@@ -15,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using BISSELL.Querying.Query.Models;
 using BISSELL.Querying.Query.Services;
 using Domain.Infer;
+using Serilog;
 
 namespace API.Controllers
 {
@@ -337,56 +339,78 @@ namespace API.Controllers
             int gameDay,
             [FromBody] LeagueGameUpdateRequest request)
         {
-            var leagueGameDay = await _context.LeagueGameDays
-                .Include(lgd => lgd.Fixtures)
-                .ThenInclude(f => f.Events)
-                .FirstOrDefaultAsync(lgd =>
-                    lgd.LeagueName == name &&
-                    lgd.Season == season &&
-                    lgd.GameDayNumber == gameDay);
-            if (leagueGameDay == null) return NotFound(new {Message = "Could not find game day.", Ref = new {name, season, gameDay}});
-            var game = leagueGameDay.Fixtures.FirstOrDefault(f =>
-                f.HomeTeamName == request.HomeTeamName &&
-                f.AwayTeamName == request.AwayTeamName);
-            if (game == null)
-                return NotFound(new
-                {
-                    Message = "Could not find fixture",
-                    Ref = new { Ref = name, season, gameDay, request.HomeTeamName, request.AwayTeamName }
-                });
-            var events = game.Events;
-            _context.LeagueFixtureEvents.RemoveRange(events);
-            await _context.SaveChangesAsync();
-            var newEvents = request.HomeScoreEvents.Select(homeScoreEvent => new LeagueFixtureEvent
+            try
+            {
+                var leagueGameDay = await _context.LeagueGameDays
+                    .Include(lgd => lgd.Fixtures)
+                    .ThenInclude(f => f.Events)
+                    .FirstOrDefaultAsync(lgd =>
+                        lgd.LeagueName == name &&
+                        lgd.Season == season &&
+                        lgd.GameDayNumber == gameDay);
+                if (leagueGameDay == null)
+                    return NotFound(new { Message = "Could not find game day.", Ref = new { name, season, gameDay } });
+                var game = leagueGameDay.Fixtures.FirstOrDefault(f =>
+                    f.HomeTeamName == request.HomeTeamName &&
+                    f.AwayTeamName == request.AwayTeamName);
+                if (game == null)
+                    return NotFound(new
+                    {
+                        Message = "Could not find fixture",
+                        Ref = new { Ref = name, season, gameDay, request.HomeTeamName, request.AwayTeamName }
+                    });
+                var events = game.Events;
+                _context.LeagueFixtureEvents.RemoveRange(events);
+                await _context.SaveChangesAsync();
+                Log.Information(
+                    "Removed events for game between {@HomeTeam} and {@AwayTeam}",
+                    request.HomeTeamName,
+                    request.AwayTeamName);
+                var newEvents = request.HomeScoreEvents.Select(homeScoreEvent => new LeagueFixtureEvent
+                    {
+                        Season = season,
+                        LeagueName = name,
+                        IsGoal = true,
+                        AddedMinute = homeScoreEvent.OvertimeMinute,
+                        Minute = homeScoreEvent.Minute,
+                        AwayTeamName = request.AwayTeamName,
+                        HomeTeamName = request.HomeTeamName,
+                        EventTeamName = request.HomeTeamName,
+                        GameDayNumber = gameDay,
+                        IsShotOnGoal = true
+                    })
+                    .ToList();
+                newEvents.AddRange(request.AwayScoreEvents.Select(awayScoreEvent => new LeagueFixtureEvent
                 {
                     Season = season,
                     LeagueName = name,
                     IsGoal = true,
-                    AddedMinute = homeScoreEvent.OvertimeMinute,
-                    Minute = homeScoreEvent.Minute,
+                    AddedMinute = awayScoreEvent.OvertimeMinute,
+                    Minute = awayScoreEvent.Minute,
                     AwayTeamName = request.AwayTeamName,
                     HomeTeamName = request.HomeTeamName,
-                    EventTeamName = request.HomeTeamName,
+                    EventTeamName = request.AwayTeamName,
                     GameDayNumber = gameDay,
                     IsShotOnGoal = true
-                })
-                .ToList();
-            newEvents.AddRange(request.AwayScoreEvents.Select(awayScoreEvent => new LeagueFixtureEvent
+                }));
+                await _context.LeagueFixtureEvents.AddRangeAsync(newEvents);
+                await _context.SaveChangesAsync();
+                Log.Information("Added {@EventCount} events", newEvents.Count);
+                Log.Debug("Added events:\r\n\t{@Events}", newEvents);
+                return Ok(newEvents);
+            }
+            catch (Exception exception)
             {
-                Season = season,
-                LeagueName = name,
-                IsGoal = true,
-                AddedMinute = awayScoreEvent.OvertimeMinute,
-                Minute = awayScoreEvent.Minute,
-                AwayTeamName = request.AwayTeamName,
-                HomeTeamName = request.HomeTeamName,
-                EventTeamName = request.AwayTeamName,
-                GameDayNumber = gameDay,
-                IsShotOnGoal = true
-            }));
-            await _context.LeagueFixtureEvents.AddRangeAsync(newEvents);
-            await _context.SaveChangesAsync();
-            return Ok();
+                Log.Error(exception, "An unhandled exception has occurred.\r\nRef: {@Request}", new
+                {
+                    name,
+                    season,
+                    gameDay,
+                    request.HomeTeamName,
+                    request.AwayTeamName
+                });
+                return BadRequest(new { Message = "We were unable to process your request." });
+            }
         }
 
         [HttpPost("gameplan/{name}/{season}")]
