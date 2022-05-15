@@ -1,55 +1,29 @@
 <template>
   <div id="home-page" class="flex-1">
-    <div class="flex flex-row justify-between">
-      <div class="flex flex-row justify-start text-sm">
-        <span v-if="selectedSeason" @click="onResetSeasonClicked">
-          > {{ selectedSeason }}
-        </span>
-        <span v-if="selectedContinent" @click="onResetContinentClicked">
-          > {{ selectedContinent }}
-        </span>
-        <span v-if="selectedCountry" @click="onResetCountryClicked">
-          > {{ selectedCountry }}
-        </span>
-        <span v-if="selectedDivision" @click="onResetDivisionClicked">
-          > {{ selectedDivision }}
-        </span>
-        <span v-if="selectedLeague" @click="onResetLeagueClicked">
-          > {{ selectedLeague }}
-        </span>
-      </div>
-      <div v-show="leagueTable != null" class="flex flex-row justify-end text-sm">
-        <div class="flex flex-col">
-          <label for="average-strength">Avg. Strength</label>
-          <input id="average-strength" type="number" step=".1" v-model="avgStrength">
-        </div>
-        <div class="flex flex-col">
-          <label for="strength-variance">Var. Strength</label>
-          <input id="strength-variance" type="number" step=".1" v-model="varStrength">
-        </div>
-        <button @click="getStrengthsToThisGameDay">Get Strengths up to this game day</button>
-      </div>
-    </div>
-    <div class="text-lg">
-      <span v-if="!selectedSeason" v-for="season of seasons" :key="season"
-            @click="onSeasonClicked(season)">
-        {{ season }}
-      </span>
-      <span v-if="!selectedContinent" v-for="continent of continents" :key="continent.name"
-            @click="onContinentClicked(continent.name)">
-        {{ continent.name }}
-      </span>
-      <span v-if="!selectedCountry" v-for="country of countries" :key="country.name"
-            @click="onCountryClicked(country.name)">
-        {{ country.name }}
-      </span>
-      <span v-if="!selectedDivision" v-for="division of divisions" :key="division.name"
-            @click="onDivisionClicked(division.name)">
-        {{ division.name }}
-      </span>
-      <span v-if="!selectedLeague" v-for="league of leagues" :key="league.name" @click="onLeagueClicked(league.name)">
-        {{ league.name }}
-      </span>
+    <div class="flex flex-row justify-between items-baseline">
+      <CLeagueSelector :continents="continents"
+                       :countries="countries"
+                       :divisions="divisions"
+                       :leagues="leagues"
+                       :seasons="seasons"
+                       :season="selectedSeason"
+                       :continent="selectedContinent"
+                       :country="selectedCountry"
+                       :division="selectedDivision"
+                       :league="selectedLeague"
+                       @reset-country="onResetCountry"
+                       @reset-continent="onResetContinent"
+                       @reset-division="onResetDivision"
+                       @reset-league="onResetLeague"
+                       @reset-season="onResetSeason"
+                       @country-update="onCountryProvided"
+                       @division-update="onDivisionProvided"
+                       @league-update="onLeagueProvided"
+                       @season-update="onSeasonProvided"
+                       @continent-update="onContinentProvided"/>
+      <CLeagueStrengthConfiguration v-show="leagueTable !== null"
+                                    @strength-request="getStrengthsToThisGameDay"
+                                    :league="selectedLeague"/>
     </div>
     <label for="game-day" v-show="lastMatchDay !== 0">
       <span>Game Day</span>
@@ -105,17 +79,27 @@ import ADialog from '@/components/functionality/dialog/ADialog.vue';
 import ASeparator from "@/components/functionality/separator/ASeparator.vue"
 import {GameScore} from "@/types/GameScore";
 import {QueryManager} from "@/managers/QueryManager";
+import CLeagueSelector from "@/components/structure/CLeagueSelector.vue";
+import CLeagueStrengthConfiguration from "@/components/structure/CLeagueStrengthConfiguration.vue"
 
 @Component({
   name: 'Home',
-  components: {CTable, CGamePlan, CGameView, ADialog, ASeparator}
+  components: {
+    CLeagueSelector,
+    CTable,
+    CGamePlan,
+    CGameView,
+    ADialog,
+    ASeparator,
+    CLeagueStrengthConfiguration
+  }
 })
 export default class Home extends Vue {
   seasons: string[] = [];
-  continents: any[] = [];
-  countries: any[] = [];
-  divisions: any[] = [];
-  leagues: any[] = [];
+  continents: string[] = [];
+  countries: string[] = [];
+  divisions: string[] = [];
+  leagues: string[] = [];
 
   selectedSeason = '';
   selectedContinent = '';
@@ -178,7 +162,7 @@ export default class Home extends Vue {
         .catch(error => console.dir(error));
   }
 
-  async onSeasonClicked(season: string) {
+  async onSeasonProvided(season: string) {
     this.selectedSeason = season;
     await this.updateRoute();
     await this.getContinents();
@@ -187,13 +171,13 @@ export default class Home extends Vue {
   async getContinents(): Promise<void> {
     await this.axios.get(`continents/seasons/${this.selectedSeason}`)
         .then(response => {
-          this.continents = response.data
-          console.log('continents', this.continents);
+          console.log('continents', response.data);
+          this.continents = response.data.map(continent => continent.name);
         })
         .catch(error => console.dir(error));
   }
 
-  async onContinentClicked(continent: string) {
+  async onContinentProvided(continent: string) {
     this.selectedContinent = continent;
     await this.updateRoute();
     await this.getCountries();
@@ -202,13 +186,13 @@ export default class Home extends Vue {
   async getCountries(): Promise<void> {
     await this.axios.get(`countries/continents/${this.selectedContinent}/${this.selectedSeason}`)
         .then(response => {
-          this.countries = response.data
-          console.log('countries', this.countries);
+          console.log('countries', response.data);
+          this.countries = response.data.map(country => country.name);
         })
         .catch(error => console.dir(error));
   }
 
-  async onCountryClicked(country: string) {
+  async onCountryProvided(country: string) {
     this.selectedCountry = country;
     await this.updateRoute();
     await this.getDivisions();
@@ -217,13 +201,13 @@ export default class Home extends Vue {
   async getDivisions(): Promise<void> {
     await this.axios.get(`divisions/countries/${this.selectedCountry}/${this.selectedSeason}`)
         .then(response => {
-          this.divisions = response.data
-          console.log('divisions', this.divisions);
+          console.log('divisions', response.data);
+          this.divisions = response.data.map(division => division.name);
         })
         .catch(error => console.dir(error));
   }
 
-  async onDivisionClicked(division: string) {
+  async onDivisionProvided(division: string) {
     this.selectedDivision = division;
     await this.updateRoute();
     await this.getLeagues();
@@ -246,13 +230,13 @@ export default class Home extends Vue {
   async getLeagues(): Promise<void> {
     await this.axios.get(`leagues/divisions/${this.selectedDivision}/${this.selectedSeason}`)
         .then(response => {
-          this.leagues = response.data
-          console.log('leagues', this.leagues);
+          console.log('leagues', response.data);
+          this.leagues = response.data.map(league => league.name);
         })
         .catch(error => console.dir(error));
   }
 
-  async onLeagueClicked(league: string) {
+  async onLeagueProvided(league: string) {
     this.selectedLeague = league;
     await this.updateRoute();
     await this.getGames(this.selectedGameDay);
@@ -261,6 +245,7 @@ export default class Home extends Vue {
   async getGames(matchDay: number): Promise<void> {
     await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/matches`)
         .then(async response => {
+          console.log('match day', response.data);
           this.lastMatchDay = response.data.lastMatchDay;
           this.lastCompletedMatchDay = response.data.lastCompletedMatchDay;
           this.selectedGameDay = matchDay;
@@ -295,7 +280,9 @@ export default class Home extends Vue {
         .then(() => window.location.reload());
   }
 
-  async getStrengthsToThisGameDay() {
+  async getStrengthsToThisGameDay(config: {averageStrength: number, variableStrength: number}) {
+    this.avgStrength = config.averageStrength;
+    this.varStrength = config.variableStrength;
     const gameDay = this.selectedGameDay;
     await this.axios.post(`leagues/${this.selectedLeague}/${this.selectedSeason}/rank/${gameDay}`, {
       averageStrength: this.avgStrength,
@@ -318,7 +305,7 @@ export default class Home extends Vue {
     this.openGameDialog = true;
   }
 
-  async onResetSeasonClicked() {
+  async onResetSeason() {
     this.selectedSeason = '';
     this.selectedContinent = '';
     this.selectedCountry = '';
@@ -328,11 +315,11 @@ export default class Home extends Vue {
     this.countries = [];
     this.divisions = [];
     this.leagues = [];
-    this.resetSelection();
+    this.resetGameSelection();
     await this.updateRoute()
   }
 
-  async onResetContinentClicked() {
+  async onResetContinent() {
     this.selectedContinent = '';
     this.selectedCountry = '';
     this.selectedDivision = '';
@@ -340,38 +327,38 @@ export default class Home extends Vue {
     this.countries = [];
     this.divisions = [];
     this.leagues = [];
-    this.resetSelection();
+    this.resetGameSelection();
     await this.updateRoute();
   }
 
-  async onResetCountryClicked() {
+  async onResetCountry() {
     this.selectedCountry = '';
     this.selectedDivision = '';
     this.selectedLeague = '';
     this.divisions = [];
     this.leagues = [];
-    this.resetSelection();
+    this.resetGameSelection();
     await this.updateRoute();
   }
 
-  async onResetDivisionClicked() {
+  async onResetDivision() {
     this.selectedDivision = '';
     this.selectedLeague = '';
     this.leagues = [];
-    this.resetSelection();
+    this.resetGameSelection();
     await this.updateRoute();
   }
 
-  async onResetLeagueClicked() {
+  async onResetLeague() {
     this.selectedLeague = '';
-    this.resetSelection();
+    this.resetGameSelection();
     await this.updateRoute();
   }
 
-  resetSelection() {
+  resetGameSelection() {
     this.leagueGames = [];
     this.leagueTable = null;
-    this.selectedGameDay = 1;
+    this.selectedGameDay = 0;
     this.lastMatchDay = 0;
     this.lastCompletedMatchDay = 0;
   }

@@ -332,6 +332,45 @@ namespace API.Controllers
             return Ok();
         }
 
+        [HttpDelete("{name}/{season}/{gameDay:int}/fixture/events")]
+        public async Task<IActionResult> DeleteGameEvents(
+            string name,
+            string season,
+            int gameDay,
+            [FromBody] LeagueGameDeleteRequest request)
+        {
+            var leagueGameDay = await _context.LeagueGameDays
+                .Include(lgd => lgd.Fixtures)
+                .ThenInclude(f => f.Events)
+                .FirstOrDefaultAsync(lgd => lgd.LeagueName == name &&
+                                            lgd.Season == season &&
+                                            lgd.GameDayNumber == gameDay);
+            if (leagueGameDay == null)
+                return NotFound(new { Message = "Could not find game day.", Ref = new { name, season, gameDay } });
+            var game = leagueGameDay.Fixtures.FirstOrDefault(f => f.HomeTeamName == request.HomeTeamName &&
+                                                                  f.AwayTeamName == request.AwayTeamName);
+            if (game == null)
+                return NotFound(new
+                {
+                    Message = "Could not find fixture.", Ref = new
+                    {
+                        request.HomeTeamName, request.AwayTeamName
+                    }
+                });
+            var events = game.Events;
+            if (!request.IncludeNonGoals) events = events.Where(e => e.IsGoal).ToList();
+            var eventCount = events.Count.ToString();
+            _context.LeagueFixtureEvents.RemoveRange(events);
+            await _context.SaveChangesAsync();
+            Log.Information(
+                "Removed all {@Events} goal events for game between {@HomeTeam} and {@AwayTeam}",
+                eventCount,
+                request.HomeTeamName,
+                request.AwayTeamName);
+            return NoContent();
+        }
+        
+        
         [HttpPut("{name}/{season}/{gameDay:int}/fixture")]
         public async Task<IActionResult> UpdateGameResult(
             string name,
@@ -357,7 +396,7 @@ namespace API.Controllers
                     return NotFound(new
                     {
                         Message = "Could not find fixture",
-                        Ref = new { Ref = name, season, gameDay, request.HomeTeamName, request.AwayTeamName }
+                        Ref = new { name, season, gameDay, request.HomeTeamName, request.AwayTeamName }
                     });
                 var goalEvents = game.Events.Where(e => e.IsGoal).ToList();
                 var eventCount = goalEvents.Count.ToString();
