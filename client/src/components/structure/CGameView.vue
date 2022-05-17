@@ -7,6 +7,7 @@
               class="self-start mx-2 my-2 px-2 py-2 shadow rounded-sm bg-gray-200 hover:bg-gray-300 active:bg-gray-100 focus:bg-gray-100 hover:shadow-md text-gray-800">
         x
       </button>
+      <CLiveGame :home-team="game.homeTeamName" :away-team="game.awayTeamName" />
       <div class="mx-2 my-2 px-2 py-2" id="buttons">
         <div class="flex flex-col">
           <div class="flex flex-row">
@@ -84,10 +85,11 @@ import ASeparator from "@/components/functionality/separator/ASeparator.vue";
 import APrimaryButton from "@/components/functionality/buttons/APrimaryButton.vue";
 import {GameScoreEvent, GameService} from "@/services/GameService";
 import {GameScore} from "@/types/GameScore";
+import CLiveGame from "@/components/structure/CLiveGame.vue";
 
 @Component({
   name: 'CGameView',
-  components: {APrimaryButton, ASeparator}
+  components: {CLiveGame, APrimaryButton, ASeparator}
 })
 export default class CGameView extends Vue {
   @Prop({type: String, required: true}) readonly league!: string;
