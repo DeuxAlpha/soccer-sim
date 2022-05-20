@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BISSELL.Querying.Query.Models;
 using BISSELL.Querying.Query.Services;
+using Domain.Infer;
 
 namespace API.Controllers
 {
@@ -57,7 +58,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetLeague(string name, string season)
         {
             var league = await _context.Leagues.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
-            if (league == null) return NotFound(new {name, season});
+            if (league == null) return NotFound(new { name, season });
             return Ok(new LeagueDto(league));
         }
 
@@ -73,11 +74,6 @@ namespace API.Controllers
                 LastMatchDay = gameDays.Max(gd => gd.GameDayNumber),
                 LastCompletedMatchDay = gameDays
                     .SelectMany(gd => gd.Fixtures
-                        .Where(f =>
-                            f.HomePossession != 0 &&
-                            f.HomePossession != null &&
-                            f.AwayPossession != 0 &&
-                            f.AwayPossession != null)
                         .Select(f => f.GameDayNumber))
                     .Max(n => n)
             });
@@ -95,15 +91,16 @@ namespace API.Controllers
             return Ok(results);
         }
 
+        // TODO: Update table with promotion data.
         [HttpGet("{name}/{season}/table")]
         public async Task<IActionResult> GetLeagueTable(string name, string season)
         {
             var league = await _context.Leagues
                 .Include(l => l.Teams)
-                .Include(l => l.PromotionSystem)
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
-            if (league == null) return NotFound(new {name, season});
-            var table = new TableDto(league);
+            if (league == null) return NotFound(new { name, season });
+            var teams = league.Teams.ToList();
+            var table = new TableDto(teams);
             var fixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
                 .Include(f => f.HomeTeam)
@@ -120,15 +117,72 @@ namespace API.Controllers
             return Ok(table);
         }
 
+        [HttpPost("{name}/{season}/rank/{gameDay:int}")]
+        public async Task<IActionResult> GetLeagueRanks(
+            string name,
+            string season,
+            int gameDay,
+            [FromBody] StrengthRequest strengthRequest)
+        {
+            var league = await _context.Leagues.SingleOrDefaultAsync(league => league.Name == name &&
+                                                                               league.Season == season);
+            if (league == null)
+                return NotFound
+                (new
+                    { Messsage = "No league exists by that name or season.", Ref = new { name, season } });
+            var fixtures = await _context.LeagueFixtures
+                .Include(f => f.Events)
+                .Where(gd => gd.LeagueName == name && gd.Season == season && gd.GameDayNumber <= gameDay)
+                .ToListAsync();
+            var results = fixtures.Select(fixture => new ResultDto(fixture)).ToList();
+            var homeTeams = results.Select(result => result.HomeTeamName).ToList();
+            var awayTeams = results.Select(result => result.AwayTeamName).ToList();
+            var teamsWithIds = homeTeams.Concat(awayTeams).Distinct().Select((team, teamId) => new
+            {
+                TeamName = team,
+                TeamId = teamId
+            }).ToList();
+            var resultsWithIds = results.Select(result => new
+            {
+                Result = result,
+                HomeId = teamsWithIds.First(t => t.TeamName == result.HomeTeamName).TeamId,
+                AwayId = teamsWithIds.First(t => t.TeamName == result.AwayTeamName).TeamId,
+            }).ToList();
+            var winnerIds = resultsWithIds.Select(r =>
+                r.Result.HomeGoals > r.Result.AwayGoals ? r.HomeId :
+                r.Result.AwayGoals > r.Result.HomeGoals ? r.AwayId :
+                -1).Where(id => id >= 0).ToList();
+            var loserIds = resultsWithIds.Select(r =>
+                r.Result.HomeGoals < r.Result.AwayGoals ? r.HomeId :
+                r.Result.AwayGoals < r.Result.HomeGoals ? r.AwayId :
+                -1).Where(id => id >= 0).ToList();
+            var strengths = StrengthAssigner.AssignStrengths(new StrengthRequest
+            {
+                AverageStrength = strengthRequest.AverageStrength,
+                StrengthVariance = strengthRequest.StrengthVariance,
+                WinnerIds = winnerIds,
+                LoserIds = loserIds
+            });
+            var strengthsAndTeams = strengths.IdToStrengthsDictionary.Select(idAndStrength => new
+            {
+                teamsWithIds.First(t => t.TeamId == idAndStrength.Key).TeamName,
+                Strength = double.Parse(idAndStrength.Value.ToString()
+                    .Split("(").Last()
+                    .Split(",").First())
+            });
+
+            return Ok(strengthsAndTeams);
+        }
+
         [HttpGet("{name}/{season}/table/{gameDay}")]
         public async Task<IActionResult> GetLeagueTable(string name, string season, int gameDay)
         {
             var league = await _context.Leagues
-                .Include(l => l.PromotionSystem)
                 .Include(l => l.Teams)
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
-            if (league == null) return NotFound(new {name, season});
-            var table = new TableDto(league);
+            if (league == null) return NotFound(new { name, season });
+            var teams = league.Teams.ToList();
+            var table = new TableDto(teams);
             var fixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
                 .Include(f => f.HomeTeam)
@@ -151,9 +205,9 @@ namespace API.Controllers
             var league = await _context.Leagues
                 .Include(l => l.PromotionSystem)
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
-            if (league == null) return NotFound(new {name, season});
+            if (league == null) return NotFound(new { name, season });
             if (league.PromotionSystem == null)
-                return BadRequest(new {error = "League does not have a promotion system", name, season});
+                return BadRequest(new { error = "League does not have a promotion system", name, season });
             return Ok(new PromotionSystemDto(league.PromotionSystem));
         }
 
@@ -162,27 +216,26 @@ namespace API.Controllers
         {
             var newLeague = await _context.Leagues.AddAsync(leagueDto.Map());
             await _context.SaveChangesAsync();
-            var returnObject = new {name = newLeague.Entity.Name, season = newLeague.Entity.Season};
+            var returnObject = new { name = newLeague.Entity.Name, season = newLeague.Entity.Season };
             return Created(Url.Action("GetLeague", "Leagues", returnObject), new LeagueDto(newLeague.Entity));
         }
 
-        [HttpPost("promotion-system")]
-        public async Task<IActionResult> ProvidePromotionSystem(PromotionSystemDto promotionSystemDto)
+        [HttpPost("{name}/{season}/promotion-system")]
+        public async Task<IActionResult> ProvidePromotionSystem(
+            string name,
+            string season,
+            [FromBody] PromotionSystemDto promotionSystemDto)
         {
             var league = await _context.Leagues
                 .Include(l => l.PromotionSystem)
-                .FirstOrDefaultAsync(l => l.Name == promotionSystemDto.LeagueName && l.Season == promotionSystemDto.Season);
-            if (league == null) return NotFound(new {name = promotionSystemDto.LeagueName, promotionSystemDto.Season});
-            if (league.PromotionSystem != null)
-            {
-                _context.PromotionSystems.Remove(league.PromotionSystem);
-                await _context.SaveChangesAsync();
-            }
-
+                .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
+            if (league == null) return NotFound(new { name, season });
+            _context.PromotionSystems.Remove(league.PromotionSystem);
+            await _context.SaveChangesAsync();
             var promotionSystem = await _context.PromotionSystems.AddAsync(promotionSystemDto.Map());
             await _context.SaveChangesAsync();
             return Created(
-                Url.Action("GetPromotionSystem", "Leagues", new {name = promotionSystem.Entity.LeagueName, season = promotionSystem.Entity.Season}),
+                Url.Action("GetPromotionSystem", "Leagues", new { name, season }),
                 new PromotionSystemDto(promotionSystem.Entity));
         }
 
@@ -233,14 +286,14 @@ namespace API.Controllers
                 .Include(l => l.GameDays)
                 .ThenInclude(gd => gd.Fixtures)
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
-            if (league == null) return NotFound(new {name, season});
+            if (league == null) return NotFound(new { name, season });
             if (league.GameDays.Any())
             {
                 _context.LeagueGameDays.RemoveRange(league.GameDays);
                 await _context.SaveChangesAsync();
             }
 
-            var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), league.Rounds);
+            var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), true);
             var gameDayNumber = 1;
             var leagueGameDays = new List<LeagueGameDay>();
             var leagueFixtures = new List<LeagueFixture>();
@@ -284,16 +337,16 @@ namespace API.Controllers
                 .Include(l => l.GameDays)
                 .ThenInclude(gd => gd.Fixtures)
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
-            if (league == null) return NotFound(new {name, season});
+            if (league == null) return NotFound(new { name, season });
             if (league.GameDays.Any())
                 return BadRequest(new BadRequestResponse
                 {
                     Message =
-                        $"Gameplan for league and season already created. Use {Url.Action("OverrideGamePlan", "Leagues", new {name, season})} instead.",
-                    Object = new {name, season}
+                        $"Gameplan for league and season already created. Use {Url.Action("OverrideGamePlan", "Leagues", new { name, season })} instead.",
+                    Object = new { name, season }
                 });
 
-            var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), league.Rounds);
+            var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), true);
             var gameDayNumber = 1;
             var leagueGameDays = new List<LeagueGameDay>();
             var leagueFixtures = new List<LeagueFixture>();
@@ -333,7 +386,7 @@ namespace API.Controllers
         public async Task<IActionResult> UpdateLeague(string name, string season, [FromBody] LeagueDto leagueDto)
         {
             var league = await _context.Leagues.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
-            if (league == null) return NotFound(new {name, season});
+            if (league == null) return NotFound(new { name, season });
             leagueDto.MapUpdate(league);
             await _context.SaveChangesAsync();
             return Ok(new LeagueDto(league));
@@ -343,7 +396,7 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteLeague(string name, string season)
         {
             var league = await _context.Countries.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
-            if (league == null) return NotFound(new {name, season});
+            if (league == null) return NotFound(new { name, season });
             _context.Countries.Remove(league);
             await _context.SaveChangesAsync();
             return NoContent();

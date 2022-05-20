@@ -17,6 +17,11 @@ export type LeagueTable = {
 
 export type LeagueTablePosition = {
   teamName: string;
+  attackStrength: number;
+  defenseStrength: number;
+  goalieStrength: number;
+  averageStrength: number;
+  inferredStrength?: number;
   position: number;
   points: number;
   goalsFor: number;

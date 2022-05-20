@@ -144,6 +144,22 @@ namespace API.Controllers
             return Ok(results);
         }
 
+        [HttpPut("{name}/{season}/strengths/{strength:double}")]
+        public async Task<IActionResult> UpdateTeamStrengths(
+            string name,
+            string season,
+            double strength)
+        {
+            var team = await _context.Teams.FirstOrDefaultAsync(t => t.Name == name &&
+                                                                     t.Season == season);
+            if (team == null) return NotFound(new { Message = "Could not find team.", Ref = new { name, season } });
+            team.AttackStrength = strength;
+            team.DefenseStrength = strength;
+            team.GoalieStrength = strength;
+            await _context.SaveChangesAsync();
+            return Ok(team);
+        }
+
         [HttpPut("{name}/{season}")]
         public async Task<IActionResult> UpdateTeam(string name, string season, [FromBody] TeamDto teamDto)
         {

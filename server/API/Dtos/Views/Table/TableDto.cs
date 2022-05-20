@@ -12,50 +12,52 @@ namespace API.Dtos.Views.Table
         public List<TablePositionDto> PreviousPositions { get; set; }
         public List<TablePositionDto> PreviousHomePositions { get; set; }
         public List<TablePositionDto> PreviousAwayPositions { get; set; }
-        public int PromotedTeamsStart { get; set; }
-        public int PromotedTeamsEnd { get; set; }
-        public int PromotionPlayOffTeamsStart { get; set; }
-        public int PromotionPlayOffTeamsEnd { get; set; }
-        public int RelegatedTeamsStart { get; set; }
-        public int RelegatedTeamsEnd { get; set; }
-        public int RelegationPlayOffTeamsStart { get; set; }
-        public int RelegationPlayOffTeamsEnd { get; set; }
 
-        public TableDto(League league)
+        public TableDto(IReadOnlyCollection<Team> teams)
         {
             // Need to be done thrice because each need to be different tables.
-            Positions = league.Teams.Select(team => new TablePositionDto
+            Positions = teams.Select(team => new TablePositionDto
             {
-                TeamName = team.Name
+                TeamName = team.Name,
+                AttackStrength = team.AttackStrength,
+                DefenseStrength = team.DefenseStrength,
+                GoalieStrength = team.GoalieStrength
             }).ToList();
-            HomePositions = league.Teams.Select(team => new TablePositionDto
+            HomePositions = teams.Select(team => new TablePositionDto
             {
-                TeamName = team.Name
+                TeamName = team.Name,
+                AttackStrength = team.AttackStrength,
+                DefenseStrength =team.DefenseStrength,
+                GoalieStrength = team.GoalieStrength
             }).ToList();
-            AwayPositions = league.Teams.Select(team => new TablePositionDto
+            AwayPositions = teams.Select(team => new TablePositionDto
             {
-                TeamName = team.Name
+                TeamName = team.Name,
+                AttackStrength = team.AttackStrength,
+                DefenseStrength = team.DefenseStrength,
+                GoalieStrength = team.GoalieStrength
             }).ToList();
-            PreviousPositions = league.Teams.Select(team => new TablePositionDto
+            PreviousPositions = teams.Select(team => new TablePositionDto
             {
-                TeamName = team.Name
+                TeamName = team.Name,
+                AttackStrength = team.AttackStrength,
+                DefenseStrength = team.DefenseStrength,
+                GoalieStrength = team.GoalieStrength
             }).ToList();
-            PreviousHomePositions = league.Teams.Select(team => new TablePositionDto
+            PreviousHomePositions = teams.Select(team => new TablePositionDto
             {
-                TeamName = team.Name
+                TeamName = team.Name,
+                AttackStrength = team.AttackStrength,
+                DefenseStrength = team.DefenseStrength,
+                GoalieStrength = team.GoalieStrength
             }).ToList();
-            PreviousAwayPositions = league.Teams.Select(team => new TablePositionDto
+            PreviousAwayPositions = teams.Select(team => new TablePositionDto
             {
-                TeamName = team.Name
+                TeamName = team.Name,
+                AttackStrength = team.AttackStrength,
+                DefenseStrength = team.DefenseStrength,
+                GoalieStrength = team.GoalieStrength
             }).ToList();
-            PromotedTeamsStart = league.PromotionSystem?.PromotedTeamsStart ?? 0;
-            PromotedTeamsEnd = league.PromotionSystem?.PromotedTeamsEnd ?? 0;
-            PromotionPlayOffTeamsStart = league.PromotionSystem?.PromotionPlayOffTeamsStart ?? 0;
-            PromotionPlayOffTeamsEnd = league.PromotionSystem?.PromotionPlayOffTeamsEnd ?? 0;
-            RelegatedTeamsStart = league.PromotionSystem?.RelegatedTeamsStart ?? 0;
-            RelegatedTeamsEnd = league.PromotionSystem?.RelegatedTeamsEnd ?? 0;
-            RelegationPlayOffTeamsStart = league.PromotionSystem?.RelegationPlayOffTeamsStart ?? 0;
-            RelegationPlayOffTeamsEnd = league.PromotionSystem?.RelegationPlayOffTeamsEnd ?? 0;
         }
 
         public void AddFixture(ResultDto result)
