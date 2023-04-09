@@ -1,12 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
 using Database.Contexts;
+using DynamicQuerying.Main.Query.Models;
+using DynamicQuerying.Main.Query.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
-using BISSELL.Querying.Query.Models;
-using BISSELL.Querying.Query.Services;
 
 namespace API.Controllers
 {
@@ -22,7 +23,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Obsolete($"Use OPTIONS:query:{nameof(GetContinentOptions)}({nameof(QueryRequest)}) instead.")]
         public IActionResult GetContinents([FromQuery] QueryRequest queryRequest)
+        {
+            return Ok(QueryService.GetQueryResponse(_context.Continents.Select(c => new ContinentDto(c)),
+                queryRequest));
+        }
+        
+        [HttpOptions("query")]
+        public ActionResult<QueryResponse<ContinentDto>> GetContinentOptions([FromBody] QueryRequest queryRequest)
         {
             return Ok(QueryService.GetQueryResponse(_context.Continents.Select(c => new ContinentDto(c)),
                 queryRequest));

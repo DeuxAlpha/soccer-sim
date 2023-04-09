@@ -11,12 +11,12 @@ using Database.Models;
 using Domain.Enums;
 using Domain.Models;
 using Domain.Services;
+using DynamicQuerying.Main.Query.Models;
+using DynamicQuerying.Main.Query.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query;
-using BISSELL.Querying.Query.Models;
-using BISSELL.Querying.Query.Services;
 
 namespace API.Controllers
 {
@@ -32,7 +32,14 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Obsolete($"Use OPTIONS:query:{nameof(GetTeamOptions)}({nameof(QueryRequest)}) instead.")]
         public IActionResult GetTeams([FromQuery] QueryRequest request)
+        {
+            return Ok(QueryService.GetQueryResponse(_context.Teams.Select(t => new TeamDto(t)), request));
+        }
+        
+        [HttpOptions("query")]
+        public ActionResult<QueryResponse<TeamDto>> GetTeamOptions([FromBody] QueryRequest request)
         {
             return Ok(QueryService.GetQueryResponse(_context.Teams.Select(t => new TeamDto(t)), request));
         }

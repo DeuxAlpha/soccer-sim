@@ -59,7 +59,7 @@
     </label>
     <div class="flex md:flex-row flex-col space-x-2">
       <div class="md:w-1/4 w-full">
-        <CGamePlan :games="leagueGames"/>
+        <CGamePlan :games="leagueGames" :table="leagueTable"/>
       </div>
       <div class="md:w-3/4 w-full">
         <CTable league="leagueName" :season="selectedSeason" :table="leagueTable"/>

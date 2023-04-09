@@ -1,12 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
 using Database.Contexts;
 using Database.Models;
+using DynamicQuerying.Main.Query.Models;
+using DynamicQuerying.Main.Query.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BISSELL.Querying.Query.Models;
-using BISSELL.Querying.Query.Services;
 
 namespace API.Controllers
 {
@@ -22,7 +23,14 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Obsolete("Use OPTIONS:query:{nameof(GetCountryOptions)}({nameof(QueryRequest)}) instead.")]
         public IActionResult GetCountries([FromQuery] QueryRequest queryRequest)
+        {
+            return Ok(QueryService.GetQueryResponse(_context.Countries.Select(c => new CountryDto(c)), queryRequest));
+        }
+        
+        [HttpOptions("query")]
+        public ActionResult<QueryResponse<CountryDto>> GetCountryOptions([FromBody] QueryRequest queryRequest)
         {
             return Ok(QueryService.GetQueryResponse(_context.Countries.Select(c => new CountryDto(c)), queryRequest));
         }

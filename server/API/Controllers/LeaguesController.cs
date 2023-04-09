@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
@@ -11,9 +12,9 @@ using Database.Models;
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BISSELL.Querying.Query.Models;
-using BISSELL.Querying.Query.Services;
 using Domain.Infer;
+using DynamicQuerying.Main.Query.Models;
+using DynamicQuerying.Main.Query.Services;
 
 namespace API.Controllers
 {
@@ -29,7 +30,14 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Obsolete($"Use OPTIONS:query:{nameof(GetLeagueOptions)}({nameof(QueryRequest)}) instead.")]
         public IActionResult GetLeagues([FromQuery] QueryRequest queryRequest)
+        {
+            return Ok(QueryService.GetQueryResponse(_context.Leagues.Select(c => new LeagueDto(c)), queryRequest));
+        }
+        
+        [HttpOptions("query")]
+        public ActionResult<QueryResponse<LeagueDto>> GetLeagueOptions([FromBody] QueryRequest queryRequest)
         {
             return Ok(QueryService.GetQueryResponse(_context.Leagues.Select(c => new LeagueDto(c)), queryRequest));
         }
@@ -293,7 +301,7 @@ namespace API.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), true);
+            var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), 2);
             var gameDayNumber = 1;
             var leagueGameDays = new List<LeagueGameDay>();
             var leagueFixtures = new List<LeagueFixture>();
@@ -346,7 +354,7 @@ namespace API.Controllers
                     Object = new { name, season }
                 });
 
-            var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), true);
+            var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), 2);
             var gameDayNumber = 1;
             var leagueGameDays = new List<LeagueGameDay>();
             var leagueFixtures = new List<LeagueFixture>();

@@ -1,12 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
 using Database.Contexts;
 using Database.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BISSELL.Querying.Query.Models;
-using BISSELL.Querying.Query.Services;
+using DynamicQuerying.Main.Query.Models;
+using DynamicQuerying.Main.Query.Services;
 
 namespace API.Controllers
 {
@@ -22,7 +23,14 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Obsolete($"Use OPTIONS:query:{nameof(GetDivisionOptions)}({nameof(QueryRequest)}) instead.")]
         public IActionResult GetDivisions([FromQuery] QueryRequest queryRequest)
+        {
+            return Ok(QueryService.GetQueryResponse(_context.Divisions.Select(d => new DivisionDto(d)), queryRequest));
+        }
+        
+        [HttpOptions("query")]
+        public ActionResult<QueryResponse<DivisionDto>> GetDivisionOptions([FromBody] QueryRequest queryRequest)
         {
             return Ok(QueryService.GetQueryResponse(_context.Divisions.Select(d => new DivisionDto(d)), queryRequest));
         }

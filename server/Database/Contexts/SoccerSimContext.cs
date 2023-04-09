@@ -2,7 +2,7 @@
 using System.Reflection;
 using Database.Models;
 using Microsoft.EntityFrameworkCore;
-using BISSELL.Configuration;
+using Config2;
 
 namespace Database.Contexts
 {
