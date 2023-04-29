@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DynamicQuerying.Main.Query.Models;
 using DynamicQuerying.Main.Query.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace API.Controllers
 {
@@ -24,7 +25,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Obsolete($"Use OPTIONS:query:{nameof(GetDivisionOptions)}({nameof(QueryRequest)}) instead.")]
-        public IActionResult GetDivisions([FromQuery] QueryRequest queryRequest)
+        public ActionResult<QueryResponse<DivisionDto>> GetDivisions([FromQuery] QueryRequest queryRequest)
         {
             return Ok(QueryService.GetQueryResponse(_context.Divisions.Select(d => new DivisionDto(d)), queryRequest));
         }
@@ -36,7 +37,7 @@ namespace API.Controllers
         }
 
         [HttpGet("countries/{country}/{season}")]
-        public IActionResult GetDivisionsInCountry(string country, string season)
+        public ActionResult<DivisionDto[]> GetDivisionsInCountry(string country, string season)
         {
             return Ok(_context.Divisions
                 .Where(c => c.CountryName == country && c.Season == season)
@@ -44,19 +45,19 @@ namespace API.Controllers
         }
 
         [HttpGet("{name}")]
-        public IActionResult GetDivision(string name)
+        public ActionResult<DivisionDto[]> GetDivisionByName(string name)
         {
             return Ok(_context.Divisions.Where(d => d.Name == name).Select(d => new DivisionDto(d)));
         }
 
         [HttpGet("seasons/{season}")]
-        public IActionResult GetDivisions(string season)
+        public ActionResult<DivisionDto[]> GetDivisionBySeason(string season)
         {
             return Ok(_context.Divisions.Where(d => d.Season == season).Select(d => new DivisionDto(d)));
         }
 
         [HttpGet("{name}/{season}")]
-        public async Task<IActionResult> GetDivision(string name, string season)
+        public async Task<ActionResult<DivisionDto>> GetDivision(string name, string season)
         {
             var division = await _context.Divisions.FirstOrDefaultAsync(d => d.Name == name && d.Season == season);
             if (division == null) return NotFound(new {name, season});
@@ -64,16 +65,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateDivision(DivisionDto divisionDto)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<DivisionDto>> CreateDivision(DivisionDto divisionDto)
         {
             var newDivision = await _context.Divisions.AddAsync(divisionDto.Map());
             await _context.SaveChangesAsync();
             var returnObject = new {name = newDivision.Entity.Name, season = newDivision.Entity.Season};
-            return Created(Url.Action("GetDivision", "Divisions", returnObject), new DivisionDto(newDivision.Entity));
+            return Created(Url.Action("GetDivisionByName", "Divisions", returnObject), new DivisionDto(newDivision.Entity));
         }
 
         [HttpPut("{name}/{season}")]
-        public async Task<IActionResult> UpdateDivision(string name, string season, [FromBody] DivisionDto divisionDto)
+        public async Task<ActionResult<DivisionDto>> UpdateDivision(string name, string season, [FromBody] DivisionDto divisionDto)
         {
             var division = await _context.Divisions.FirstOrDefaultAsync(d => d.Name == name && d.Season == season);
             if (division == null) return NotFound(new {name, season});
@@ -83,7 +85,8 @@ namespace API.Controllers
         }
 
         [HttpDelete("{name}/{season}")]
-        public async Task<IActionResult> DeleteDivision(string name, string season)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult> DeleteDivision(string name, string season)
         {
             var division = await _context.Divisions.FirstOrDefaultAsync(d => d.Name == name && d.Season == season);
             if (division == null) return NotFound(new {name, season});

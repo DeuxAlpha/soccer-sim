@@ -5,6 +5,7 @@ using API.Dtos;
 using Database.Contexts;
 using DynamicQuerying.Main.Query.Models;
 using DynamicQuerying.Main.Query.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -24,7 +25,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Obsolete($"Use OPTIONS:query:{nameof(GetContinentOptions)}({nameof(QueryRequest)}) instead.")]
-        public IActionResult GetContinents([FromQuery] QueryRequest queryRequest)
+        public ActionResult<QueryResponse<ContinentDto>> GetContinents([FromQuery] QueryRequest queryRequest)
         {
             return Ok(QueryService.GetQueryResponse(_context.Continents.Select(c => new ContinentDto(c)),
                 queryRequest));
@@ -38,25 +39,25 @@ namespace API.Controllers
         }
 
         [HttpGet("seasons")]
-        public async Task<IActionResult> GetSeasons()
+        public async Task<ActionResult<string[]>> GetSeasons()
         {
             return Ok(await _context.Continents.Select(c => c.Season).Distinct().ToListAsync());
         }
 
         [HttpGet("{name}")]
-        public IActionResult GetContinent(string name)
+        public ActionResult<ContinentDto> GetContinent(string name)
         {
             return Ok(_context.Continents.Where(c => c.Name == name).Select(c => new ContinentDto(c)));
         }
 
         [HttpGet("seasons/{season}")]
-        public IActionResult GetContinents(string season)
+        public ActionResult<ContinentDto[]> GetContinents(string season)
         {
             return Ok(_context.Continents.Where(c => c.Season == season).Select(c => new ContinentDto(c)));
         }
 
         [HttpGet("{name}/{season}")]
-        public async Task<IActionResult> GetContinent(string name, string season)
+        public async Task<ActionResult<ContinentDto>> GetContinent(string name, string season)
         {
             var continent = await _context.Continents.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
             if (continent == null) return NotFound(new {name, season});
@@ -64,7 +65,8 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateContinent(ContinentDto continentDto)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<ContinentDto>> CreateContinent(ContinentDto continentDto)
         {
             var newContinent = await _context.Continents.AddAsync(continentDto.Map());
             await _context.SaveChangesAsync();
@@ -74,7 +76,8 @@ namespace API.Controllers
         }
 
         [HttpDelete("{name}/{season}")]
-        public async Task<IActionResult> DeleteContinent(string name, string season)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult> DeleteContinent(string name, string season)
         {
             var continent = await _context.Continents.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
             if (continent == null) return NotFound(new {name, season});

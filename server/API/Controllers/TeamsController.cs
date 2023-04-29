@@ -13,6 +13,7 @@ using Domain.Models;
 using Domain.Services;
 using DynamicQuerying.Main.Query.Models;
 using DynamicQuerying.Main.Query.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -33,7 +34,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Obsolete($"Use OPTIONS:query:{nameof(GetTeamOptions)}({nameof(QueryRequest)}) instead.")]
-        public IActionResult GetTeams([FromQuery] QueryRequest request)
+        public ActionResult<QueryResponse<TeamDto>> GetTeams([FromQuery] QueryRequest request)
         {
             return Ok(QueryService.GetQueryResponse(_context.Teams.Select(t => new TeamDto(t)), request));
         }
@@ -45,19 +46,21 @@ namespace API.Controllers
         }
 
         [HttpGet("{name}")]
-        public IActionResult GetTeam(string name)
+        public ActionResult<TeamDto[]> GetTeam(string name)
         {
             return Ok(_context.Teams.Where(c => c.Name == name).Select(c => new TeamDto(c)));
         }
 
         [HttpGet("seasons/{season}")]
-        public IActionResult GetTeams(string season)
+        public ActionResult<TeamDto[]> GetTeams(string season)
         {
             return Ok(_context.Teams.Where(c => c.Season == season).Select(c => new TeamDto(c)));
         }
 
         [HttpGet("{name}/{season}")]
-        public async Task<IActionResult> GetTeam(string name, string season)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<TeamDto>> GetTeam(string name, string season)
         {
             var country = await _context.Teams.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
             if (country == null) return NotFound(new {name, season});
@@ -65,7 +68,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{name}/{season}/fixtures")]
-        public IActionResult GetTeamFixtures(string name, string season)
+        public ActionResult<LeagueFixtureDto[]> GetTeamFixtures(string name, string season)
         {
             return Ok(_context.LeagueFixtures
                 .Include(f => f.Events)
@@ -74,7 +77,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{name}/{season}/{league}/fixtures")]
-        public IActionResult GetTeamFixtures(string name, string season, string league)
+        public ActionResult<LeagueFixtureDto[]> GetTeamFixtures(string name, string season, string league)
         {
             return Ok(_context.LeagueFixtures
                 .Include(f => f.Events)
@@ -86,7 +89,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{name}/{season}/{league}/{gameDay}")]
-        public async Task<IActionResult> GetTeamFixture(string name, string season, string league, int gameDay)
+        public async Task<ActionResult<LeagueFixtureDto>> GetTeamFixture(string name, string season, string league, int gameDay)
         {
             var fixture = await _context.LeagueFixtures
                 .Include(f => f.Events)
@@ -100,7 +103,8 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTeam(TeamDto teamDto)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<TeamDto>> CreateTeam(TeamDto teamDto)
         {
             var newTeam = await _context.Teams.AddAsync(teamDto.Map());
             await _context.SaveChangesAsync();
@@ -109,7 +113,7 @@ namespace API.Controllers
         }
 
         [HttpPost("{name}/{season}/simulate")]
-        public async Task<IActionResult> SimulateTeamFixtures(string name, string season)
+        public async Task<ActionResult<ResultDto[]>> SimulateTeamFixtures(string name, string season)
         {
             var leagueFixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
@@ -129,7 +133,7 @@ namespace API.Controllers
         }
 
         [HttpPost("{name}/{season}/simulate/override")]
-        public async Task<IActionResult> OverrideTeamFixtureSimulations(string name, string season)
+        public async Task<ActionResult<ResultDto>> OverrideTeamFixtureSimulations(string name, string season)
         {
             var leagueFixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
@@ -152,7 +156,9 @@ namespace API.Controllers
         }
 
         [HttpPut("{name}/{season}/strengths/{strength:double}")]
-        public async Task<IActionResult> UpdateTeamStrengths(
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<TeamDto>> UpdateTeamStrengths(
             string name,
             string season,
             double strength)
@@ -164,11 +170,13 @@ namespace API.Controllers
             team.DefenseStrength = strength;
             team.GoalieStrength = strength;
             await _context.SaveChangesAsync();
-            return Ok(team);
+            return Ok(new TeamDto(team));
         }
 
         [HttpPut("{name}/{season}")]
-        public async Task<IActionResult> UpdateTeam(string name, string season, [FromBody] TeamDto teamDto)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<TeamDto>> UpdateTeam(string name, string season, [FromBody] TeamDto teamDto)
         {
             var team = await _context.Teams.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
             if (team == null) return NotFound(new {name, season});
@@ -178,7 +186,9 @@ namespace API.Controllers
         }
 
         [HttpDelete("{name}/{season}")]
-        public async Task<IActionResult> DeleteTeam(string name, string season)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> DeleteTeam(string name, string season)
         {
             var team = await _context.Countries.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
             if (team == null) return NotFound(new {name, season});

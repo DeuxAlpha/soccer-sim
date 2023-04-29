@@ -6,6 +6,7 @@ using Database.Contexts;
 using Database.Models;
 using DynamicQuerying.Main.Query.Models;
 using DynamicQuerying.Main.Query.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +25,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Obsolete("Use OPTIONS:query:{nameof(GetCountryOptions)}({nameof(QueryRequest)}) instead.")]
-        public IActionResult GetCountries([FromQuery] QueryRequest queryRequest)
+        public ActionResult<QueryResponse<CountryDto>> GetCountries([FromQuery] QueryRequest queryRequest)
         {
             return Ok(QueryService.GetQueryResponse(_context.Countries.Select(c => new CountryDto(c)), queryRequest));
         }
@@ -36,7 +37,7 @@ namespace API.Controllers
         }
 
         [HttpGet("continents/{continent}/{season}")]
-        public IActionResult GetCountriesOnContinent(string continent, string season)
+        public ActionResult<CountryDto[]> GetCountriesOnContinent(string continent, string season)
         {
             return Ok(_context.Countries
                 .Where(c => c.ContinentName == continent && c.Season == season)
@@ -44,13 +45,13 @@ namespace API.Controllers
         }
 
         [HttpGet("{name}")]
-        public IActionResult GetCountry(string name)
+        public ActionResult<CountryDto> GetCountry(string name)
         {
             return Ok(_context.Countries.Where(c => c.Name == name).Select(c => new CountryDto(c)));
         }
 
         [HttpGet("seasons/{season}")]
-        public IActionResult GetCountries(string season)
+        public ActionResult<CountryDto[]> GetCountries(string season)
         {
             return Ok(_context.Countries.Where(c => c.Season == season).Select(c => new CountryDto(c)));
         }
@@ -64,6 +65,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateCountry(CountryDto countryDto)
         {
             var newCountry = await _context.Countries.AddAsync(countryDto.Map());
@@ -83,6 +85,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("{name}/{season}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteCountry(string name, string season)
         {
             var country = await _context.Countries.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);

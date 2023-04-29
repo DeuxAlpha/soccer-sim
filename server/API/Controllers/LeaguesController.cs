@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Infer;
 using DynamicQuerying.Main.Query.Models;
 using DynamicQuerying.Main.Query.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace API.Controllers
 {
@@ -31,7 +32,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Obsolete($"Use OPTIONS:query:{nameof(GetLeagueOptions)}({nameof(QueryRequest)}) instead.")]
-        public IActionResult GetLeagues([FromQuery] QueryRequest queryRequest)
+        public ActionResult<QueryResponse<LeagueDto>> GetLeagues([FromQuery] QueryRequest queryRequest)
         {
             return Ok(QueryService.GetQueryResponse(_context.Leagues.Select(c => new LeagueDto(c)), queryRequest));
         }
@@ -43,7 +44,7 @@ namespace API.Controllers
         }
 
         [HttpGet("divisions/{division}/{season}")]
-        public IActionResult GetLeaguesInDivision(string division, string season)
+        public ActionResult<LeagueDto[]> GetLeaguesInDivision(string division, string season)
         {
             return Ok(_context.Leagues
                 .Where(l => l.DivisionName == division && l.Season == season)
@@ -51,19 +52,19 @@ namespace API.Controllers
         }
 
         [HttpGet("{name}")]
-        public IActionResult GetLeague(string name)
+        public ActionResult<LeagueDto[]> GetLeaguesByName(string name)
         {
             return Ok(_context.Leagues.Where(c => c.Name == name).Select(c => new LeagueDto(c)));
         }
 
         [HttpGet("seasons/{season}")]
-        public IActionResult GetLeagues(string season)
+        public ActionResult<LeagueDto[]> GetLeaguesBySeason(string season)
         {
             return Ok(_context.Leagues.Where(c => c.Season == season).Select(c => new LeagueDto(c)));
         }
 
         [HttpGet("{name}/{season}")]
-        public async Task<IActionResult> GetLeague(string name, string season)
+        public async Task<ActionResult<LeagueDto>> GetLeague(string name, string season)
         {
             var league = await _context.Leagues.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
             if (league == null) return NotFound(new { name, season });
@@ -71,7 +72,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{name}/{season}/matches")]
-        public async Task<IActionResult> GetMatches(string name, string season)
+        public async Task<ActionResult<MatchInfoDto>> GetMatches(string name, string season)
         {
             var gameDays = await _context.LeagueGameDays
                 .Include(l => l.Fixtures)
@@ -88,7 +89,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{name}/{season}/fixtures/{gameDay}")]
-        public async Task<IActionResult> GetLeagueFixture(string name, string season, int gameDay)
+        public async Task<ActionResult<ResultDto[]>> GetLeagueFixture(string name, string season, int gameDay)
         {
             var fixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
@@ -101,7 +102,7 @@ namespace API.Controllers
 
         // TODO: Update table with promotion data.
         [HttpGet("{name}/{season}/table")]
-        public async Task<IActionResult> GetLeagueTable(string name, string season)
+        public async Task<ActionResult<TableDto>> GetLeagueTable(string name, string season)
         {
             var league = await _context.Leagues
                 .Include(l => l.Teams)
@@ -126,7 +127,7 @@ namespace API.Controllers
         }
 
         [HttpPost("{name}/{season}/rank/{gameDay:int}")]
-        public async Task<IActionResult> GetLeagueRanks(
+        public async Task<ActionResult> GetLeagueRanks(
             string name,
             string season,
             int gameDay,
@@ -183,7 +184,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{name}/{season}/table/{gameDay}")]
-        public async Task<IActionResult> GetLeagueTable(string name, string season, int gameDay)
+        public async Task<ActionResult<TableDto>> GetLeagueTable(string name, string season, int gameDay)
         {
             var league = await _context.Leagues
                 .Include(l => l.Teams)
@@ -208,7 +209,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{name}/{season}/promotion-system")]
-        public async Task<IActionResult> GetPromotionSystem(string name, string season)
+        public async Task<ActionResult<PromotionSystemDto>> GetPromotionSystem(string name, string season)
         {
             var league = await _context.Leagues
                 .Include(l => l.PromotionSystem)
@@ -220,16 +221,18 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateLeague(LeagueDto leagueDto)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<LeagueDto>> CreateLeague(LeagueDto leagueDto)
         {
             var newLeague = await _context.Leagues.AddAsync(leagueDto.Map());
             await _context.SaveChangesAsync();
             var returnObject = new { name = newLeague.Entity.Name, season = newLeague.Entity.Season };
-            return Created(Url.Action("GetLeague", "Leagues", returnObject), new LeagueDto(newLeague.Entity));
+            return Created(Url.Action("GetLeaguesByName", "Leagues", returnObject), new LeagueDto(newLeague.Entity));
         }
 
         [HttpPost("{name}/{season}/promotion-system")]
-        public async Task<IActionResult> ProvidePromotionSystem(
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<PromotionSystemDto>> ProvidePromotionSystem(
             string name,
             string season,
             [FromBody] PromotionSystemDto promotionSystemDto)
@@ -248,7 +251,7 @@ namespace API.Controllers
         }
 
         [HttpPost("{name}/{season}/simulate")]
-        public async Task<IActionResult> SimulateLeague(string name, string season)
+        public async Task<ActionResult<ResultDto[]>> SimulateLeague(string name, string season)
         {
             var leagueFixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
@@ -266,7 +269,7 @@ namespace API.Controllers
         }
 
         [HttpPost("{name}/{season}/simulate/override")]
-        public async Task<IActionResult> OverrideLeagueSimulation(string name, string season)
+        public async Task<ActionResult<ResultDto>> OverrideLeagueSimulation(string name, string season)
         {
             var leagueFixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
@@ -287,7 +290,7 @@ namespace API.Controllers
         }
 
         [HttpPost("gameplan/{name}/{season}/override")]
-        public async Task<IActionResult> OverrideGamePlan(string name, string season)
+        public async Task<ActionResult> OverrideGamePlan(string name, string season)
         {
             var league = await _context.Leagues
                 .Include(l => l.Teams)
@@ -338,7 +341,7 @@ namespace API.Controllers
         }
 
         [HttpPost("gameplan/{name}/{season}")]
-        public async Task<IActionResult> CreateGamePlan(string name, string season)
+        public async Task<ActionResult> CreateGamePlan(string name, string season)
         {
             var league = await _context.Leagues
                 .Include(l => l.Teams)
@@ -391,7 +394,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{name}/{season}")]
-        public async Task<IActionResult> UpdateLeague(string name, string season, [FromBody] LeagueDto leagueDto)
+        public async Task<ActionResult<LeagueDto>> UpdateLeague(string name, string season, [FromBody] LeagueDto leagueDto)
         {
             var league = await _context.Leagues.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
             if (league == null) return NotFound(new { name, season });
@@ -401,7 +404,8 @@ namespace API.Controllers
         }
 
         [HttpDelete("{name}/{season}")]
-        public async Task<IActionResult> DeleteLeague(string name, string season)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult> DeleteLeague(string name, string season)
         {
             var league = await _context.Countries.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
             if (league == null) return NotFound(new { name, season });
