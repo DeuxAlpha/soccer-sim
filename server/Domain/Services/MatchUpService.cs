@@ -10,7 +10,13 @@ namespace Domain.Services
         public static IEnumerable<GameDay<T>> CreateRoundRobin<T>(List<T> participants, int rounds)
         {
             var participantCount = participants.Count;
-            var overallGameDays = participantCount % 2 == 0 ? participantCount - 1 : participantCount;
+            var isOdd = participantCount % 2 == 1;
+            if (isOdd)
+            {
+                participants.Add(default);
+                participantCount++;
+            }
+            var overallGameDays = participantCount - 1;
             var sideToggle = true;
             var places = Enumerable.Range(1, participants.Count).ToList();
             var teamIndices = participants
@@ -35,6 +41,11 @@ namespace Domain.Services
                     }
                     else
                     {
+                        if (isOdd && teamIndex.Team == null || firstTeam == null)
+                        {
+                            firstTeamAssigned = false;
+                            continue;
+                        }
                         gameDay.Games.Add(new MatchUp<T>
                         {
                             Home = sideToggle ? firstTeam : teamIndex.Team,
@@ -47,7 +58,7 @@ namespace Domain.Services
                 gameDay.Games = gameDay.Games.Shuffle().ToList();
                 gameDays.Add(gameDay);
                 sideToggle = !sideToggle;
-                Rotate(teamIndices, participantCount % 2 == 0);
+                Rotate(teamIndices, isOdd);
             }
 
             var roundsToAdd = new List<GameDay<T>>();
@@ -79,7 +90,7 @@ namespace Domain.Services
             return gameDays;
         }
 
-        private static void Rotate<T>(ICollection<TeamIndex<T>> teamIndices, bool even)
+        private static void Rotate<T>(ICollection<TeamIndex<T>> teamIndices, bool isOdd)
         {
             // round-robin
             var maxPlace = teamIndices.Count;
@@ -89,7 +100,7 @@ namespace Domain.Services
                 if (teamIndex.Place % 2 != 0)
                 {
                     if (teamIndex.Place + 2 > maxPlace)
-                        teamIndex.Place += even ? 1 : -1;
+                        teamIndex.Place += isOdd ? 1 : -1;
                     else
                         teamIndex.Place += 2;
                 }
