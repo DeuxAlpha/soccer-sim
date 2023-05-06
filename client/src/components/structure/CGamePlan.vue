@@ -1,6 +1,6 @@
 <template>
   <div class="border border-gray-200 p-2" v-if="games.length > 0 && table !== null">
-    <div class="bg-gray-300 flex items-center justify-between my-1" v-for="game of games" :key="game.homeTeamName + game.awayTeamName">
+    <div @click="onGameClicked(game)" class="bg-gray-300 cursor-pointer hover:bg-gray-400 hover:shadow-sm flex items-center justify-between my-1" v-for="game of games" :key="game.homeTeamName + game.awayTeamName">
       <div class="w-5/12 text-right">
         <span class="text-gray-500 mr-2">({{getPosition(game.homeTeamName)}})</span>
         <span>{{game.homeTeamName}}</span>
@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import {Vue, Component, Prop} from 'vue-property-decorator';
+import {Vue, Component, Prop, Emit} from 'vue-property-decorator';
 import {LeagueGame} from "@/models/LeagueGame";
 import {LeagueTable} from "@/models/LeagueTable";
 
@@ -37,6 +37,11 @@ export default class CGamePlan extends Vue {
 
   getPosition(homeTeamName: string): number {
     return this.table.previousPositions.find(p => p.teamName === homeTeamName)!.position;
+  }
+
+  @Emit('game-click')
+  onGameClicked(game: LeagueGame): LeagueGame {
+    return game;
   }
 }
 </script>

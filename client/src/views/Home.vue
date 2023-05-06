@@ -1,5 +1,40 @@
 <template>
   <div id="home-page" class="flex-1">
+    <AModal v-if="selectedGame">
+      <div class="flex flex-col justify-center w-full">
+        <div class="self-end cursor-pointer" @click="selectedGame = null">X</div>
+        <div class="w-full underline flex justify-center">{{ selectedGame.gameDay }}</div>
+        <div class="w-full flex justify-center">{{ selectedGame.homeTeamName }} - {{ selectedGame.awayTeamName }}</div>
+        <div class="w-full flex justify-center">{{ selectedGame.homeGoals }} - {{ selectedGame.awayGoals }}</div>
+        <div class="w-full flex justify-center">({{ selectedGame.homeHalfGoals }} - {{
+            selectedGame.awayHalfGoals
+          }})
+        </div>
+        <div class="flex flex-row w-full justify-center">
+          <div class="flex flex-col justify-center w-full">
+            <div class="self-center">Shots</div>
+            <div class="self-center">{{ selectedGame.homeShots }} - {{ selectedGame.awayShots }}</div>
+          </div>
+          <div class="flex flex-col justify-center w-full">
+            <div class="self-center">Shots on goal</div>
+            <div class="self-center">{{ selectedGame.homeShotsOnGoal }} - {{ selectedGame.awayShotsOnGoal }}</div>
+          </div>
+        </div>
+        <div class="flex flex-row w-full justify-center">
+          <div class="flex flex-col justify-center w-full">
+            <div class="self-center">Ball possession</div>
+            <div class="self-center">{{ selectedGame.homePossession }} - {{ selectedGame.awayPossession }}</div>
+          </div>
+        </div>
+        <div class="flex flex-col w-full justify-center" v-if="selectedGame">
+          <div class="flex flex-col justify-center w-full">
+            <div class="self-center">Story</div>
+          </div>
+          <div class="flex flex-row justify-center" v-for="story in gameStory(selectedGame)">{{story}}</div>
+        </div>
+      </div>
+
+    </AModal>
     <div class="flex flex-row justify-between">
       <div class="flex flex-row justify-start text-sm">
       <span v-if="selectedSeason" @click="onResetSeasonClicked">
@@ -59,11 +94,18 @@
     </label>
     <div class="flex md:flex-row flex-col space-x-2">
       <div class="md:w-1/4 w-full">
-        <CGamePlan :games="leagueGames" :table="leagueTable"/>
+        <CGamePlan @game-click="onGameClicked($event)" :games="leagueGames" :table="leagueTable"/>
       </div>
       <div class="md:w-3/4 w-full">
         <CTable league="leagueName" :season="selectedSeason" :table="leagueTable"/>
       </div>
+    </div>
+    <div v-if="isNewLeague">
+      <button
+          @click="onRecreateGamePlanClicked"
+          class="py-2 px-4 bg-blue-300 text-white hover:bg-blue-400 focus:bg-blue-500 active:bg-blue-500">
+        Create new gameplan
+      </button>
     </div>
     <div v-show="leagueTable" class="flex h-8 flex-col space-y-4 my-8 justify-around">
       <div class="flex flex-row">
@@ -92,16 +134,17 @@
 </template>
 
 <script lang="ts">
-import {Vue, Component} from "vue-property-decorator";
+import {Component, Vue} from "vue-property-decorator";
 import {LeagueGame} from "@/models/LeagueGame";
 import CGamePlan from "@/components/structure/CGamePlan.vue";
 import {LeagueTable} from "@/models/LeagueTable";
 import CTable from "@/components/structure/CTable.vue";
 import {StrengthResponse} from "@/models/responses/StrengthResponse";
+import AModal from "@/components/functionality/AModal.vue";
 
 @Component({
   name: 'Home',
-  components: {CTable, CGamePlan}
+  components: {AModal, CTable, CGamePlan}
 })
 export default class Home extends Vue {
   seasons: string[] = [];
@@ -160,6 +203,8 @@ export default class Home extends Vue {
         .catch(error => console.dir(error));
   }
 
+  isNewLeague = false;
+
   async onLeagueClicked(league: string) {
     this.selectedLeague = league;
     await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/matches`)
@@ -169,7 +214,11 @@ export default class Home extends Vue {
           this.selectedGameDay = this.lastMatchDay;
           await this.loadMatchDay(this.selectedGameDay);
         })
-        .catch(error => console.dir(error));
+        .catch(error => {
+          console.dir(error)
+          console.log('failed to load a single matchday. providing options to user.')
+          this.isNewLeague = true;
+        });
   }
 
   async onGameDayChanged() {
@@ -188,7 +237,7 @@ export default class Home extends Vue {
   }
 
   async onRecreateGamePlanClicked() {
-    await this.axios.post(`leagues/gameplan/{this.selectedLeague}/{this.selectedSeason}/override`)
+    await this.axios.post(`leagues/gameplan/${this.selectedLeague}/${this.selectedSeason}/override`)
         .then(() => window.location.reload());
   }
 
@@ -266,6 +315,18 @@ export default class Home extends Vue {
     this.selectedGameDay = 1;
     this.lastMatchDay = 0;
     this.lastCompletedMatchDay = 0;
+  }
+
+  selectedGame: LeagueGame | null = null;
+
+  onGameClicked(game: LeagueGame) {
+    this.selectedGame = game;
+  }
+
+  gameStory = (game: LeagueGame) => {
+    console.log(game.story);
+    if (!game) return [];
+    return game.story;
   }
 }
 </script>
