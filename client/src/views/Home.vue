@@ -32,6 +32,9 @@
           </div>
           <div class="flex flex-row justify-center" v-for="story in gameStory(selectedGame)">{{story}}</div>
         </div>
+        <div class="flex flex-col w-full justify-center mt-2">
+          <APrimaryButton @click="resimulate(selectedGame)" class="self-center">Resimulate</APrimaryButton>
+        </div>
       </div>
 
     </AModal>
@@ -142,10 +145,11 @@ import CTable from "@/components/structure/CTable.vue";
 import {StrengthResponse} from "@/models/responses/StrengthResponse";
 import AModal from "@/components/functionality/AModal.vue";
 import {PromotionSystem} from "@/models/responses/PromotionSystem";
+import APrimaryButton from "@/components/functionality/buttons/APrimaryButton.vue";
 
 @Component({
   name: 'Home',
-  components: {AModal, CTable, CGamePlan}
+  components: {APrimaryButton, AModal, CTable, CGamePlan}
 })
 export default class Home extends Vue {
   seasons: string[] = [];
@@ -336,6 +340,16 @@ export default class Home extends Vue {
   gameStory = (game: LeagueGame) => {
     if (!game) return [];
     return game.story;
+  }
+
+  async resimulate(game: LeagueGame | null) {
+    if (!game) return;
+    await this.axios.post(`teams/${game.homeTeamName}/${this.selectedSeason}/simulate/${this.selectedGameDay}`)
+        .then(response => {
+          console.dir(response);
+          this.selectedGame = response.data;
+        })
+        .catch(error => console.log(error));
   }
 }
 </script>

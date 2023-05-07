@@ -132,6 +132,26 @@ namespace API.Controllers
             return Ok(results);
         }
 
+        [HttpPost("{name}/{season}/simulate/{gameDay:int}")]
+        public async Task<ActionResult<ResultDto>> SimulateTeamFixture(string name, string season, int gameDay)
+        {
+            var leagueFixture = await _context.LeagueFixtures
+                .Include(f => f.Events)
+                .Include(f => f.League)
+                .Include(f => f.HomeTeam)
+                .Include(f => f.AwayTeam)
+                .Where(f => (f.HomeTeamName == name || f.AwayTeamName == name) &&
+                            f.Season == season &&
+                            f.GameDayNumber == gameDay)
+                .FirstOrDefaultAsync();
+            _context.LeagueFixtureEvents.RemoveRange(leagueFixture.Events);
+            await _context.SaveChangesAsync();
+            var result = await GameFacilitator.StoreFixtureResult(leagueFixture, _context);
+            await _context.SaveChangesAsync();
+            return Ok(result);
+        }
+        
+
         [HttpPost("{name}/{season}/simulate/override")]
         public async Task<ActionResult<ResultDto>> OverrideTeamFixtureSimulations(string name, string season)
         {
