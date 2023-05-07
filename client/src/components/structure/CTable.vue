@@ -13,7 +13,7 @@
       <span class="goal-diff">GD</span>
       <span class="points">Pts.</span>
     </div>
-    <div class="flex flex-row" v-for="position of table.positions">
+    <div class="flex flex-row" :class="getPositionClass(position.position)" v-for="position of table.positions">
       <span class="position">{{ position.position }}</span>
       <span class="prev-position">{{ getPreviousPosition(position.teamName) }}</span>
       <span class="team-column">
@@ -42,12 +42,24 @@
 <script lang="ts">
 import {Vue, Component, Prop} from 'vue-property-decorator';
 import {LeagueTable} from "@/models/LeagueTable";
+import {PromotionSystem} from "@/models/responses/PromotionSystem";
 
 @Component
 export default class CTable extends Vue {
   @Prop([Object]) readonly table!: LeagueTable;
   @Prop(String) readonly season!: string;
   @Prop(String) readonly league!: string;
+  @Prop(Object) readonly promotionSystem?: PromotionSystem;
+
+  getPositionClass(position: number) {
+    console.log('getPositionClass', position)
+    return {
+      'bg-green-200': this.isPromotedPosition(position),
+      'bg-green-100': this.isPromotionPlayOffPosition(position),
+      'bg-red-100': this.isRelegationPlayOffPosition(position),
+      'bg-red-200': this.isRelegationPosition(position),
+    }
+  }
 
   getPreviousPosition(teamName: string): number {
     return this.table.previousPositions.find(p => p.teamName == teamName)!.position;
@@ -55,6 +67,34 @@ export default class CTable extends Vue {
 
   async overrideInferredTeamStrength(teamName: string, inferredStrength: number) {
     await this.axios.put(`teams/${teamName}/${this.season}/strengths/${inferredStrength}`);
+  }
+
+  isPromotedPosition(position: number): boolean {
+    if (this.promotionSystem === undefined) {
+      return false;
+    }
+    return position <= this.promotionSystem.promotedTeamsEnd;
+  }
+
+  isPromotionPlayOffPosition(position: number): boolean {
+    if (this.promotionSystem === undefined) {
+      return false;
+    }
+    return position > this.promotionSystem.promotedTeamsEnd && position <= this.promotionSystem.promotionPlayOffTeamsEnd;
+  }
+
+  isRelegationPlayOffPosition(position: number): boolean {
+    if (this.promotionSystem === undefined) {
+      return false;
+    }
+    return position >= this.promotionSystem.relegationPlayOffTeamsStart && position <= this.promotionSystem.relegationPlayOffTeamsEnd;
+  }
+
+  isRelegationPosition(position: number): boolean {
+    if (this.promotionSystem === undefined) {
+      return false;
+    }
+    return position >= this.promotionSystem.relegatedTeamsStart;
   }
 }
 </script>

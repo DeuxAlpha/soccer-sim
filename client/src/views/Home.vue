@@ -97,7 +97,7 @@
         <CGamePlan @game-click="onGameClicked($event)" :games="leagueGames" :table="leagueTable"/>
       </div>
       <div class="md:w-3/4 w-full">
-        <CTable league="leagueName" :season="selectedSeason" :table="leagueTable"/>
+        <CTable :promotion-system="promotionSystem" league="leagueName" :season="selectedSeason" :table="leagueTable"/>
       </div>
     </div>
     <div v-if="isNewLeague">
@@ -141,6 +141,7 @@ import {LeagueTable} from "@/models/LeagueTable";
 import CTable from "@/components/structure/CTable.vue";
 import {StrengthResponse} from "@/models/responses/StrengthResponse";
 import AModal from "@/components/functionality/AModal.vue";
+import {PromotionSystem} from "@/models/responses/PromotionSystem";
 
 @Component({
   name: 'Home',
@@ -158,6 +159,7 @@ export default class Home extends Vue {
   selectedCountry = '';
   selectedDivision = '';
   selectedLeague = '';
+  promotionSystem: PromotionSystem | null = null;
 
   leagueGames: LeagueGame[] = [];
   leagueTable: LeagueTable | null = null;
@@ -213,12 +215,20 @@ export default class Home extends Vue {
           this.lastCompletedMatchDay = response.data.lastCompletedMatchDay;
           this.selectedGameDay = this.lastMatchDay;
           await this.loadMatchDay(this.selectedGameDay);
+          await this.getPromotionSystem();
         })
         .catch(error => {
           console.dir(error)
           console.log('failed to load a single matchday. providing options to user.')
           this.isNewLeague = true;
         });
+  }
+
+
+  async getPromotionSystem() {
+    await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/promotion-system`)
+        .then(response => this.promotionSystem = response.data)
+        .catch(error => console.dir(error));
   }
 
   async onGameDayChanged() {
@@ -324,7 +334,6 @@ export default class Home extends Vue {
   }
 
   gameStory = (game: LeagueGame) => {
-    console.log(game.story);
     if (!game) return [];
     return game.story;
   }
