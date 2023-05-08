@@ -24,10 +24,12 @@ namespace API.Controllers
     public class LeaguesController : ControllerBase
     {
         private readonly SoccerSimContext _context;
+        private readonly SeasonProcessingService _seasonProcessingService;
 
-        public LeaguesController(SoccerSimContext context)
+        public LeaguesController(SoccerSimContext context, SeasonProcessingService seasonProcessingService)
         {
             _context = context;
+            _seasonProcessingService = seasonProcessingService;
         }
 
         [HttpGet]
@@ -104,24 +106,7 @@ namespace API.Controllers
         [HttpGet("{name}/{season}/table")]
         public async Task<ActionResult<TableDto>> GetLeagueTable(string name, string season)
         {
-            var league = await _context.Leagues
-                .Include(l => l.Teams)
-                .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
-            if (league == null) return NotFound(new { name, season });
-            var teams = league.Teams.ToList();
-            var table = new TableDto(teams);
-            var fixtures = await _context.LeagueFixtures
-                .Include(f => f.Events)
-                .Include(f => f.HomeTeam)
-                .Include(f => f.AwayTeam)
-                .Where(f => f.LeagueName == name && f.Season == season)
-                .ToListAsync();
-            foreach (var fixture in fixtures)
-            {
-                table.AddFixture(new ResultDto(fixture));
-            }
-
-            table.ApplyPositions();
+            var table = await _seasonProcessingService.GetTable(name, season);
 
             return Ok(table);
         }
@@ -186,6 +171,14 @@ namespace API.Controllers
         [HttpGet("{name}/{season}/table/{gameDay}")]
         public async Task<ActionResult<TableDto>> GetLeagueTable(string name, string season, int gameDay)
         {
+            var table = await _seasonProcessingService.GetTable(name, season, gameDay);
+
+            return Ok(table);
+        }
+        
+        [HttpGet("{name}/{season}/promoted-relegated")]
+        public async Task<ActionResult<PromoRelegationOverviewDto>> GetPromotedTeams(string name, string season)
+        {
             var league = await _context.Leagues
                 .Include(l => l.Teams)
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
@@ -196,7 +189,7 @@ namespace API.Controllers
                 .Include(f => f.Events)
                 .Include(f => f.HomeTeam)
                 .Include(f => f.AwayTeam)
-                .Where(f => f.LeagueName == name && f.Season == season && f.GameDayNumber <= gameDay)
+                .Where(f => f.LeagueName == name && f.Season == season)
                 .ToListAsync();
             foreach (var fixture in fixtures)
             {
@@ -205,7 +198,15 @@ namespace API.Controllers
 
             table.ApplyPositions();
 
-            return Ok(table);
+            var response = new PromoRelegationOverviewDto
+            {
+                PromotedTeams = await _seasonProcessingService.GetPromotedTeams(name, season),
+                RelegatedTeams = await _seasonProcessingService.GetRelegatedTeams(name,  season),
+                PromoPlayoffTeams = await _seasonProcessingService.GetTeamsInPromotionPlayOff(name, season),
+                RelegationPlayoffTeams = await _seasonProcessingService.GetTeamsInRelegationPlayoff(name, season)
+            };
+
+            return Ok(response);
         }
 
         [HttpGet("{name}/{season}/promotion-system")]
