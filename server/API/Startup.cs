@@ -1,3 +1,4 @@
+using API.Services;
 using Database.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +27,7 @@ namespace API
 
             services.AddDbContext<SoccerSimContext>(options =>
                 options.UseSqlServer(StaticConfig.GetValue<string>("ConnectionStrings:Development")));
+            services.AddTransient<SeasonProcessingService>();
 
             services.AddControllers();
 
