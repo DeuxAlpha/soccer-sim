@@ -232,7 +232,21 @@ export default class Home extends Vue {
   async getPromotionSystem() {
     await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}/promotion-system`)
         .then(response => this.promotionSystem = response.data)
-        .catch(error => console.dir(error));
+        .catch(error => {
+          console.dir(error)
+          this.promotionSystem = {
+            season: this.selectedSeason,
+            leagueName: this.selectedLeague,
+            relegatedTeamsStart: 0,
+            promotionPlayOffTeamsEnd: 0,
+            relegationPlayOffTeamsEnd: 0,
+            relegationPlayOffTeamsStart: 0,
+            promotedTeamsEnd: 0,
+            promotedTeamsStart: 0,
+            promotionPlayOffTeamsStart: 0,
+            relegatedTeamsEnd: 0
+          };
+        });
   }
 
   async onGameDayChanged() {
