@@ -21,7 +21,7 @@ namespace API.Dtos.Views.Table
         public double AttackStrength { get; set; }
         public double DefenseStrength { get; set; }
         public double GoalieStrength { get; set; }
-        public double AverageStrength => (AttackStrength + DefenseStrength + GoalDifference) / 3;
+        public double AverageStrength => (AttackStrength + DefenseStrength + GoalieStrength) / 3;
 
         public TablePositionDto Clone()
         {
