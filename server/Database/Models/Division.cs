@@ -15,5 +15,19 @@ namespace Database.Models
         public Country Country { get; set; }
         public ICollection<League> Leagues { get; set; }
         public ICollection<Competition> Competitions { get; set; }
+        
+        public Division() {}
+
+        public Division(Division division)
+        {
+            // Assign all properties from the division to this division.
+            Name = division.Name;
+            Season = division.Season;
+            Abbreviation = division.Abbreviation;
+            Level = division.Level;
+            CountryName = division.CountryName;
+            OnlyFirstTeams = division.OnlyFirstTeams;
+            
+        }
     }
 }
