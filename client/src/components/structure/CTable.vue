@@ -94,7 +94,7 @@ export default class CTable extends Vue {
     if (this.promotionSystem === undefined) {
       return false;
     }
-    return position >= this.promotionSystem.relegatedTeamsStart;
+    return position >= this.promotionSystem.relegatedTeamsStart && position <= this.promotionSystem.relegatedTeamsEnd;
   }
 }
 </script>
