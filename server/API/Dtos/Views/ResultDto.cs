@@ -27,6 +27,8 @@ namespace API.Dtos.Views
         public int AwayShots => Events.Count(e => e.EventTeamName == AwayTeamName);
         public int AwayShotsOnGoal => Events.Count(e => e.EventTeamName == AwayTeamName && e.IsShotOnGoal);
         public int AwayPossession { get; set; }
+        public string Winner => HomeGoals > AwayGoals ? HomeTeamName : AwayGoals > HomeGoals ? AwayTeamName : "Draw";
+        public string Loser => HomeGoals < AwayGoals ? HomeTeamName : AwayGoals < HomeGoals ? AwayTeamName : "Draw";
 
         public ResultDto(LeagueFixture fixture)
         {
