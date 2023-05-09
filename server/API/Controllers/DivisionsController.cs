@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
+using API.Dtos.Requests;
+using API.Services;
 using Database.Contexts;
 using Database.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +19,12 @@ namespace API.Controllers
     public class DivisionsController : ControllerBase
     {
         private readonly SoccerSimContext _context;
+        private readonly SeasonProcessingService _seasonProcessingService;
 
-        public DivisionsController(SoccerSimContext context)
+        public DivisionsController(SoccerSimContext context, SeasonProcessingService seasonProcessingService)
         {
             _context = context;
+            _seasonProcessingService = seasonProcessingService;
         }
 
         [HttpGet]
@@ -72,6 +76,16 @@ namespace API.Controllers
             await _context.SaveChangesAsync();
             var returnObject = new {name = newDivision.Entity.Name, season = newDivision.Entity.Season};
             return Created(Url.Action("GetDivisionByName", "Divisions", returnObject), new DivisionDto(newDivision.Entity));
+        }
+        
+        [HttpPost("{name}/{season}/status")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<DivisionProcessingStatus>> GetDivisionProcessingStatus(string name, string season)
+        {
+            var division = await _context.Divisions.FirstOrDefaultAsync(d => d.Name == name && d.Season == season); // Sanity check to make sure the division exists
+            if (division == null) return NotFound(new {name, season});
+            var status = await _seasonProcessingService.GetDivisionProcessingStatus(season, name);
+            return Ok(status);
         }
 
         [HttpPut("{name}/{season}")]
