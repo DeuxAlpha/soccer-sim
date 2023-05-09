@@ -38,7 +38,7 @@ public class SeasonProcessingService
         table.ApplyPositions();
         return table;
     }
-    
+
     public async Task<TableDto> GetTable(string leagueName, string season)
     {
         var league = await _context.Leagues
@@ -180,5 +180,86 @@ public class SeasonProcessingService
         }
 
         return teamsInPlayOff;
+    }
+
+    public async Task<DivisionProcessingStatus> GetDivisionProcessingStatus(string season, string divisionName)
+    {
+        var division = await _context.Divisions.FirstOrDefaultAsync(d => d.Season == season && d.Name == divisionName);
+        if (division == null) throw new InvalidOperationException("Division not found");
+        var newDivision = new Division(division);
+        var promotedUp = new List<TeamDto>(); // The teams getting promoted out of this division.
+        var relegatedDown = new List<TeamDto>(); // The teams getting relegated out of this division.
+        var promotedTeams = new List<TeamDto>(); // The teams getting promoted into this division.
+        var relegatedTeams = new List<TeamDto>(); // The teams getting relegated into this division.
+        var promotionPlayoffPot = new List<TeamDto>(); // The teams in the promotion playoff pot.
+        var relegationPlayoffPot = new List<TeamDto>(); // The teams in the relegation playoff pot.
+        foreach (var league in division.Leagues.ToList())
+        {
+            promotedUp.AddRange(await GetPromotedTeams(league.Name, season));
+            relegatedDown.AddRange(await GetRelegatedTeams(league.Name, season));
+            promotionPlayoffPot.AddRange(
+                await GetTeamsInPromotionPlayOff(league.Name, season));
+            relegationPlayoffPot.AddRange(
+                await GetTeamsInRelegationPlayoff(league.Name, season));
+
+            // Teams get relegated from lower divisions to higher ones.
+            var lowerDivision = await GetLowerDivision(division);
+            var lowerLeagues = lowerDivision.Leagues;
+            var newTeams = new List<TeamDto>(); // Holds all the teams that get promoted or relegated to this division.
+            promotionPlayoffPot.AddRange(promotionPlayoffPot);
+            foreach (var lowerLeague in lowerLeagues)
+            {
+                promotionPlayoffPot.AddRange(
+                    await GetTeamsInRelegationPlayoff(lowerLeague.Name, season));
+                relegatedTeams.AddRange(await GetRelegatedTeams(lowerLeague.Name, season));
+            }
+
+            // Teams get promoted from higher divisions to lower ones.
+            var higherDivision = await GetHigherDivision(division);
+            var higherLeagues = higherDivision.Leagues;
+            relegationPlayoffPot.AddRange(relegationPlayoffPot);
+            foreach (var higherLeague in higherLeagues)
+            {
+                relegationPlayoffPot.AddRange(
+                    await GetTeamsInPromotionPlayOff(higherLeague.Name, season));
+                promotedTeams.AddRange(await GetPromotedTeams(higherLeague.Name, season));
+            }
+        }
+
+        var response = new DivisionProcessingStatus
+        {
+            PromotedTeams = promotedUp,
+            RelegatedTeams = relegatedDown,
+            PromoPlayoffTeams = promotionPlayoffPot,
+            RelegationPlayoffTeams = relegationPlayoffPot,
+            PromotedIntoThisDivision = promotedTeams,
+            RelegatedIntoThisDivision = relegatedTeams
+        };
+
+        return response;
+    }
+    
+    private async Task<Division> GetLowerDivision(Division division)
+    {
+        var lowerDivision = await _context.Divisions
+            .Include(d => d.Leagues)
+            .ThenInclude(l => l.Teams)
+            .FirstOrDefaultAsync(d =>
+                d.CountryName == division.CountryName && 
+                d.Season == division.Season &&
+                d.Level == division.Level - 1);
+        return lowerDivision;
+    }
+    
+    private async Task<Division> GetHigherDivision(Division division)
+    {
+        var higherDivision = await _context.Divisions
+            .Include(d => d.Leagues)
+            .ThenInclude(l => l.Teams)
+            .FirstOrDefaultAsync(d => 
+                d.CountryName == division.CountryName && 
+                d.Season == division.Season && 
+                d.Level == division.Level + 1);
+        return higherDivision;
     }
 }
