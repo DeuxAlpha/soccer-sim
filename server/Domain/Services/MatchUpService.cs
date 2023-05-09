@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Domain.Extensions;
 using Domain.Models;
@@ -7,16 +8,21 @@ namespace Domain.Services
 {
     public static class MatchUpService
     {
-        public static IEnumerable<GameDay<T>> CreateRoundRobin<T>(List<T> participants, int rounds)
+        public static IReadOnlyCollection<GameDay<T>> CreateRoundRobin<T>(List<T> participants, int rounds)
         {
-            var participantCount = participants.Count;
-            var isOdd = participantCount % 2 == 1;
-            if (isOdd)
+            if (participants == null || participants.Count == 0)
             {
-                participants.Add(default);
-                participantCount++;
+                throw new ArgumentException("Participants list cannot be empty.", nameof(participants));
             }
-            var overallGameDays = participantCount - 1;
+
+            if (rounds < 1)
+            {
+                throw new ArgumentException("Number of rounds must be greater than or equal to 1.", nameof(rounds));
+            }
+            
+            var participantCount = participants.Count;
+            var isOdd = participantCount % 2 != 0;
+            var overallGameDays = isOdd ? participantCount - 1 : participantCount;
             var sideToggle = true;
             var places = Enumerable.Range(1, participants.Count).ToList();
             var teamIndices = participants
@@ -41,11 +47,6 @@ namespace Domain.Services
                     }
                     else
                     {
-                        if (isOdd && teamIndex.Team == null || firstTeam == null)
-                        {
-                            firstTeamAssigned = false;
-                            continue;
-                        }
                         gameDay.Games.Add(new MatchUp<T>
                         {
                             Home = sideToggle ? firstTeam : teamIndex.Team,
@@ -58,7 +59,7 @@ namespace Domain.Services
                 gameDay.Games = gameDay.Games.Shuffle().ToList();
                 gameDays.Add(gameDay);
                 sideToggle = !sideToggle;
-                Rotate(teamIndices, isOdd);
+                Rotate(teamIndices, participantCount % 2 == 0);
             }
 
             var roundsToAdd = new List<GameDay<T>>();
@@ -90,28 +91,41 @@ namespace Domain.Services
             return gameDays;
         }
 
-        private static void Rotate<T>(ICollection<TeamIndex<T>> teamIndices, bool isOdd)
+        private static void Rotate<T>(ICollection<TeamIndex<T>> teamIndices, bool even)
         {
             // round-robin
             var maxPlace = teamIndices.Count;
+
             foreach (var teamIndex in teamIndices)
             {
-                if (teamIndex.Place == 1) continue;
+                if (teamIndex.Place == 1)
+                    continue;
+
                 if (teamIndex.Place % 2 != 0)
                 {
-                    if (teamIndex.Place + 2 > maxPlace)
-                        teamIndex.Place += isOdd ? 1 : -1;
-                    else
-                        teamIndex.Place += 2;
+                    teamIndex.Place = GetUpdatedPlaceForOdd(teamIndex.Place, maxPlace, even);
                 }
                 else
                 {
-                    if (teamIndex.Place - 2 <= 0)
-                        teamIndex.Place = 3;
-                    else
-                        teamIndex.Place -= 2;
+                    teamIndex.Place = GetUpdatedPlaceForEven(teamIndex.Place, maxPlace);
                 }
             }
+        }
+        
+        private static int GetUpdatedPlaceForOdd(int currentPlace, int maxPlace, bool even)
+        {
+            if (currentPlace + 2 > maxPlace)
+                return even ? currentPlace + 1 : currentPlace - 1;
+
+            return currentPlace + 2;
+        }
+
+        private static int GetUpdatedPlaceForEven(int currentPlace, int maxPlace)
+        {
+            if (currentPlace - 2 <= 0)
+                return 3;
+
+            return currentPlace - 2;
         }
 
         private class TeamIndex<T>
