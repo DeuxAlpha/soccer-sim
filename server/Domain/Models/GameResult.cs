@@ -7,7 +7,7 @@ namespace Domain.Models
 {
     public class GameResult
     {
-        public List<GoalEvent> GoalEvents { get; }
+        public List<GoalEvent> GoalEvents { get; set; }
         public List<ActingTeam> Possessions { get; set; }
         public TeamLineUp PreHomeTeam { get; set; }
         public TeamLineUp PreAwayTeam { get; set; }
