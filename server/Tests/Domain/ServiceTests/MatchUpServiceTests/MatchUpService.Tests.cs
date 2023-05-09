@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Domain.Services;
 using NUnit.Framework;
 
@@ -23,7 +24,8 @@ namespace Tests.Domain.ServiceTests.MatchUpServiceTests
             var roundRobin = MatchUpService.CreateRoundRobin(new List<int>
             {
                 1, 2, 3, 4, 5
-            }, 1);
+            }, 1).ToList();
+
             Assert.That(roundRobin, Has.Count.EqualTo(5));
         }
 
