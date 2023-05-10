@@ -19,7 +19,7 @@ namespace Domain.Services
             {
                 throw new ArgumentException("Number of rounds must be greater than or equal to 1.", nameof(rounds));
             }
-            
+
             var participantCount = participants.Count;
             var isOdd = participantCount % 2 != 0;
             var overallGameDays = isOdd ? participantCount - 1 : participantCount;
@@ -56,10 +56,20 @@ namespace Domain.Services
                     }
                 }
 
-                gameDay.Games = gameDay.Games.Shuffle().ToList();
+                gameDay.Games = gameDay.Games
+                    .Shuffle()
+                    .ToList();
                 gameDays.Add(gameDay);
                 sideToggle = !sideToggle;
-                Rotate(teamIndices, participantCount % 2 == 0);
+                // Don't rotate on the last round
+                if (gameDayIndex < overallGameDays - 1)
+                    Rotate(teamIndices, !isOdd);
+            }
+
+            if (isOdd)
+            {
+                RotateLastOddRound(teamIndices);
+                FillLastRound(teamIndices, sideToggle, gameDays);
             }
 
             var roundsToAdd = new List<GameDay<T>>();
@@ -91,6 +101,33 @@ namespace Domain.Services
             return gameDays;
         }
 
+        private static void FillLastRound<T>(List<TeamIndex<T>> teamIndices, bool sideToggle, List<GameDay<T>> gameDays)
+        {
+            var gameDay = new GameDay<T>();
+            var firstTeamAssigned = false;
+            T firstTeam = default;
+            foreach (var teamIndex in teamIndices.OrderBy(i => i.Place))
+            {
+                if (firstTeamAssigned == false)
+                {
+                    firstTeam = teamIndex.Team;
+                    firstTeamAssigned = true;
+                }
+                else
+                {
+                    gameDay.Games.Add(new MatchUp<T>
+                    {
+                        Home = sideToggle ? firstTeam : teamIndex.Team,
+                        Away = sideToggle ? teamIndex.Team : firstTeam
+                    });
+                    firstTeamAssigned = false;
+                }
+            }
+
+            gameDay.Games = gameDay.Games.Shuffle().ToList();
+            gameDays.Add(gameDay);
+        }
+
         private static void Rotate<T>(ICollection<TeamIndex<T>> teamIndices, bool even)
         {
             // round-robin
@@ -111,7 +148,21 @@ namespace Domain.Services
                 }
             }
         }
-        
+
+        private static void RotateLastOddRound<T>(ICollection<TeamIndex<T>> teamIndices)
+        {
+            var maxPlace = teamIndices.Count;
+
+            foreach (var teamIndex in teamIndices)
+            {
+                if (teamIndex.Place == 1) teamIndex.Place = maxPlace;
+                else if (teamIndex.Place == maxPlace) teamIndex.Place -= 1;
+                else if (teamIndex.Place == 2) teamIndex.Place = 1;
+                else if (teamIndex.Place % 2 != 0) teamIndex.Place -= 2;
+                // Else teamindex place stays put.
+            }
+        }
+
         private static int GetUpdatedPlaceForOdd(int currentPlace, int maxPlace, bool even)
         {
             if (currentPlace + 2 > maxPlace)
