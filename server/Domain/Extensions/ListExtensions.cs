@@ -12,5 +12,13 @@ namespace Domain.Extensions
             list.Remove(randomItem);
             return randomItem;
         }
+
+        public static T Pop<T>(this List<T> list)
+        {
+            var firstIndex = 0;
+            var firstItem = list[firstIndex];
+            list.Remove(firstItem);
+            return firstItem;
+        }
     }
 }
