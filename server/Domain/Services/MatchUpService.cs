@@ -33,7 +33,7 @@ namespace Domain.Services
                 }).ToList();
 
             var gameDays = new List<GameDay<T>>();
-            for (var gameDayIndex = 0; gameDayIndex < overallGameDays; gameDayIndex++)
+            for (var gameDayIndex = 0; gameDayIndex < (isOdd ? overallGameDays : overallGameDays - 1); gameDayIndex++)
             {
                 var gameDay = new GameDay<T>();
                 var firstTeamAssigned = false;
