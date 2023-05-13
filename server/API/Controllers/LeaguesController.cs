@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
+using API.Dtos.Requests;
 using API.Dtos.Responses;
 using API.Dtos.Views;
 using API.Dtos.Views.Table;
@@ -16,6 +17,8 @@ using Domain.Infer;
 using DynamicQuerying.Main.Query.Models;
 using DynamicQuerying.Main.Query.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.ML.Probabilistic.Math;
+using Serilog;
 
 namespace API.Controllers
 {
@@ -339,6 +342,87 @@ namespace API.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        [HttpPut("{name}/{season}/{gameDay:int}/fixture")]
+        public async Task<ActionResult> UpdateGameResult(
+            string name,
+            string season,
+            int gameDay,
+            [FromBody] LeagueGameUpdateRequest request)
+        {
+            try
+            {
+                var leagueGameDay = await _context.LeagueGameDays
+                    .Include(lgd => lgd.Fixtures)
+                    .ThenInclude(f => f.Events)
+                    .FirstOrDefaultAsync(lgd => lgd.LeagueName == name &&
+                                                lgd.Season == season &&
+                                                lgd.GameDayNumber == gameDay);
+                if (leagueGameDay == null)
+                    return NotFound(new { Message = "Could not find game day", Ref = new { name, season, gameDay } });
+                var game = leagueGameDay.Fixtures.FirstOrDefault(f => f.HomeTeamName == request.HomeTeamName &&
+                                                                      f.AwayTeamName == request.AwayTeamName);
+                if (game == null)
+                    return NotFound(new
+                    {
+                        Message = "Could not find fixture",
+                        Ref = new { name, season, gameDay, request.HomeTeamName, request.AwayTeamName }
+                    });
+                var goalEvents = game.Events.Where(e => e.IsGoal).ToList();
+                var eventCount = goalEvents.Count.ToString();
+                _context.LeagueFixtureEvents.RemoveRange(goalEvents);
+                await _context.SaveChangesAsync();
+                Log.Information(
+                    "Removed all {@Events} goal events for game between {@HomeTeam} and {@AwayTeam}",
+                    eventCount,
+                    request.HomeTeamName,
+                    request.AwayTeamName);
+                var newEvents = request.HomeScoreEvents.Select(homeScoreEvent => new LeagueFixtureEvent
+                    {
+                        Season = season,
+                        LeagueName = name,
+                        IsGoal = true,
+                        AddedMinute = homeScoreEvent.OvertimeMinute,
+                        Minute = homeScoreEvent.Minute,
+                        AwayTeamName = request.AwayTeamName,
+                        HomeTeamName = request.HomeTeamName,
+                        EventTeamName = request.HomeTeamName,
+                        GameDayNumber = gameDay,
+                        IsShotOnGoal = true
+                    })
+                    .ToList();
+                newEvents.AddRange(request.AwayScoreEvents.Select(awayScoreEvent => new LeagueFixtureEvent
+                {
+                    Season = season,
+                    LeagueName = name,
+                    IsGoal = true,
+                    AddedMinute = awayScoreEvent.OvertimeMinute,
+                    Minute = awayScoreEvent.Minute,
+                    AwayTeamName = request.AwayTeamName,
+                    HomeTeamName = request.HomeTeamName,
+                    EventTeamName = request.AwayTeamName,
+                    GameDayNumber = gameDay,
+                    IsShotOnGoal = true
+                }));
+                await _context.LeagueFixtureEvents.AddRangeAsync(newEvents);
+                await _context.SaveChangesAsync();
+                Log.Information("Added {@EventCount} events", newEvents.Count);
+                Log.Debug("Added events:\r\n\t{@Events}", newEvents);
+                return Ok();
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception, "An unhandled exception has occurred.\r\nRef: {@Request}", new
+                {
+                    name,
+                    season,
+                    gameDay,
+                    request.HomeTeamName,
+                    request.AwayTeamName
+                });
+                return BadRequest(new { Message = "We were unable to process your request." });
+            }
         }
 
         [HttpPost("gameplan/{name}/{season}")]
