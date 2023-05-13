@@ -305,7 +305,7 @@ namespace API.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), 2);
+            var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), league.Rounds);
             var gameDayNumber = 1;
             var leagueGameDays = new List<LeagueGameDay>();
             var leagueFixtures = new List<LeagueFixture>();
@@ -358,7 +358,7 @@ namespace API.Controllers
                     Object = new { name, season }
                 });
 
-            var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), 2);
+            var gameDays = MatchUpService.CreateRoundRobin(league.Teams.ToList(), league.Rounds);
             var gameDayNumber = 1;
             var leagueGameDays = new List<LeagueGameDay>();
             var leagueFixtures = new List<LeagueFixture>();
