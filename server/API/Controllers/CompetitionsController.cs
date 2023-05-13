@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos.Requests;
@@ -20,11 +21,13 @@ public class CompetitionsController : ControllerBase
 {
     private readonly SoccerSimContext _context;
     private readonly ILogger<CompetitionsController> _logger;
+    private readonly SeasonProcessingService _seasonProcessingService;
 
-    public CompetitionsController(SoccerSimContext context, ILogger<CompetitionsController> logger)
+    public CompetitionsController(SoccerSimContext context, ILogger<CompetitionsController> logger, SeasonProcessingService seasonProcessingService)
     {
         _context = context;
         _logger = logger;
+        _seasonProcessingService = seasonProcessingService;
     }
 
     [HttpPost("game/{season}/{homeTeam}/{awayTeam}")]
@@ -55,90 +58,21 @@ public class CompetitionsController : ControllerBase
     
     [HttpPost("{season}/playoff")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult> ProcessPlayoff(string season, DivisionSeasonPlayoffRequest request)
+    public async Task<ActionResult<PlayoffResultDto>> ProcessPlayoff(string season, DivisionSeasonPlayoffRequest request)
     {
-        // check if request teams are to the power of 2
-        var playoffTeams = request.Teams.ToList();
-        var count = playoffTeams.Count;
-        var power = 0;
-        while (count % 2 == 0 && count > 1)
+        try
         {
-            count /= 2;
-            power++;
+            var result = await _seasonProcessingService.CreatePlayoff(request.Teams, season);
+            if (result == null) return BadRequest(new { Message = "No teams were provided in the playoff" });
+            return Ok(result);
         }
-        _logger.LogInformation("Power: {Power}", power);
-
-        if (count == 1)
+        catch (Exception exception)
         {
-            var teamCollection = new List<Team>();
-            foreach (var playoffTeam in playoffTeams)
+            _logger.LogError(exception, "Unhandled exception");
+            return BadRequest(new
             {
-                var team = await _context.Teams.FirstOrDefaultAsync(t => t.Season == season && t.Name == playoffTeam);
-                if (team == null) return NotFound(new {season, playoffTeam});
-                teamCollection.Add(team);
-            }
-            // Create rounds of playoffs until there is a winner
-            // Pull from the first and last of the collection to create a game.
-            // The winner of the game goes to the next round.
-            // The loser is eliminated.
-            // Repeat until there is a winner.
-            var round = 1;
-            var maxRounds = power;
-            var winners = teamCollection;
-            var losers = new List<Team>();
-            var results = new List<ResultDto>();
-
-            while (round <= maxRounds)
-            {
-                var roundGames = new List<MatchUp<Team>>();
-                for (var i = 0; i < winners.Count / 2; i++)
-                {
-                    var homeTeam = winners[i];
-                    var awayTeam = winners[winners.Count - i - 1];
-                    var game = new MatchUp<Team>
-                    {
-                        Home = homeTeam,
-                        Away = awayTeam
-                    };
-                    roundGames.Add(game);
-                }
-
-                var roundWinners = new List<Team>();
-                foreach (var game in roundGames)
-                {
-                    var result = ProcessGame(game.Home, game.Away);
-                    results.Add(result);
-                    while (result.Winner == "Draw")
-                    {
-                        result = ProcessGame(game.Home, game.Away);
-                        results.Add(result);
-                    }
-                    // add the winning team to the winners list
-                    var winningTeam = result.Winner == game.Home.Name ? game.Home : game.Away;
-                    roundWinners.Add(winningTeam);
-                    // add the losing team to the losers list
-                    var losingTeam = result.Loser == game.Home.Name ? game.Home : game.Away;
-                    losers.Add(losingTeam);
-                }
-
-                // set the winners for the next round
-                winners = roundWinners;
-                round++;
-            }
-
-            // the last team in the winners list is the champion
-            var champion = winners.First();
-
-            return Ok(new
-            {
-                Champion = champion.Name,
-                Losers = losers.Select(l => l.Name),
-                Results = results.Select(r => $"{r.Fixture} {r.Score}{r.HalfTimeScore}")
+                Message = exception.Message
             });
-        }
-        else
-        {
-            return BadRequest(new {Message = "Teams must be to the power of 2"});
         }
     }
 }

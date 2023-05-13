@@ -7,6 +7,7 @@ using API.Dtos.Views;
 using API.Dtos.Views.Table;
 using Database.Contexts;
 using Database.Models;
+using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services;
@@ -143,9 +144,10 @@ public class SeasonProcessingService
         if (promotionSystem.RelegatedTeamsStart == 0) return relegatedTeams;
         for (var p = promotionSystem.RelegatedTeamsStart; p <= promotionSystem.RelegatedTeamsEnd; p++)
         {
-            var teamName = table.Positions.First(pos => pos.Position == p).TeamName;
+            var teamName = table.Positions.FirstOrDefault(pos => pos.Position == p)?.TeamName;
             var team = teams.FirstOrDefault(t => t.Name == teamName);
-            relegatedTeams.Add(new TeamDto(team));
+            if (team != null)
+                relegatedTeams.Add(new TeamDto(team));
         }
 
         return relegatedTeams;
@@ -174,9 +176,9 @@ public class SeasonProcessingService
         if (promotionSystem.RelegationPlayOffTeamsStart == 0) return teamsInPlayOff;
         for (var p = promotionSystem.RelegationPlayOffTeamsStart; p <= promotionSystem.RelegationPlayOffTeamsEnd; p++)
         {
-            var teamName = table.Positions.First(pos => pos.Position == p).TeamName;
+            var teamName = table.Positions.FirstOrDefault(pos => pos.Position == p)?.TeamName;
             var team = teams.FirstOrDefault(t => t.Name == teamName);
-            teamsInPlayOff.Add(new TeamDto(team));
+            if (team != null) teamsInPlayOff.Add(new TeamDto(team));
         }
 
         return teamsInPlayOff;
@@ -184,9 +186,10 @@ public class SeasonProcessingService
 
     public async Task<DivisionProcessingStatus> GetDivisionProcessingStatus(string season, string divisionName)
     {
-        var division = await _context.Divisions.FirstOrDefaultAsync(d => d.Season == season && d.Name == divisionName);
+        var division = await _context.Divisions
+            .Include(d => d.Leagues)
+            .FirstOrDefaultAsync(d => d.Season == season && d.Name == divisionName);
         if (division == null) throw new InvalidOperationException("Division not found");
-        var newDivision = new Division(division);
         var promotedUp = new List<TeamDto>(); // The teams getting promoted out of this division.
         var relegatedDown = new List<TeamDto>(); // The teams getting relegated out of this division.
         var promotedTeams = new List<TeamDto>(); // The teams getting promoted into this division.
@@ -204,10 +207,8 @@ public class SeasonProcessingService
 
             // Teams get relegated from lower divisions to higher ones.
             var lowerDivision = await GetLowerDivision(division);
-            var lowerLeagues = lowerDivision.Leagues;
-            var newTeams = new List<TeamDto>(); // Holds all the teams that get promoted or relegated to this division.
-            promotionPlayoffPot.AddRange(promotionPlayoffPot);
-            foreach (var lowerLeague in lowerLeagues)
+            var lowerLeagues = lowerDivision?.Leagues;
+            foreach (var lowerLeague in lowerLeagues ?? Array.Empty<League>())
             {
                 promotionPlayoffPot.AddRange(
                     await GetTeamsInRelegationPlayoff(lowerLeague.Name, season));
@@ -216,9 +217,8 @@ public class SeasonProcessingService
 
             // Teams get promoted from higher divisions to lower ones.
             var higherDivision = await GetHigherDivision(division);
-            var higherLeagues = higherDivision.Leagues;
-            relegationPlayoffPot.AddRange(relegationPlayoffPot);
-            foreach (var higherLeague in higherLeagues)
+            var higherLeagues = higherDivision?.Leagues;
+            foreach (var higherLeague in higherLeagues ?? Array.Empty<League>())
             {
                 relegationPlayoffPot.AddRange(
                     await GetTeamsInPromotionPlayOff(higherLeague.Name, season));
@@ -228,12 +228,12 @@ public class SeasonProcessingService
 
         var response = new DivisionProcessingStatus
         {
-            PromotedTeams = promotedUp,
-            RelegatedTeams = relegatedDown,
-            PromoPlayoffTeams = promotionPlayoffPot,
-            RelegationPlayoffTeams = relegationPlayoffPot,
-            PromotedIntoThisDivision = promotedTeams,
-            RelegatedIntoThisDivision = relegatedTeams
+            PromotedTeams = promotedUp.Distinct(),
+            RelegatedTeams = relegatedDown.Distinct(),
+            PromoPlayoffTeams = promotionPlayoffPot.Distinct(),
+            RelegationPlayoffTeams = relegationPlayoffPot.Distinct(),
+            PromotedIntoThisDivision = promotedTeams.Distinct(),
+            RelegatedIntoThisDivision = relegatedTeams.Distinct()
         };
 
         return response;
@@ -261,5 +261,107 @@ public class SeasonProcessingService
                 d.Season == division.Season && 
                 d.Level == division.Level + 1);
         return higherDivision;
+    }
+
+    public async Task<PlayoffResultDto> CreatePlayoff(IEnumerable<string> teams, string season)
+    {
+        var playoffTeams = teams.ToList();
+        if (!playoffTeams.Any()) return null;
+        // check if request teams are to the power of 2
+        var count = playoffTeams.Count;
+        var power = 0;
+        while (count % 2 == 0 && count > 1)
+        {
+            count /= 2;
+            power++;
+        }
+
+        if (count != 1)
+        {
+            throw new InvalidOperationException("Number of teams must be to the power of 2");
+        }
+
+        var teamCollection = new List<Team>();
+        foreach (var playoffTeam in playoffTeams)
+        {
+            var team = await _context.Teams.FirstOrDefaultAsync(t => t.Season == season && t.Name == playoffTeam);
+            if (team == null) throw new InvalidOperationException("Team not found");
+            teamCollection.Add(team);
+        }
+
+        // Create rounds of playoffs until there is a winner
+        // Pull from the first and last of the collection to create a game.
+        // The winner of the game goes to the next round.
+        // The loser is eliminated.
+        // Repeat until there is a winner.
+        var round = 1;
+        var maxRounds = power;
+        var winners = teamCollection;
+        var losers = new List<Team>();
+        var results = new List<ResultDto>();
+
+        while (round <= maxRounds)
+        {
+            var roundGames = new List<MatchUp<Team>>();
+            for (var i = 0; i < winners.Count / 2; i++)
+            {
+                var homeTeam = winners[i];
+                var awayTeam = winners[winners.Count - i - 1];
+                var game = new MatchUp<Team>
+                {
+                    Home = homeTeam,
+                    Away = awayTeam
+                };
+                roundGames.Add(game);
+            }
+
+            var roundWinners = new List<Team>();
+            foreach (var game in roundGames)
+            {
+                var result = ProcessGame(game.Home, game.Away);
+                results.Add(result);
+                while (result.Winner == "Draw")
+                {
+                    result = ProcessGame(game.Home, game.Away);
+                    results.Add(result);
+                }
+
+                // add the winning team to the winners list
+                var winningTeam = result.Winner == game.Home.Name ? game.Home : game.Away;
+                roundWinners.Add(winningTeam);
+                // add the losing team to the losers list
+                var losingTeam = result.Loser == game.Home.Name ? game.Home : game.Away;
+                losers.Add(losingTeam);
+            }
+
+            // set the winners for the next round
+            winners = roundWinners;
+            round++;
+        }
+
+        // the last team in the winners list is the champion
+        var champion = winners.First();
+
+        return new PlayoffResultDto
+        {
+            Champion = champion.Name,
+            Losers = losers.Select(l => l.Name),
+            Results = results.Select(r => $"{r.Fixture} {r.Score}{r.HalfTimeScore}")
+        };
+    }
+    
+    private ResultDto ProcessGame(Team home, Team away)
+    {
+        var result = GameFacilitator.SimulateGame(new LeagueFixture
+        {
+            HomeTeam = home,
+            AwayTeam = away,
+            HomeTeamName = home.Name,
+            AwayTeamName = away.Name,
+            ActionsPerMinute = 4,
+            PaceModifier = 1,
+            ShotAccuracyModifier = 1
+        });
+        return result;
     }
 }
