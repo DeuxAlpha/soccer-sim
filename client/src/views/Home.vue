@@ -35,6 +35,22 @@
         <div class="flex flex-col w-full justify-center mt-2">
           <APrimaryButton @click="resimulate(selectedGame)" class="self-center">Resimulate</APrimaryButton>
         </div>
+        <div class="flex flex-col items-center">
+          <h3 class="">
+            Override
+          </h3>
+          <div class="flex flex-row items-center justify-center">
+            <input class="w-4" v-model="secondHalfHomeTeamGoals">
+            -
+            <input class="w-4" v-model="secondHalfAwayTeamGoals">
+            (
+            <input class="w-4" v-model="firstHalfHomeTeamGoals">
+            -
+            <input class="w-4" v-model="firstHalfAwayTeamGoals">
+            )
+          </div>
+          <APrimaryButton @click="onOverrideScoreClicked">Override Score</APrimaryButton>
+        </div>
       </div>
 
     </AModal>
@@ -89,12 +105,16 @@
         {{ league.name }}
       </span>
     </div>
-    <label for="game-day" v-show="lastMatchDay !== 0">
-      <span>Game Day</span>
-      <select v-model="selectedGameDay" id="game-day" @change="onGameDayChanged">
-        <option v-for="gameDay of lastMatchDay" :value="gameDay">{{ gameDay }}</option>
-      </select>
-    </label>
+    <div class="flex flex-row items-baseline">
+      <label for="game-day" v-show="lastMatchDay !== 0">
+        <span>Game Day</span>
+        <select v-model="selectedGameDay" id="game-day" @change="onGameDayChanged">
+          <option v-for="gameDay of lastMatchDay" :value="gameDay">{{ gameDay }}</option>
+        </select>
+      </label>
+      <APrimaryButton v-show="lastMatchDay !== 0" @click="onResimulateGameDayClicked">Resimulate Game Day</APrimaryButton>
+      <APrimaryButton v-show="lastMatchDay !== 0" @click="onDeleteGameDayClicked">Delete Game Day</APrimaryButton>
+    </div>
     <div class="flex md:flex-row flex-col space-x-2">
       <div class="md:w-1/4 w-full">
         <CGamePlan @game-click="onGameClicked($event)" :games="leagueGames" :table="leagueTable"/>
@@ -153,6 +173,7 @@ import {StrengthResponse} from "@/models/responses/StrengthResponse";
 import AModal from "@/components/functionality/AModal.vue";
 import {PromotionSystem} from "@/models/responses/PromotionSystem";
 import APrimaryButton from "@/components/functionality/buttons/APrimaryButton.vue";
+import {GameService} from "@/services/GameService";
 
 @Component({
   name: 'Home',
@@ -181,6 +202,11 @@ export default class Home extends Vue {
 
   avgStrength = 900;
   varStrength = 500;
+
+  firstHalfAwayTeamGoals = 0;
+  firstHalfHomeTeamGoals = 0;
+  secondHalfHomeTeamGoals = 0;
+  secondHalfAwayTeamGoals = 0;
 
   async mounted() {
     const querySeason = this.$route.query.season;
@@ -436,6 +462,10 @@ export default class Home extends Vue {
 
   onGameClicked(game: LeagueGame) {
     this.selectedGame = game;
+    this.firstHalfHomeTeamGoals = this.selectedGame.homeHalfGoals;
+    this.firstHalfAwayTeamGoals = this.selectedGame.awayHalfGoals;
+    this.secondHalfHomeTeamGoals = this.selectedGame.homeGoals;
+    this.secondHalfAwayTeamGoals = this.selectedGame.awayGoals;
   }
 
   gameStory = (game: LeagueGame) => {
@@ -468,6 +498,39 @@ export default class Home extends Vue {
     await this.axios.post(`countries/${this.selectedCountry}/${this.selectedSeason}/process/${this.newSeason}`)
         .then(() => window.location.reload())
         .catch(error => console.dir(error));
+  }
+
+  async onOverrideScoreClicked(): Promise<void> {
+    if (this.firstHalfAwayTeamGoals > this.secondHalfAwayTeamGoals) return;
+    if (this.firstHalfHomeTeamGoals > this.secondHalfHomeTeamGoals) return;
+
+    const homeScoreEvents = GameService.CreateRangeOfEvents(this.firstHalfHomeTeamGoals, 0, 45, 8);
+    homeScoreEvents.push(...GameService.CreateRangeOfEvents(this.secondHalfHomeTeamGoals - this.firstHalfHomeTeamGoals, 45, 90, 8));
+    const awayScoreEvents = GameService.CreateRangeOfEvents(this.firstHalfAwayTeamGoals, 0, 45, 8);
+    awayScoreEvents.push(...GameService.CreateRangeOfEvents(this.secondHalfAwayTeamGoals - this.firstHalfAwayTeamGoals, 45, 90, 8));
+
+
+    await this.axios.put(`leagues/${this.selectedLeague}/${this.selectedSeason}/${this.selectedGameDay}/fixture`, {
+      homeTeamName: this.selectedGame?.homeTeamName,
+      awayTeamName: this.selectedGame?.awayTeamName,
+      homeScoreEvents: homeScoreEvents,
+      awayScoreEvents: awayScoreEvents
+    }).then(() => {
+      window.location.reload()
+    })
+        .catch(error => console.error(error));
+  }
+
+  async onResimulateGameDayClicked(): Promise<void> {
+    await this.axios.post(`leagues/${this.selectedLeague}/${this.selectedSeason}/simulate/${this.selectedGameDay}/override`)
+        .then(() => window.location.reload())
+        .catch(error => console.error(error));
+  }
+
+  async onDeleteGameDayClicked(): Promise<void> {
+    await this.axios.delete(`leagues/${this.selectedLeague}/${this.selectedSeason}/${this.selectedGameDay}`)
+        .then(() => window.location.reload())
+        .catch(error => console.error(error));
   }
 }
 </script>

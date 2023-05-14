@@ -273,7 +273,7 @@ namespace API.Controllers
         }
 
         [HttpPost("{name}/{season}/simulate/override")]
-        public async Task<ActionResult<ResultDto>> OverrideLeagueSimulation(string name, string season)
+        public async Task<ActionResult<List<ResultDto>>> OverrideLeagueSimulation(string name, string season)
         {
             var leagueFixtures = await _context.LeagueFixtures
                 .Include(f => f.Events)
@@ -291,6 +291,37 @@ namespace API.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(results);
+        }
+
+        [HttpPost("{name}/{season}/simulate/{gameDay:int}/override")]
+        public async Task<ActionResult<List<ResultDto>>> OverrideLeagueGameDaySimulation(string name, string season, int gameDay)
+        {
+            var leagueFixtures = await _context.LeagueFixtures
+                .Include(f => f.Events)
+                .Include(f => f.League)
+                .Include(f => f.HomeTeam)
+                .Include(f => f.AwayTeam)
+                .Where(f => f.LeagueName == name && f.Season == season && f.GameDayNumber == gameDay)
+                .ToListAsync();
+            _context.LeagueFixtureEvents.RemoveRange(leagueFixtures.SelectMany(f => f.Events));
+            await _context.SaveChangesAsync();
+            var results = new List<ResultDto>();
+            foreach (var fixture in leagueFixtures)
+                results.Add(await GameFacilitator.StoreFixtureResult(fixture, _context));
+            await _context.SaveChangesAsync();
+            return Ok(results);
+        }
+
+        [HttpDelete("{name}/{season}/{gameDay:int}")]
+        public async Task<ActionResult> DeleteLeagueGameDay(string name, string season, int gameDay)
+        {
+            var leagueFixtures = await _context.LeagueFixtures
+                .Include(f => f.Events)
+                .Where(f => f.LeagueName == name && f.Season == season && f.GameDayNumber == gameDay)
+                .ToListAsync();
+            _context.LeagueFixtureEvents.RemoveRange(leagueFixtures.SelectMany(f => f.Events));
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         [HttpPost("gameplan/{name}/{season}/override")]
