@@ -135,7 +135,7 @@ namespace API.Controllers
                     foreach (var loser in losers)
                     {
                         var existing = divisionTeams.FirstOrDefault(t => t.Name == loser.Name);
-                        if (existing!= null) divisionTeams.Add(loser);
+                        if (existing == null) divisionTeams.Add(loser);
                     }
                     prevRelegated = losers;
                     var divChampion = divisionTeams.FirstOrDefault(t => t.Name == promoResult.Champion);
