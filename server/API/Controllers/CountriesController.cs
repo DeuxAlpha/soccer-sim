@@ -15,6 +15,7 @@ using DynamicQuerying.Main.Query.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace API.Controllers
 {
@@ -86,6 +87,7 @@ namespace API.Controllers
             if (country == null) return NotFound(new {name, season});
             var divisionsBottomToTop = country.Divisions.OrderByDescending(d => d.Level).ToList();
             var prevPromoted = new List<TeamDto>();
+            var prevRelegated = new List<TeamDto>();
             var results = new List<PlayoffResultDto>();
             var newLeagues = new List<LeagueInfoDto>();
             for (var divIdx = 0; divIdx < divisionsBottomToTop.Count; divIdx++)
@@ -97,31 +99,53 @@ namespace API.Controllers
                 var divisionTeams = division.Leagues.SelectMany(l => l.Teams).Select(t => new TeamDto(t)).ToList();
                 foreach (var promotedTeam in divisionStatus.PromotedTeams)
                 {
-                    divisionTeams.Remove(promotedTeam);
+                    var divTeam = divisionTeams.FirstOrDefault(t => t.Name == promotedTeam.Name);
+                    if (divTeam == null)
+                    {
+                        continue;
+                    }
+
+                    divisionTeams.Remove(divTeam);
                 }
                 foreach (var relegatedTeam in divisionStatus.RelegatedTeams)
                 {
-                    divisionTeams.Remove(relegatedTeam);
+                    var divTeam = divisionTeams.FirstOrDefault(t => t.Name == relegatedTeam.Name);
+                    if (divTeam == null) continue;
+                    divisionTeams.Remove(divTeam);
                 }
 
                 divisionTeams.AddRange(prevPromoted);
 
                 divisionTeams.AddRange(newTeams);
 
+                foreach (var rel in prevRelegated)
+                {
+                    var divTeam = divisionTeams.FirstOrDefault(t => t.Name == rel.Name);
+                    if (divTeam == null) continue;
+                    divisionTeams.Remove(divTeam);
+                }
+                
                 var promoResult = await _seasonProcessingService
                     .CreatePlayoff(divisionStatus.PromoPlayoffTeams.Select(t => t.Name), season);
                 if (promoResult != null)
                 {
                     results.Add(promoResult);
-                
-                    divisionTeams.AddRange(divisionStatus.PromoPlayoffTeams.Where(t => promoResult.Losers.Contains(t.Name)));
-                    prevPromoted = divisionStatus.PromoPlayoffTeams.Where(t => promoResult.Champion == t.Name).ToList();
+
+                    var losers = divisionStatus.PromoPlayoffTeams.Where(t => promoResult.Losers.Contains(t.Name)).ToList();
+                    foreach (var loser in losers)
+                    {
+                        var existing = divisionTeams.FirstOrDefault(t => t.Name == loser.Name);
+                        if (existing!= null) divisionTeams.Add(loser);
+                    }
+                    prevRelegated = losers;
+                    var divChampion = divisionTeams.FirstOrDefault(t => t.Name == promoResult.Champion);
+                    if (divChampion != null) divisionTeams.Remove(divChampion);
+                    prevPromoted.AddRange(divisionStatus.PromoPlayoffTeams.Where(t => promoResult.Champion == t.Name).ToList());
                 }
-                    
 
                 var divisionLeaguesCount = division.Leagues.Count();
                 // This is so that teams that have played together stay together
-                divisionTeams = divisionTeams.OrderBy(t => t.LeagueName).Distinct().ToList();
+                divisionTeams = divisionTeams.OrderBy(t => t.LeagueName).DistinctBy(t => t.Name).ToList();
                 var teamsPerLeague = divisionTeams.Count / divisionLeaguesCount;
                 
                 // Create new continent if not exist

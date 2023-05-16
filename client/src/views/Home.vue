@@ -411,6 +411,7 @@ export default class Home extends Vue {
     this.leagues = [];
     this.resetSelection();
     await this.updateRoute();
+    await this.getAppropriateNextCollection();
   }
 
   async onResetContinentClicked() {
@@ -424,6 +425,7 @@ export default class Home extends Vue {
     this.leagues = [];
     this.resetSelection();
     await this.updateRoute();
+    await this.getAppropriateNextCollection();
   }
 
   async onResetCountryClicked() {
@@ -435,6 +437,7 @@ export default class Home extends Vue {
     this.leagues = [];
     this.resetSelection();
     await this.updateRoute();
+    await this.getAppropriateNextCollection();
   }
 
   async onResetDivisionClicked() {
@@ -444,6 +447,7 @@ export default class Home extends Vue {
     this.leagues = [];
     this.resetSelection();
     await this.updateRoute();
+    await this.getAppropriateNextCollection();
   }
 
   async onResetLeagueClicked() {
@@ -451,6 +455,7 @@ export default class Home extends Vue {
     this.selectedLeague = '';
     this.resetSelection();
     await this.updateRoute();
+    await this.getAppropriateNextCollection();
   }
 
   resetSelection() {
@@ -500,7 +505,7 @@ export default class Home extends Vue {
     if (!this.newSeason) return;
     await this.axios.post(`countries/${this.selectedCountry}/${this.selectedSeason}/process/${this.newSeason}`)
         .then(response => {
-          alert('Playoffs: ' + response.data.playoffs);
+          alert('Playoffs: ' + JSON.stringify(response.data.playoffs));
           this.selectedSeason = response.data.newSeason;
           this.updateRoute();
           window.location.reload()

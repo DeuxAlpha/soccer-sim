@@ -32,8 +32,8 @@ namespace Database.Contexts
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (optionsBuilder.IsConfigured) return;
             optionsBuilder.EnableSensitiveDataLogging();
+            if (optionsBuilder.IsConfigured) return;
             const string fallbackConnectionString =
                 "Server=localhost,20240;Database=SoccerSim;User Id=sa;Password=Your_password123";
             var connectionString = StaticConfig.GetValue<string>("ConnectionStrings:Development");
