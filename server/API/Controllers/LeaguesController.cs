@@ -83,6 +83,10 @@ namespace API.Controllers
                 .Include(l => l.Fixtures)
                 .Where(l => l.LeagueName == name && l.Season == season)
                 .ToListAsync();
+            if (gameDays.Count == 0)
+            {
+                return NotFound(new { name, season });
+            }
             return Ok(new MatchInfoDto
             {
                 LastMatchDay = gameDays.Max(gd => gd.GameDayNumber),

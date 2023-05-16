@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
+using API.Dtos.Requests;
+using API.Dtos.Responses;
+using API.Dtos.Views;
+using API.Dtos.Views.Table;
+using API.Services;
 using Database.Contexts;
 using Database.Models;
 using DynamicQuerying.Main.Query.Models;
@@ -17,10 +23,12 @@ namespace API.Controllers
     public class CountriesController : ControllerBase
     {
         private readonly SoccerSimContext _context;
+        private readonly SeasonProcessingService _seasonProcessingService;
 
-        public CountriesController(SoccerSimContext context)
+        public CountriesController(SoccerSimContext context, SeasonProcessingService seasonProcessingService)
         {
             _context = context;
+            _seasonProcessingService = seasonProcessingService;
         }
 
         [HttpGet]
@@ -62,6 +70,143 @@ namespace API.Controllers
             var country = await _context.Countries.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
             if (country == null) return NotFound(new {name, season});
             return Ok(new CountryDto(country));
+        }
+
+        [HttpPost("{name}/{season}/process/{newSeason}")]
+        public async Task<ActionResult<CountrySeasonProcessResponse>> ProcessCountry(string name, string season, string newSeason)
+        {
+            var country = await _context.Countries
+                .Include(c => c.Divisions)
+                .ThenInclude(d => d.Leagues)
+                .ThenInclude(l => l.PromotionSystem)
+                .Include(c => c.Divisions)
+                .ThenInclude(d => d.Leagues)
+                .ThenInclude(l => l.Teams)
+                .FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
+            if (country == null) return NotFound(new {name, season});
+            var divisionsBottomToTop = country.Divisions.OrderByDescending(d => d.Level).ToList();
+            var prevPromoted = new List<TeamDto>();
+            var results = new List<PlayoffResultDto>();
+            var newLeagues = new List<LeagueInfoDto>();
+            for (var divIdx = 0; divIdx < divisionsBottomToTop.Count; divIdx++)
+            {
+                var division = divisionsBottomToTop[divIdx];
+                var divisionStatus = await _seasonProcessingService.GetDivisionProcessingStatus(season, division.Name);
+                var newTeams = divisionStatus.RelegatedIntoThisDivision.ToList();
+                newTeams.AddRange(divisionStatus.PromotedIntoThisDivision.ToList());
+                var divisionTeams = division.Leagues.SelectMany(l => l.Teams).Select(t => new TeamDto(t)).ToList();
+                foreach (var promotedTeam in divisionStatus.PromotedTeams)
+                {
+                    divisionTeams.Remove(promotedTeam);
+                }
+                foreach (var relegatedTeam in divisionStatus.RelegatedTeams)
+                {
+                    divisionTeams.Remove(relegatedTeam);
+                }
+
+                divisionTeams.AddRange(prevPromoted);
+
+                divisionTeams.AddRange(newTeams);
+
+                var promoResult = await _seasonProcessingService
+                    .CreatePlayoff(divisionStatus.PromoPlayoffTeams.Select(t => t.Name), season);
+                if (promoResult != null)
+                {
+                    results.Add(promoResult);
+                
+                    divisionTeams.AddRange(divisionStatus.PromoPlayoffTeams.Where(t => promoResult.Losers.Contains(t.Name)));
+                    prevPromoted = divisionStatus.PromoPlayoffTeams.Where(t => promoResult.Champion == t.Name).ToList();
+                }
+                    
+
+                var divisionLeaguesCount = division.Leagues.Count();
+                // This is so that teams that have played together stay together
+                divisionTeams = divisionTeams.OrderBy(t => t.LeagueName).Distinct().ToList();
+                var teamsPerLeague = divisionTeams.Count / divisionLeaguesCount;
+                
+                // Create new continent if not exist
+                var newContinent = await _context.Continents
+                    .FirstOrDefaultAsync(c => c.Name == country.ContinentName && c.Season == newSeason);
+                if (newContinent == null)
+                {
+                    newContinent = new Continent();
+                    newContinent.Name = country.ContinentName;
+                    newContinent.Season = newSeason;
+                    var response = await _context.Continents.AddAsync(newContinent);
+                    await _context.SaveChangesAsync();
+                    newContinent = response.Entity;
+                }
+                
+                // Create new country if not exist
+                var newCountry = await _context.Countries
+                    .FirstOrDefaultAsync(c => c.Name == country.Name && c.Season == newSeason);
+                if (newCountry == null)
+                {
+                    newCountry = new Country(country);
+                    newCountry.Season = newSeason;
+                    var response = await _context.Countries.AddAsync(newCountry);
+                    await _context.SaveChangesAsync();
+                    newCountry = response.Entity;
+                }
+                // Create new division if not exist
+                var newDivision = await _context.Divisions
+                    .FirstOrDefaultAsync(d => d.Name == division.Name && d.Season == newSeason);
+                if (newDivision == null)
+                {
+                    newDivision = new Division(division);
+                    newDivision.Season = newSeason;
+                    var response = await _context.Divisions.AddAsync(newDivision);
+                    await _context.SaveChangesAsync();
+                    newDivision = response.Entity;
+                }
+
+                for (var leagueIdx = 0; leagueIdx < divisionLeaguesCount; leagueIdx++)
+                {
+                    var leagueResponse = new LeagueInfoDto();
+                    var league = division.Leagues.ElementAt(leagueIdx);
+                    var newLeague = await _context.Leagues
+                        .FirstOrDefaultAsync(l => l.Name == league.Name && l.Season == newSeason);
+                    if (newLeague == null)
+                    {
+                        newLeague = new League(league);
+                        newLeague.Season = newSeason;
+                        var response = await _context.Leagues.AddAsync(newLeague);
+                        await _context.SaveChangesAsync();
+                        newLeague = response.Entity;
+                    }
+
+                    var existingPromoSystem = await _context.PromotionSystems
+                        .FirstOrDefaultAsync(p => p.Season == newSeason && p.LeagueName == newLeague.Name);
+                    if (existingPromoSystem == null)
+                    {
+                        var promoSystem = league.PromotionSystem ?? new PromotionSystem();
+                        promoSystem.Season = newSeason;
+                        promoSystem.LeagueName = league.Name;
+                        var response = await _context.PromotionSystems.AddAsync(promoSystem);
+                        await _context.SaveChangesAsync();
+                    }
+                    
+                    for (var teamIdx = 0; teamIdx < teamsPerLeague; teamIdx++)
+                    {
+                        var team = divisionTeams[leagueIdx * teamsPerLeague + teamIdx];
+                        team.LeagueName = league.Name;
+                        team.Season = newSeason;
+                        var response = await _context.Teams.AddAsync(team.Map());
+                        leagueResponse.Teams.Add(team.Name);
+                        await _context.SaveChangesAsync();
+                    }
+                    newLeagues.Add(new LeagueInfoDto{Teams = leagueResponse.Teams});
+                }
+            }
+
+            var processResponse = new CountrySeasonProcessResponse
+            {
+                NewSeason = newSeason,
+                Playoffs = results,
+                Leagues = newLeagues
+            };
+
+            return Ok(processResponse);
         }
 
         [HttpPost]

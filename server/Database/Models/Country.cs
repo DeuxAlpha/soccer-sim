@@ -5,6 +5,7 @@ namespace Database.Models
 {
     public class Country
     {
+        
         public string Season { get; set; }
         public string Name { get; set; }
         public string Abbreviation { get; set; }
@@ -23,5 +24,26 @@ namespace Database.Models
         public ICollection<Division> Divisions { get; set; }
         public ICollection<Competition> Competitions { get; set; }
         public Continent Continent { get; set; }
+        
+        public Country() {}
+
+        public Country(Country country)
+        {
+            // Assing values from country to this
+            Season = country.Season;
+            Name = country.Name;
+            Abbreviation = country.Abbreviation;
+            AttackStrength = country.AttackStrength;
+            DefenseStrength = country.DefenseStrength;
+            GoalieStrength = country.GoalieStrength;
+            PotentialPositiveShift = country.PotentialPositiveShift;
+            PotentialPositiveChance = country.PotentialPositiveChance;
+            PotentialNegativeShift = country.PotentialNegativeShift;
+            PotentialNegativeChance = country.PotentialNegativeChance;
+            MaxPace = country.MaxPace;
+            ShotOnGoalRate = country.ShotOnGoalRate;
+            ContinentName = country.ContinentName;
+            Image = country.Image;
+        }
     }
 }

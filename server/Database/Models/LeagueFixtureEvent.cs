@@ -9,5 +9,7 @@ namespace Database.Models
         public int GameDayNumber { get; set; }
         public Team EventTeam { get; set; }
         public LeagueFixture Fixture { get; set; }
+        
+        public LeagueFixtureEvent() {}
     }
 }

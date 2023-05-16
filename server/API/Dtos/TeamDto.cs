@@ -41,7 +41,7 @@ namespace API.Dtos
             LeagueName = team.LeagueName;
             Image = team.Image;
         }
-
+        
         public Team Map()
         {
             return new Team

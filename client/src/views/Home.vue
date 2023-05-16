@@ -265,6 +265,9 @@ export default class Home extends Vue {
           this.selectedGameDay = matchDay;
           await this.loadMatchDay(matchDay);
         })
+        .catch(error => {
+          this.isNewLeague = true;
+        })
   }
 
   async getSeasons(): Promise<void> {
@@ -496,7 +499,12 @@ export default class Home extends Vue {
     if (!this.selectedCountry) return;
     if (!this.newSeason) return;
     await this.axios.post(`countries/${this.selectedCountry}/${this.selectedSeason}/process/${this.newSeason}`)
-        .then(() => window.location.reload())
+        .then(response => {
+          alert('Playoffs: ' + response.data.playoffs);
+          this.selectedSeason = response.data.newSeason;
+          this.updateRoute();
+          window.location.reload()
+        })
         .catch(error => console.dir(error));
   }
 

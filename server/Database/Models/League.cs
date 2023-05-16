@@ -20,5 +20,25 @@ namespace Database.Models
         public ICollection<Competition> Competitions { get; set; }
         public Division Division { get; set; }
         public PromotionSystem PromotionSystem { get; set; }
+        
+        public League() {}
+
+        public League(League league)
+        {
+            // Assign values from league to this
+            Season = league.Season;
+            Name = league.Name;
+            Abbreviation = league.Abbreviation;
+            Rounds = league.Rounds;
+            DivisionName = league.DivisionName;
+            Image = league.Image;
+            ShotAccuracyModifier = league.ShotAccuracyModifier;
+            PaceModifier = league.PaceModifier;
+            MaxHomeAdvantage = league.MaxHomeAdvantage;
+            MaxAwayDisadvantage = league.MaxAwayDisadvantage;
+            MaxProgressChance = league.MaxProgressChance;
+            MinProgressChance = league.MinProgressChance;
+            ActionsPerMinute = league.ActionsPerMinute;
+        }
     }
 }

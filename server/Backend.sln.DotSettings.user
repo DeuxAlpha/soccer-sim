@@ -16,14 +16,15 @@
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CAaron_005CDocuments_005CCoding_005CSoccer_002DSim_005Cserver_005CDependencies_005CWestwind_002EUtilities_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CAaron_005CDocuments_005CCoding_005CSoccer_002DSim_005Cserver_005CDependencies_005CYamlDotNet_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=0AAA5945_002D77AD_002D41A3_002D80D7_002DB81BCC6F882C_002Fd_003AControllers_002Ff_003ALeaguesController_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=b2a82fbe_002Daeb8_002D4a14_002D976c_002D599401081a93/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="MatchUpServiceTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=b2a82fbe_002Daeb8_002D4a14_002D976c_002D599401081a93/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="MatchUpServiceTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::DA8CF6F7-196B-47FA-8005-8C7B0404F24E::.NETCoreApp,Version=v3.1::Tests.Domain.ServiceTests.MatchUpServiceTests.MatchUpServiceTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::DA8CF6F7-196B-47FA-8005-8C7B0404F24E::net5.0::Tests.Domain.ServiceTests.MatchUpServiceTests.MatchUpServiceTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=e8307631_002Dfe25_002D4ce2_002Daa75_002D80d0ffd90a7a/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="TestStrengthAssigner_ValidValues_ReturnsStrengthResponse" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=e8307631_002Dfe25_002D4ce2_002Daa75_002D80d0ffd90a7a/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TestStrengthAssigner_ValidValues_ReturnsStrengthResponse" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::DA8CF6F7-196B-47FA-8005-8C7B0404F24E::net5.0::Tests.Domain.Infer.StrengthAssignerSpecs.TestStrengthAssigner_ValidValues_ReturnsStrengthResponse&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::DA8CF6F7-196B-47FA-8005-8C7B0404F24E::net5.0::Tests.Domain.ServiceTests.MatchUpServiceTests.MatchUpServiceTests.CreateRoundRobin_UnEvenTeams_CreatesRoundRobin&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Gameplan/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
