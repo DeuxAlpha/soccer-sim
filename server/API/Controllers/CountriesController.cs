@@ -254,9 +254,28 @@ namespace API.Controllers
                         var team = divisionTeams[leagueIdx * teamsPerLeague + teamIdx];
                         team.LeagueName = league.Name;
                         team.Season = newSeason;
-                        var response = await _context.Teams.AddAsync(team.Map());
-                        leagueResponse.Teams.Add(team.Name);
-                        await _context.SaveChangesAsync();
+                        
+                        try
+                        {
+                            var existingTeam =
+                                await _context.Teams.FirstOrDefaultAsync(t =>
+                                    t.Name == team.Name && t.Season == newSeason);
+                            if (existingTeam == null)
+                            {
+                                await _context.Teams.AddAsync(team.Map());
+                                await _context.SaveChangesAsync();
+                                leagueResponse.Teams.Add(team.Name);    
+                            }
+                            else
+                            {
+                                Log.Information("Team {team} already exists in this season '{season}'.", team.Name, newSeason);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Error saving team {team} to league {league}", team.Name, league.Name);
+                        }
+                        
                     }
                     newLeagues.Add(new LeagueInfoDto{Teams = leagueResponse.Teams});
                 }
