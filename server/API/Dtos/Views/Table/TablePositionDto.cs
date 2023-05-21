@@ -22,6 +22,9 @@ namespace API.Dtos.Views.Table
         public double DefenseStrength { get; set; }
         public double GoalieStrength { get; set; }
         public double AverageStrength => (AttackStrength + DefenseStrength + GoalieStrength) / 3;
+        public bool ChampionFlag { get; set; }
+        public bool PromotionFlag { get; set; }
+        public bool RelegationFlag { get; set; }
 
         public TablePositionDto Clone()
         {
@@ -40,7 +43,10 @@ namespace API.Dtos.Views.Table
                 ShotsAgainstGoal = ShotsAgainstGoal,
                 AttackStrength = AttackStrength,
                 DefenseStrength = DefenseStrength,
-                GoalieStrength = GoalieStrength
+                GoalieStrength = GoalieStrength,
+                ChampionFlag = ChampionFlag,
+                PromotionFlag = PromotionFlag,
+                RelegationFlag = RelegationFlag
             };
         }
     }

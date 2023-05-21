@@ -19,6 +19,9 @@ namespace API.Dtos
         public double ShotOnGoalRate { get; set; }
         public string LeagueName { get; set; }
         public string Image { get; set; }
+        public bool PromotionFlag { get; set; }
+        public bool RelegationFlag { get; set; }
+        public bool ChampionFlag { get; set; }
 
         public TeamDto()
         {
@@ -40,6 +43,9 @@ namespace API.Dtos
             ShotOnGoalRate = team.ShotOnGoalRate;
             LeagueName = team.LeagueName;
             Image = team.Image;
+            PromotionFlag = team.PromotionFlag;
+            RelegationFlag = team.RelegationFlag;
+            ChampionFlag = team.ChampionFlag;
         }
         
         public Team Map()
@@ -60,6 +66,9 @@ namespace API.Dtos
                 ShotOnGoalRate = ShotOnGoalRate,
                 LeagueName = LeagueName,
                 Image = Image,
+                PromotionFlag = PromotionFlag,
+                RelegationFlag = RelegationFlag,
+                ChampionFlag = ChampionFlag
             };
         }
 
@@ -77,6 +86,9 @@ namespace API.Dtos
             team.ShotOnGoalRate = ShotOnGoalRate;
             team.LeagueName = LeagueName;
             team.Image = Image;
+            team.PromotionFlag = PromotionFlag;
+            team.RelegationFlag = RelegationFlag;
+            team.ChampionFlag = ChampionFlag;
         }
     }
 }

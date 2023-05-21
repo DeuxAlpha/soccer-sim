@@ -94,9 +94,31 @@ namespace API.Controllers
             {
                 var division = divisionsBottomToTop[divIdx];
                 var divisionStatus = await _seasonProcessingService.GetDivisionProcessingStatus(season, division.Name);
-                var newTeams = divisionStatus.RelegatedIntoThisDivision.ToList();
-                newTeams.AddRange(divisionStatus.PromotedIntoThisDivision.ToList());
+                var relegatedTeams = divisionStatus.RelegatedIntoThisDivision.ToList();
+                var promotedTeams = divisionStatus.PromotedIntoThisDivision.ToList();
+                foreach (var relegatedTeam in relegatedTeams)
+                {
+                    relegatedTeam.RelegationFlag = true;
+                    relegatedTeam.PromotionFlag = false;
+                }
+
+                foreach (var promotedTeam in promotedTeams)
+                {
+                    promotedTeam.PromotionFlag = true;
+                    promotedTeam.RelegationFlag = false;
+                }
                 var divisionTeams = division.Leagues.SelectMany(l => l.Teams).Select(t => new TeamDto(t)).ToList();
+                foreach (var team in divisionTeams)
+                {
+                    team.ChampionFlag = false;
+                    team.RelegationFlag = false;
+                    team.PromotionFlag = false;
+                }
+                if (divisionStatus.Champion != null)
+                {
+                    var champ = divisionTeams.FirstOrDefault(t => t.Name == divisionStatus.Champion.Name);
+                    if (champ != null) champ.ChampionFlag = true;
+                }
                 foreach (var promotedTeam in divisionStatus.PromotedTeams)
                 {
                     var divTeam = divisionTeams.FirstOrDefault(t => t.Name == promotedTeam.Name);
@@ -114,9 +136,16 @@ namespace API.Controllers
                     divisionTeams.Remove(divTeam);
                 }
 
+                foreach (var prom in prevPromoted)
+                {
+                    prom.PromotionFlag = true;
+                    prom.RelegationFlag = false;
+                }
+                
                 divisionTeams.AddRange(prevPromoted);
 
-                divisionTeams.AddRange(newTeams);
+                divisionTeams.AddRange(relegatedTeams);
+                divisionTeams.AddRange(promotedTeams);
 
                 foreach (var rel in prevRelegated)
                 {
@@ -134,6 +163,12 @@ namespace API.Controllers
                     var losers = divisionStatus.PromoPlayoffTeams.Where(t => promoResult.Losers.Contains(t.Name)).ToList();
                     foreach (var loser in losers)
                     {
+                        // If the loser is a different league than promoted team, then flag them as relegated.
+                        var promoTeam = divisionStatus.PromotedTeams.FirstOrDefault();
+                        if (promoTeam != null)
+                        {
+                            loser.RelegationFlag = loser.LeagueName != promoTeam.LeagueName;
+                        }
                         var existing = divisionTeams.FirstOrDefault(t => t.Name == loser.Name);
                         if (existing == null) divisionTeams.Add(loser);
                     }
@@ -141,6 +176,10 @@ namespace API.Controllers
                     var divChampion = divisionTeams.FirstOrDefault(t => t.Name == promoResult.Champion);
                     if (divChampion != null) divisionTeams.Remove(divChampion);
                     prevPromoted.AddRange(divisionStatus.PromoPlayoffTeams.Where(t => promoResult.Champion == t.Name).ToList());
+                    foreach (var prom in prevPromoted)
+                    {
+                        prom.PromotionFlag = true;
+                    }
                 }
 
                 var divisionLeaguesCount = division.Leagues.Count();

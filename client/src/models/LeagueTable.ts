@@ -35,4 +35,7 @@ export type LeagueTablePosition = {
   shotsOnGoal: number;
   shotsAgainst: number;
   shotsAgainstGoal: number;
+  championFlag: boolean;
+  promotionFlag: boolean;
+  relegationFlag: boolean;
 }

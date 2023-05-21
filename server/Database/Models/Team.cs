@@ -20,6 +20,9 @@ namespace Database.Models
         public bool NotFirstTeam { get; set; }
         public string LeagueName { get; set; }
         public string Image { get; set; }
+        public bool PromotionFlag { get; set; }
+        public bool RelegationFlag { get; set; }
+        public bool ChampionFlag { get; set; }
 
         public League League { get; set; }
         public ICollection<LeagueFixture> HomeLeagueFixtures { get; set; }
