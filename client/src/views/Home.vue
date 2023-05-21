@@ -56,19 +56,19 @@
     </AModal>
     <div class="flex flex-row justify-between">
       <div class="flex flex-row justify-start text-sm">
-      <span v-if="selectedSeason" @click="onResetSeasonClicked">
+      <span class="cursor-pointer hover:underline text-blue-600 hover:text-blue-700" v-if="selectedSeason" @click="onResetSeasonClicked">
         > {{ selectedSeason }}
       </span>
-        <span v-if="selectedContinent" @click="onResetContinentClicked">
+      <span class="cursor-pointer hover:underline text-blue-600 hover:text-blue-700" v-if="selectedContinent" @click="onResetContinentClicked">
         > {{ selectedContinent }}
       </span>
-        <span v-if="selectedCountry" @click="onResetCountryClicked">
+      <span class="cursor-pointer hover:underline text-blue-600 hover:text-blue-700" v-if="selectedCountry" @click="onResetCountryClicked">
         > {{ selectedCountry }}
       </span>
-        <span v-if="selectedDivision" @click="onResetDivisionClicked">
+      <span class="cursor-pointer hover:underline text-blue-600 hover:text-blue-700" v-if="selectedDivision" @click="onResetDivisionClicked">
         > {{ selectedDivision }}
       </span>
-        <span v-if="selectedLeague" @click="onResetLeagueClicked">
+      <span class="cursor-pointer hover:underline text-blue-600 hover:text-blue-700" v-if="selectedLeague" @click="onResetLeagueClicked">
         > {{ selectedLeague }}
       </span>
       </div>
@@ -85,23 +85,23 @@
       </div>
     </div>
     <div class="text-lg">
-      <span v-if="!selectedSeason" v-for="season of seasons" :key="season"
+      <span class="cursor-pointer hover:underline" v-if="!selectedSeason" v-for="season of seasons" :key="season"
             @click="onSeasonClicked(season)">
         {{ season }}
       </span>
-      <span v-if="!selectedContinent" v-for="continent of continents" :key="continent.name"
+      <span class="cursor-pointer hover:underline" v-if="!selectedContinent" v-for="continent of continents" :key="continent.name"
             @click="onContinentClicked(continent.name)">
         {{ continent.name }}
       </span>
-      <span v-if="!selectedCountry" v-for="country of countries" :key="country.name"
+      <span class="cursor-pointer hover:underline" v-if="!selectedCountry" v-for="country of countries" :key="country.name"
             @click="onCountryClicked(country.name)">
         {{ country.name }}
       </span>
-      <span v-if="!selectedDivision" v-for="division of divisions" :key="division.name"
+      <span class="cursor-pointer hover:underline" v-if="!selectedDivision" v-for="division of divisions" :key="division.name"
             @click="onDivisionClicked(division.name)">
         {{ division.name }}
       </span>
-      <span v-if="!selectedLeague" v-for="league of leagues" :key="league.name" @click="onLeagueClicked(league.name)">
+      <span class="cursor-pointer hover:underline" v-if="!selectedLeague" v-for="league of leagues" :key="league.name" @click="onLeagueClicked(league.name)">
         {{ league.name }}
       </span>
     </div>
