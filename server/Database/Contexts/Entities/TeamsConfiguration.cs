@@ -41,6 +41,12 @@ namespace Database.Contexts.Entities
             builder.Property(t => t.PotentialPositiveChance).HasDefaultValue(0).IsRequired();
 
             builder.Property(t => t.NotFirstTeam).HasDefaultValue(false).IsRequired();
+
+            builder.Property(t => t.ChampionFlag).HasDefaultValue(false).IsRequired();
+
+            builder.Property(t => t.PromotionFlag).HasDefaultValue(false).IsRequired();
+
+            builder.Property(t => t.PromotionFlag).HasDefaultValue(false).IsRequired();
         }
     }
 }

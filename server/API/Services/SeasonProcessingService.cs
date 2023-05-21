@@ -59,6 +59,27 @@ public class SeasonProcessingService
         return table;
     }
 
+    public async Task<TeamDto> GetFirstPlacedTeam(string leagueName, string season)
+    {
+        var league = await _context.Leagues
+            .Include(l => l.Teams)
+            .FirstOrDefaultAsync(l => l.Season == season && l.Name == leagueName);
+        if (league == null) throw new InvalidOperationException("League not found");
+        var teams = league.Teams.ToList();
+        var table = new TableDto(teams);
+        var fixtures = await _context.LeagueFixtures
+            .Include(f => f.Events)
+            .Include(f => f.HomeTeam)
+            .Include(f => f.AwayTeam)
+            .Where(f => f.LeagueName == leagueName && f.Season == season)
+            .ToListAsync();
+        foreach (var fixture in fixtures) table.AddFixture(new ResultDto(fixture));
+        table.ApplyPositions();
+        var firstPlacedTeam = table.Positions.First(p => p.Position == 1);
+        var team = teams.First(t => t.Name == firstPlacedTeam.TeamName);
+        return new TeamDto(team);
+    }
+    
     public async Task<IEnumerable<TeamDto>> GetPromotedTeams(string leagueName, string season)
     {
         var league = await _context.Leagues
@@ -196,6 +217,12 @@ public class SeasonProcessingService
         var relegatedTeams = new List<TeamDto>(); // The teams getting relegated into this division.
         var promotionPlayoffPot = new List<TeamDto>(); // The teams in the promotion playoff pot.
         var relegationPlayoffPot = new List<TeamDto>(); // The teams in the relegation playoff pot.
+        TeamDto champion = null;
+        if (division.Level == 1)
+        {
+            var league = division.Leagues.First();
+            champion = await GetFirstPlacedTeam(league.Name, season);
+        }
         foreach (var league in division.Leagues.ToList())
         {
             promotedUp.AddRange(await GetPromotedTeams(league.Name, season));
@@ -233,7 +260,8 @@ public class SeasonProcessingService
             PromoPlayoffTeams = promotionPlayoffPot.Distinct(),
             RelegationPlayoffTeams = relegationPlayoffPot.Distinct(),
             PromotedIntoThisDivision = promotedTeams.Distinct(),
-            RelegatedIntoThisDivision = relegatedTeams.Distinct()
+            RelegatedIntoThisDivision = relegatedTeams.Distinct(),
+            Champion = champion
         };
 
         return response;

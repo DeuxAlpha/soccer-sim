@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using Database.Models;
 
 namespace API.Dtos.Views.Table
@@ -21,42 +22,60 @@ namespace API.Dtos.Views.Table
                 TeamName = team.Name,
                 AttackStrength = team.AttackStrength,
                 DefenseStrength = team.DefenseStrength,
-                GoalieStrength = team.GoalieStrength
+                GoalieStrength = team.GoalieStrength,
+                ChampionFlag = team.ChampionFlag,
+                PromotionFlag = team.PromotionFlag,
+                RelegationFlag = team.RelegationFlag
             }).ToList();
             HomePositions = teams.Select(team => new TablePositionDto
             {
                 TeamName = team.Name,
                 AttackStrength = team.AttackStrength,
                 DefenseStrength =team.DefenseStrength,
-                GoalieStrength = team.GoalieStrength
+                GoalieStrength = team.GoalieStrength,
+                ChampionFlag = team.ChampionFlag,
+                PromotionFlag = team.PromotionFlag,
+                RelegationFlag = team.RelegationFlag
             }).ToList();
             AwayPositions = teams.Select(team => new TablePositionDto
             {
                 TeamName = team.Name,
                 AttackStrength = team.AttackStrength,
                 DefenseStrength = team.DefenseStrength,
-                GoalieStrength = team.GoalieStrength
+                GoalieStrength = team.GoalieStrength,
+                ChampionFlag = team.ChampionFlag,
+                PromotionFlag = team.PromotionFlag,
+                RelegationFlag = team.RelegationFlag
             }).ToList();
             PreviousPositions = teams.Select(team => new TablePositionDto
             {
                 TeamName = team.Name,
                 AttackStrength = team.AttackStrength,
                 DefenseStrength = team.DefenseStrength,
-                GoalieStrength = team.GoalieStrength
+                GoalieStrength = team.GoalieStrength,
+                ChampionFlag = team.ChampionFlag,
+                PromotionFlag = team.PromotionFlag,
+                RelegationFlag = team.RelegationFlag
             }).ToList();
             PreviousHomePositions = teams.Select(team => new TablePositionDto
             {
                 TeamName = team.Name,
                 AttackStrength = team.AttackStrength,
                 DefenseStrength = team.DefenseStrength,
-                GoalieStrength = team.GoalieStrength
+                GoalieStrength = team.GoalieStrength,
+                ChampionFlag = team.ChampionFlag,
+                PromotionFlag = team.PromotionFlag,
+                RelegationFlag = team.RelegationFlag
             }).ToList();
             PreviousAwayPositions = teams.Select(team => new TablePositionDto
             {
                 TeamName = team.Name,
                 AttackStrength = team.AttackStrength,
                 DefenseStrength = team.DefenseStrength,
-                GoalieStrength = team.GoalieStrength
+                GoalieStrength = team.GoalieStrength,
+                ChampionFlag = team.ChampionFlag,
+                PromotionFlag = team.PromotionFlag,
+                RelegationFlag = team.RelegationFlag
             }).ToList();
         }
 

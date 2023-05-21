@@ -19,6 +19,9 @@
       <span class="team-column">
         <span class="flex flex-row justify-start items-baseline">
           <span>{{ position.teamName }}</span>
+          <span class="text-xs font-bold" v-if="position.championFlag">(CH)</span>
+          <span class="text-xs font-bold" v-if="position.relegationFlag">(R)</span>
+          <span class="text-xs font-bold" v-if="position.promotionFlag">(P)</span>
           <span class="ml-2 text-xs">{{ position.attackStrength.toFixed(1) }}</span>
           <button @click="overrideInferredTeamStrength(position.teamName, position.inferredStrength)"
                 class="ml-2 text-xs text-gray-600 hover:text-gray-700"

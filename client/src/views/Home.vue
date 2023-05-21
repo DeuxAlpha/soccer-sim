@@ -56,19 +56,19 @@
     </AModal>
     <div class="flex flex-row justify-between">
       <div class="flex flex-row justify-start text-sm">
-      <span v-if="selectedSeason" @click="onResetSeasonClicked">
+      <span class="cursor-pointer hover:underline text-blue-600 hover:text-blue-700" v-if="selectedSeason" @click="onResetSeasonClicked">
         > {{ selectedSeason }}
       </span>
-        <span v-if="selectedContinent" @click="onResetContinentClicked">
+      <span class="cursor-pointer hover:underline text-blue-600 hover:text-blue-700" v-if="selectedContinent" @click="onResetContinentClicked">
         > {{ selectedContinent }}
       </span>
-        <span v-if="selectedCountry" @click="onResetCountryClicked">
+      <span class="cursor-pointer hover:underline text-blue-600 hover:text-blue-700" v-if="selectedCountry" @click="onResetCountryClicked">
         > {{ selectedCountry }}
       </span>
-        <span v-if="selectedDivision" @click="onResetDivisionClicked">
+      <span class="cursor-pointer hover:underline text-blue-600 hover:text-blue-700" v-if="selectedDivision" @click="onResetDivisionClicked">
         > {{ selectedDivision }}
       </span>
-        <span v-if="selectedLeague" @click="onResetLeagueClicked">
+      <span class="cursor-pointer hover:underline text-blue-600 hover:text-blue-700" v-if="selectedLeague" @click="onResetLeagueClicked">
         > {{ selectedLeague }}
       </span>
       </div>
@@ -85,23 +85,23 @@
       </div>
     </div>
     <div class="text-lg">
-      <span v-if="!selectedSeason" v-for="season of seasons" :key="season"
+      <span class="cursor-pointer hover:underline" v-if="!selectedSeason" v-for="season of seasons" :key="season"
             @click="onSeasonClicked(season)">
         {{ season }}
       </span>
-      <span v-if="!selectedContinent" v-for="continent of continents" :key="continent.name"
+      <span class="cursor-pointer hover:underline" v-if="!selectedContinent" v-for="continent of continents" :key="continent.name"
             @click="onContinentClicked(continent.name)">
         {{ continent.name }}
       </span>
-      <span v-if="!selectedCountry" v-for="country of countries" :key="country.name"
+      <span class="cursor-pointer hover:underline" v-if="!selectedCountry" v-for="country of countries" :key="country.name"
             @click="onCountryClicked(country.name)">
         {{ country.name }}
       </span>
-      <span v-if="!selectedDivision" v-for="division of divisions" :key="division.name"
+      <span class="cursor-pointer hover:underline" v-if="!selectedDivision" v-for="division of divisions" :key="division.name"
             @click="onDivisionClicked(division.name)">
         {{ division.name }}
       </span>
-      <span v-if="!selectedLeague" v-for="league of leagues" :key="league.name" @click="onLeagueClicked(league.name)">
+      <span class="cursor-pointer hover:underline" v-if="!selectedLeague" v-for="league of leagues" :key="league.name" @click="onLeagueClicked(league.name)">
         {{ league.name }}
       </span>
     </div>
@@ -112,17 +112,36 @@
           <option v-for="gameDay of lastMatchDay" :value="gameDay">{{ gameDay }}</option>
         </select>
       </label>
-      <APrimaryButton v-show="lastMatchDay !== 0" @click="onResimulateGameDayClicked">Resimulate Game Day</APrimaryButton>
+      <APrimaryButton v-show="lastMatchDay !== 0" @click="onResimulateGameDayClicked">Resimulate Game Day
+      </APrimaryButton>
       <APrimaryButton v-show="lastMatchDay !== 0" @click="onDeleteGameDayClicked">Delete Game Day</APrimaryButton>
     </div>
     <div class="flex md:flex-row flex-col space-x-2">
-      <div class="md:w-1/4 w-full">
-        <CGamePlan @game-click="onGameClicked($event)" :games="leagueGames" :table="leagueTable"/>
-      </div>
-      <div class="md:w-3/4 w-full">
-        <CTable :promotion-system="promotionSystem" league="leagueName" :season="selectedSeason" :table="leagueTable"/>
+      <CGamePlan @game-click="onGameClicked($event)" :games="leagueGames" :table="leagueTable"/>
+      <CTable :promotion-system="promotionSystem" league="leagueName" :season="selectedSeason"
+              :table="leagueTable"/>
+      <div class="flex flex-col" v-if="leagueTable">
+        <h4 class="text-lg">League Information</h4>
+        <label for="league-shot-accuracy-modifier">Shot accuracy modifier</label>
+        <input id="league-shot-accuracy-modifier" type="number" step=".01" v-model="shotAccuracyModifier">
+        <label for="league-pace-modifier">Pace modifier</label>
+        <input id="league-pace-modifier" type="number" step=".01" v-model="paceModifier">
+        <label for="league-max-home-advantage">Max home advantage</label>
+        <input id="league-max-home-advantage" type="number" step="1" v-model="maxHomeAdvantage">
+        <label for="league-max-away-disadvantage">Max away disadvantage</label>
+        <input id="league-max-away-disadvantage" type="number" step="1" v-model="maxAwayDisadvantage">
+        <label for="league-actions-per-minute">Actions per minute</label>
+        <input id="league-actions-per-minute" type="number" step="1" v-model="actionsPerMinute">
+        <label for="league-max-progress-chance">Max progress chance</label>
+        <input id="league-max-progress-chance" type="number" step=".01" v-model="maxProgressChance">
+        <label for="league-min-progress-chance">Min progress chance</label>
+        <input id="league-min-progress-chance" type="number" step=".01" v-model="minProgressChance">
+        <label for="league-rounds">Rounds</label>
+        <input id="league-rounds" type="number" step="1" v-model="rounds">
+        <APrimaryButton @click="onSaveLeagueInformationClicked">Save League</APrimaryButton>
       </div>
     </div>
+
     <div v-if="isNewLeague">
       <button
           @click="onRecreateGamePlanClicked"
@@ -158,6 +177,10 @@
           <input v-model="newSeason" id="new-season">
           <APrimaryButton @click="onProcessCountryClicked">Process Country</APrimaryButton>
         </div>
+        <button @click="onDeleteLeagueClicked"
+                class="py-2 px-4 bg-red-300 text-white hover:bg-red-400 focus:bg-red-500 active:bg-red-500">
+          Delete League
+        </button>
       </div>
     </div>
   </div>
@@ -174,6 +197,7 @@ import AModal from "@/components/functionality/AModal.vue";
 import {PromotionSystem} from "@/models/responses/PromotionSystem";
 import APrimaryButton from "@/components/functionality/buttons/APrimaryButton.vue";
 import {GameService} from "@/services/GameService";
+import {LeagueInformation} from "@/models/responses/LeagueInformation";
 
 @Component({
   name: 'Home',
@@ -226,6 +250,7 @@ export default class Home extends Vue {
 
   async getAppropriateNextCollection(): Promise<void> {
     if (this.selectedLeague) {
+      await this.getLeagueInformation();
       await this.getPromotionSystem();
       if (this.selectedGameDay) {
         await this.getGames(this.selectedGameDay);
@@ -331,6 +356,7 @@ export default class Home extends Vue {
     await this.updateRoute();
     await this.getGames(this.selectedGameDay);
     await this.getPromotionSystem();
+    await this.getLeagueInformation();
   }
 
 
@@ -542,6 +568,55 @@ export default class Home extends Vue {
 
   async onDeleteGameDayClicked(): Promise<void> {
     await this.axios.delete(`leagues/${this.selectedLeague}/${this.selectedSeason}/${this.selectedGameDay}`)
+        .then(() => window.location.reload())
+        .catch(error => console.error(error));
+  }
+
+  shotAccuracyModifier: number = 0;
+  paceModifier: number = 0;
+  maxHomeAdvantage: number = 0;
+  maxAwayDisadvantage: number = 0;
+  actionsPerMinute: number = 0;
+  maxProgressChance: number = 0;
+  minProgressChance: number = 0;
+  rounds: number = 0;
+
+  async getLeagueInformation(): Promise<void> {
+    await this.axios.get(`leagues/${this.selectedLeague}/${this.selectedSeason}`)
+        .then(response => {
+          this.shotAccuracyModifier = response.data.shotAccuracyModifier;
+          this.paceModifier = response.data.paceModifier;
+          this.maxHomeAdvantage = response.data.maxHomeAdvantage;
+          this.maxAwayDisadvantage = response.data.maxAwayDisadvantage;
+          this.actionsPerMinute = response.data.actionsPerMinute;
+          this.maxProgressChance = response.data.maxProgressChance;
+          this.minProgressChance = response.data.minProgressChance;
+          this.rounds = response.data.rounds;
+        })
+        .catch(error => console.error(error));
+  }
+
+  async onSaveLeagueInformationClicked(): Promise<void> {
+    const leagueInformation: LeagueInformation = {
+      shotAccuracyModifier: this.shotAccuracyModifier,
+      paceModifier: this.paceModifier,
+      maxHomeAdvantage: this.maxHomeAdvantage,
+      maxAwayDisadvantage: this.maxAwayDisadvantage,
+      actionsPerMinute: this.actionsPerMinute,
+      maxProgressChance: this.maxProgressChance,
+      minProgressChance: this.minProgressChance,
+      rounds: this.rounds,
+      name: this.selectedLeague,
+      season: this.selectedSeason,
+      divisionName: this.selectedDivision
+    }
+    await this.axios.put(`leagues/${this.selectedLeague}/${this.selectedSeason}`, leagueInformation)
+        .then(() => window.location.reload())
+        .catch(error => console.error(error));
+  }
+
+  async onDeleteLeagueClicked(): Promise<void> {
+    await this.axios.delete(`leagues/${this.selectedLeague}/${this.selectedSeason}`)
         .then(() => window.location.reload())
         .catch(error => console.error(error));
   }

@@ -10,4 +10,5 @@ public class DivisionProcessingStatus
     public IEnumerable<TeamDto> RelegationPlayoffTeams { get; set; }
     public IEnumerable<TeamDto> PromotedIntoThisDivision { get; set; }
     public IEnumerable<TeamDto> RelegatedIntoThisDivision { get; set; }
+    public TeamDto Champion { get; set; }
 }

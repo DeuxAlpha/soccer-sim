@@ -527,9 +527,16 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> DeleteLeague(string name, string season)
         {
-            var league = await _context.Countries.FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
+            var league = await _context.Leagues
+                .Include(l => l.Teams)
+                .Include(l => l.LeagueFixtures)
+                .Include(l => l.GameDays)
+                .FirstOrDefaultAsync(c => c.Name == name && c.Season == season);
             if (league == null) return NotFound(new { name, season });
-            _context.Countries.Remove(league);
+            _context.LeagueGameDays.RemoveRange(league.GameDays);
+            _context.LeagueFixtures.RemoveRange(league.LeagueFixtures);
+            _context.Teams.RemoveRange(league.Teams);
+            _context.Leagues.Remove(league);
             await _context.SaveChangesAsync();
             return NoContent();
         }
