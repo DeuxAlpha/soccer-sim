@@ -249,8 +249,11 @@ namespace API.Controllers
                 .Include(l => l.PromotionSystem)
                 .FirstOrDefaultAsync(l => l.Name == name && l.Season == season);
             if (league == null) return NotFound(new { name, season });
-            _context.PromotionSystems.Remove(league.PromotionSystem);
-            await _context.SaveChangesAsync();
+            if (league.PromotionSystem != null)
+            {
+                _context.PromotionSystems.Remove(league.PromotionSystem);
+                await _context.SaveChangesAsync();
+            }
             var promotionSystem = await _context.PromotionSystems.AddAsync(promotionSystemDto.Map());
             await _context.SaveChangesAsync();
             return Created(
