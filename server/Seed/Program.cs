@@ -1696,6 +1696,374 @@ try
     await StoreLeagueInfo(context, turkishSuperLig2012, "2012-2013", "Turkey", "Super Lig", 1);
 
     #endregion
+
+    #region 2013
+
+    context = new SoccerSimContext();
+    var belgianProLeague2013 = GetFixtures("2013-2014", "B1");
+    await StoreLeagueInfo(context, belgianProLeague2013, "2013-2014", "Belgium", "Pro League", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesliga2013 = GetFixtures("2013-2014", "D1");
+    await StoreLeagueInfo(context, germanBundesliga2013, "2013-2014", "Germany", "Bundesliga", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesliga22013 = GetFixtures("2013-2014", "D2");
+    await StoreLeagueInfo(context, germanBundesliga22013, "2013-2014", "Germany", "Bundesliga 2", 2);
+    
+    context = new SoccerSimContext();
+    var englishPremierLeague2013 = GetFixtures("2013-2014", "E0");
+    await StoreLeagueInfo(context, englishPremierLeague2013, "2013-2014", "England", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var englishChampionship2013 = GetFixtures("2013-2014", "E1");
+    await StoreLeagueInfo(context, englishChampionship2013, "2013-2014", "England", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var englishLeagueOne2013 = GetFixtures("2013-2014", "E2");
+    await StoreLeagueInfo(context, englishLeagueOne2013, "2013-2014", "England", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var englishLeagueTwo2013 = GetFixtures("2013-2014", "E3");
+    await StoreLeagueInfo(context, englishLeagueTwo2013, "2013-2014", "England", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var englishConference2013 = GetFixtures("2013-2014", "EC");
+    await StoreLeagueInfo(context, englishConference2013, "2013-2014", "England", "Conference", 5);
+    
+    context = new SoccerSimContext();
+    var frenchLigue12013 = GetFixtures("2013-2014", "F1");
+    await StoreLeagueInfo(context, frenchLigue12013, "2013-2014", "France", "Ligue 1", 1);
+    
+    context = new SoccerSimContext();
+    var frenchLigue22013 = GetFixtures("2013-2014", "F2");
+    await StoreLeagueInfo(context, frenchLigue22013, "2013-2014", "France", "Ligue 2", 2);
+    
+    context = new SoccerSimContext();
+    var greecesuperLeague2013 = GetFixtures("2013-2014", "G1");
+    await StoreLeagueInfo(context, greecesuperLeague2013, "2013-2014", "Greece", "Super League", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieA2013 = GetFixtures("2013-2014", "I1");
+    await StoreLeagueInfo(context, italianSerieA2013, "2013-2014", "Italy", "Serie A", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieB2013 = GetFixtures("2013-2014", "I2");
+    await StoreLeagueInfo(context, italianSerieB2013, "2013-2014", "Italy", "Serie B", 2);
+    
+    context = new SoccerSimContext();
+    var dutchEredivisie2013 = GetFixtures("2013-2014", "N1");
+    await StoreLeagueInfo(context, dutchEredivisie2013, "2013-2014", "Netherlands", "Eredivisie", 1);
+    
+    context = new SoccerSimContext();
+    var portugueseLiga2013 = GetFixtures("2013-2014", "P1");
+    await StoreLeagueInfo(context, portugueseLiga2013, "2013-2014", "Portugal", "Liga", 1);
+    
+    context = new SoccerSimContext();
+    var scottishPremiership2013 = GetFixtures("2013-2014", "SC0");
+    await StoreLeagueInfo(context, scottishPremiership2013, "2013-2014", "Scotland", "Premiership", 1);
+    
+    context = new SoccerSimContext();
+    var scottishChampionship2013 = GetFixtures("2013-2014", "SC1");
+    await StoreLeagueInfo(context, scottishChampionship2013, "2013-2014", "Scotland", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueOne2013 = GetFixtures("2013-2014", "SC2");
+    await StoreLeagueInfo(context, scottishLeagueOne2013, "2013-2014", "Scotland", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueTwo2013 = GetFixtures("2013-2014", "SC3");
+    await StoreLeagueInfo(context, scottishLeagueTwo2013, "2013-2014", "Scotland", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var spanishPrimeraDivision2013 = GetFixtures("2013-2014", "SP1");
+    await StoreLeagueInfo(context, spanishPrimeraDivision2013, "2013-2014", "Spain", "Primera Division", 1);
+    
+    context = new SoccerSimContext();
+    var spanishSegundaDivision2013 = GetFixtures("2013-2014", "SP2");
+    await StoreLeagueInfo(context, spanishSegundaDivision2013, "2013-2014", "Spain", "Segunda Division", 2);
+    
+    context = new SoccerSimContext();
+    var turkishSuperLig2013 = GetFixtures("2013-2014", "T1");
+    await StoreLeagueInfo(context, turkishSuperLig2013, "2013-2014", "Turkey", "Super Lig", 1);
+
+    #endregion
+    
+    #region 2014
+
+    context = new SoccerSimContext();
+    var belgianProLeague2014 = GetFixtures("2014-2015", "B1");
+    await StoreLeagueInfo(context, belgianProLeague2014, "2014-2015", "Belgium", "Pro League", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesliga2014 = GetFixtures("2014-2015", "D1");
+    await StoreLeagueInfo(context, germanBundesliga2014, "2014-2015", "Germany", "Bundesliga", 1);
+    
+    context = new SoccerSimContext();
+    var german2Bundesliga2014 = GetFixtures("2014-2015", "D2");
+    await StoreLeagueInfo(context, german2Bundesliga2014, "2014-2015", "Germany", "2. Bundesliga", 2);
+    
+    context = new SoccerSimContext();
+    var englishPremierLeague2014 = GetFixtures("2014-2015", "E0");
+    await StoreLeagueInfo(context, englishPremierLeague2014, "2014-2015", "England", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var englishChampionship2014 = GetFixtures("2014-2015", "E1");
+    await StoreLeagueInfo(context, englishChampionship2014, "2014-2015", "England", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var englishLeagueOne2014 = GetFixtures("2014-2015", "E2");
+    await StoreLeagueInfo(context, englishLeagueOne2014, "2014-2015", "England", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var englishLeagueTwo2014 = GetFixtures("2014-2015", "E3");
+    await StoreLeagueInfo(context, englishLeagueTwo2014, "2014-2015", "England", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var englishConference2014 = GetFixtures("2014-2015", "EC");
+    await StoreLeagueInfo(context, englishConference2014, "2014-2015", "England", "Conference", 5);
+    
+    context = new SoccerSimContext();
+    var frenchLigue12014 = GetFixtures("2014-2015", "F1");
+    await StoreLeagueInfo(context, frenchLigue12014, "2014-2015", "France", "Ligue 1", 1);
+    
+    context = new SoccerSimContext();
+    var frenchLigue22014 = GetFixtures("2014-2015", "F2");
+    await StoreLeagueInfo(context, frenchLigue22014, "2014-2015", "France", "Ligue 2", 2);
+    
+    context = new SoccerSimContext();
+    var greecesuperLeague2014 = GetFixtures("2014-2015", "G1");
+    await StoreLeagueInfo(context, greecesuperLeague2014, "2014-2015", "Greece", "Super League", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieA2014 = GetFixtures("2014-2015", "I1");
+    await StoreLeagueInfo(context, italianSerieA2014, "2014-2015", "Italy", "Serie A", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieB2014 = GetFixtures("2014-2015", "I2");
+    await StoreLeagueInfo(context, italianSerieB2014, "2014-2015", "Italy", "Serie B", 2);
+    
+    context = new SoccerSimContext();
+    var dutchEredivisie2014 = GetFixtures("2014-2015", "N1");
+    await StoreLeagueInfo(context, dutchEredivisie2014, "2014-2015", "Netherlands", "Eredivisie", 1);
+    
+    context = new SoccerSimContext();
+    var portugueseLiga2014 = GetFixtures("2014-2015", "P1");
+    await StoreLeagueInfo(context, portugueseLiga2014, "2014-2015", "Portugal", "Liga ZON Sagres", 1);
+    
+    context = new SoccerSimContext();
+    var scottishPremiership2014 = GetFixtures("2014-2015", "SC0");
+    await StoreLeagueInfo(context, scottishPremiership2014, "2014-2015", "Scotland", "Premiership", 1);
+    
+    context = new SoccerSimContext();
+    var scottishChampionship2014 = GetFixtures("2014-2015", "SC1");
+    await StoreLeagueInfo(context, scottishChampionship2014, "2014-2015", "Scotland", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueOne2014 = GetFixtures("2014-2015", "SC2");
+    await StoreLeagueInfo(context, scottishLeagueOne2014, "2014-2015", "Scotland", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueTwo2014 = GetFixtures("2014-2015", "SC3");
+    await StoreLeagueInfo(context, scottishLeagueTwo2014, "2014-2015", "Scotland", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var spanishPrimeraDivision2014 = GetFixtures("2014-2015", "SP1");
+    await StoreLeagueInfo(context, spanishPrimeraDivision2014, "2014-2015", "Spain", "Primera Division", 1);
+    
+    context = new SoccerSimContext();
+    var spanishSegundaDivision2014 = GetFixtures("2014-2015", "SP2");
+    await StoreLeagueInfo(context, spanishSegundaDivision2014, "2014-2015", "Spain", "Segunda Division", 2);
+    
+    context = new SoccerSimContext();
+    var turkishSuperLig2014 = GetFixtures("2014-2015", "T1");
+    await StoreLeagueInfo(context, turkishSuperLig2014, "2014-2015", "Turkey", "Super Lig", 1);
+
+    #endregion
+    
+    #region 2015
+
+    context = new SoccerSimContext();
+    var belgianProLeague2015 = GetFixtures("2015-2016", "B1");
+    await StoreLeagueInfo(context, belgianProLeague2015, "2015-2016", "Belgium", "Pro League", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesliga2015 = GetFixtures("2015-2016", "D1");
+    await StoreLeagueInfo(context, germanBundesliga2015, "2015-2016", "Germany", "Bundesliga", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesliga22015 = GetFixtures("2015-2016", "D2");
+    await StoreLeagueInfo(context, germanBundesliga22015, "2015-2016", "Germany", "Bundesliga 2", 2);
+    
+    context = new SoccerSimContext();
+    var englishPremierLeague2015 = GetFixtures("2015-2016", "E0");
+    await StoreLeagueInfo(context, englishPremierLeague2015, "2015-2016", "England", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var englishChampionship2015 = GetFixtures("2015-2016", "E1");
+    await StoreLeagueInfo(context, englishChampionship2015, "2015-2016", "England", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var englishLeagueOne2015 = GetFixtures("2015-2016", "E2");
+    await StoreLeagueInfo(context, englishLeagueOne2015, "2015-2016", "England", "League One", 3);
+
+    context = new SoccerSimContext();
+    var englishLeagueTwo2015 = GetFixtures("2015-2016", "E3");
+    await StoreLeagueInfo(context, englishLeagueTwo2015, "2015-2016", "England", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var englishConference2015 = GetFixtures("2015-2016", "EC");
+    await StoreLeagueInfo(context, englishConference2015, "2015-2016", "England", "Conference", 5);
+    
+    context = new SoccerSimContext();
+    var frenchLigue12015 = GetFixtures("2015-2016", "F1");
+    await StoreLeagueInfo(context, frenchLigue12015, "2015-2016", "France", "Ligue 1", 1);
+    
+    context = new SoccerSimContext();
+    var frenchLigue22015 = GetFixtures("2015-2016", "F2");
+    await StoreLeagueInfo(context, frenchLigue22015, "2015-2016", "France", "Ligue 2", 2);
+    
+    context= new SoccerSimContext();
+    var greecSuperLeague2015 = GetFixtures("2015-2016", "G1");  
+    await StoreLeagueInfo(context, greecSuperLeague2015, "2015-2016", "Greece", "Super League", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieA2015 = GetFixtures("2015-2016", "I1");
+    await StoreLeagueInfo(context, italianSerieA2015, "2015-2016", "Italy", "Serie A", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieB2015 = GetFixtures("2015-2016", "I2");
+    await StoreLeagueInfo(context, italianSerieB2015, "2015-2016", "Italy", "Serie B", 2);
+    
+    context = new SoccerSimContext();
+    var dutchEredivisie2015 = GetFixtures("2015-2016", "N1");
+    await StoreLeagueInfo(context, dutchEredivisie2015, "2015-2016", "Netherlands", "Eredivisie", 1);
+    
+    context = new SoccerSimContext();
+    var portugueseLiga2015 = GetFixtures("2015-2016", "P1");
+    await StoreLeagueInfo(context, portugueseLiga2015, "2015-2016", "Portugal", "Liga", 1);
+    
+    context = new SoccerSimContext();
+    var scottishPremiership2015 = GetFixtures("2015-2016", "SC0");
+    await StoreLeagueInfo(context, scottishPremiership2015, "2015-2016", "Scotland", "Premiership", 1);
+    
+    context = new SoccerSimContext();
+    var scottishChampionship2015 = GetFixtures("2015-2016", "SC1");
+    await StoreLeagueInfo(context, scottishChampionship2015, "2015-2016", "Scotland", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueOne2015 = GetFixtures("2015-2016", "SC2");
+    await StoreLeagueInfo(context, scottishLeagueOne2015, "2015-2016", "Scotland", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueTwo2015 = GetFixtures("2015-2016", "SC3");
+    await StoreLeagueInfo(context, scottishLeagueTwo2015, "2015-2016", "Scotland", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var spanishPrimera2015 = GetFixtures("2015-2016", "SP1");
+    await StoreLeagueInfo(context, spanishPrimera2015, "2015-2016", "Spain", "Primera Division", 1);
+    
+    context = new SoccerSimContext();
+    var spanishSegunda2015 = GetFixtures("2015-2016", "SP2");
+    await StoreLeagueInfo(context, spanishSegunda2015, "2015-2016", "Spain", "Segunda Division", 2);
+    
+    context = new SoccerSimContext();
+    var turkishSuperLig2015 = GetFixtures("2015-2016", "T1");
+    await StoreLeagueInfo(context, turkishSuperLig2015, "2015-2016", "Turkey", "Super Lig", 1);
+
+    #endregion
+    
+    #region 2016
+    
+    context = new SoccerSimContext();
+    var belgianFirstDivisionA2016 = GetFixtures("2016-2017", "B1");
+    await StoreLeagueInfo(context, belgianFirstDivisionA2016, "2016-2017", "Belgium", "First Division A", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesliga2016 = GetFixtures("2016-2017", "D1");
+    await StoreLeagueInfo(context, germanBundesliga2016, "2016-2017", "Germany", "Bundesliga", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesliga22016 = GetFixtures("2016-2017", "D2");
+    await StoreLeagueInfo(context, germanBundesliga22016, "2016-2017", "Germany", "Bundesliga 2", 2);
+    
+    context = new SoccerSimContext();
+    var englishPremierLeague2016 = GetFixtures("2016-2017", "E0");
+    await StoreLeagueInfo(context, englishPremierLeague2016, "2016-2017", "England", "Premier League", 1);
+
+    context = new SoccerSimContext();
+    var englishChampionship2016 = GetFixtures("2016-2017", "E1");
+    await StoreLeagueInfo(context, englishChampionship2016, "2016-2017", "England", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var englishLeagueOne2016 = GetFixtures("2016-2017", "E2");
+    await StoreLeagueInfo(context, englishLeagueOne2016, "2016-2017", "England", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var englishLeagueTwo2016 = GetFixtures("2016-2017", "E3");
+    await StoreLeagueInfo(context, englishLeagueTwo2016, "2016-2017", "England", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var englishConference2016 = GetFixtures("2016-2017", "EC");
+    await StoreLeagueInfo(context, englishConference2016, "2016-2017", "England", "Conference", 5);
+    
+    context = new SoccerSimContext();
+    var frenchLigue12016 = GetFixtures("2016-2017", "F1");
+    await StoreLeagueInfo(context, frenchLigue12016, "2016-2017", "France", "Ligue 1", 1);
+    
+    context = new SoccerSimContext();
+    var frenchLigue22016 = GetFixtures("2016-2017", "F2");
+    await StoreLeagueInfo(context, frenchLigue22016, "2016-2017", "France", "Ligue 2", 2);
+    
+    context = new SoccerSimContext();
+    var greecSuperLeague2016 = GetFixtures("2016-2017", "G1");
+    await StoreLeagueInfo(context, greecSuperLeague2016, "2016-2017", "Greece", "Super League", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieA2016 = GetFixtures("2016-2017", "I1");
+    await StoreLeagueInfo(context, italianSerieA2016, "2016-2017", "Italy", "Serie A", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieB2016 = GetFixtures("2016-2017", "I2");
+    await StoreLeagueInfo(context, italianSerieB2016, "2016-2017", "Italy", "Serie B", 2);
+    
+    context = new SoccerSimContext();
+    var dutchEredivisie2016 = GetFixtures("2016-2017", "N1");
+    await StoreLeagueInfo(context, dutchEredivisie2016, "2016-2017", "Netherlands", "Eredivisie", 1);
+    
+    context = new SoccerSimContext();
+    var portugueseLiga2016 = GetFixtures("2016-2017", "P1");
+    await StoreLeagueInfo(context, portugueseLiga2016, "2016-2017", "Portugal", "Liga ZON Sagres", 1);
+    
+    context = new SoccerSimContext();
+    var scottishPremiership2016 = GetFixtures("2016-2017", "SC0");
+    await StoreLeagueInfo(context, scottishPremiership2016, "2016-2017", "Scotland", "Premiership", 1);
+    
+    context = new SoccerSimContext();
+    var scottishChampionship2016 = GetFixtures("2016-2017", "SC1");
+    await StoreLeagueInfo(context, scottishChampionship2016, "2016-2017", "Scotland", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueOne2016 = GetFixtures("2016-2017", "SC2");
+    await StoreLeagueInfo(context, scottishLeagueOne2016, "2016-2017", "Scotland", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueTwo2016 = GetFixtures("2016-2017", "SC3");
+    await StoreLeagueInfo(context, scottishLeagueTwo2016, "2016-2017", "Scotland", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var spanishPrimeraDivision2016 = GetFixtures("2016-2017", "SP1");
+    await StoreLeagueInfo(context, spanishPrimeraDivision2016, "2016-2017", "Spain", "Primera Division", 1);
+    
+    context = new SoccerSimContext();
+    var spanishSegundaDivision2016 = GetFixtures("2016-2017", "SP2");
+    await StoreLeagueInfo(context, spanishSegundaDivision2016, "2016-2017", "Spain", "Segunda Division", 2);
+    
+    context = new SoccerSimContext();
+    var turkishSuperLig2016 = GetFixtures("2016-2017", "T1");
+    await StoreLeagueInfo(context, turkishSuperLig2016, "2016-2017", "Turkey", "Super Lig", 1);
+    
+    #endregion
 }
 catch (Exception exception)
 {
