@@ -20,10 +20,10 @@ Log.Information("Soccer Seed v1993-01");
 
 try
 {
+    #region 1993
 
-    // Create the following countries and leagues: England, Premier League, Championship, League One, League Two, etc.
     
-    // var context = new SoccerSimContext();
+// var context = new SoccerSimContext();
     // var bundesligaFixtures1993 = Get1993Fixtures("1993-1994", "D1");
     // await StoreLeagueInfo1993(context, bundesligaFixtures1993, "1993-1994", "Germany", "Bundesliga", 1);
     //
@@ -62,6 +62,9 @@ try
     // context = new SoccerSimContext();
     // var spanishLaLigaFixtures1993 = Get1993Fixtures("1993-1994", "SP1");
     // await StoreLeagueInfo1993(context, spanishLaLigaFixtures1993, "1993-1994", "Spain", "La Liga", 1);
+    #endregion
+
+    #region 1994
 
     // var context = new SoccerSimContext();
     // var germanBundesligaFixtures1994 = GetFixtures("1994-1995", "D1");
@@ -122,7 +125,11 @@ try
     // context = new SoccerSimContext();
     // var turkishSuperLigFixtures1994 = GetFixtures("1994-1995", "T1");
     // await StoreLeagueInfo(context, turkishSuperLigFixtures1994, "1994-1995", "Turkey", "Super Lig", 1);
-    
+
+    #endregion
+
+    #region 1995
+
     // var context = new SoccerSimContext();
     // var belgiumFirstDivisionAFixtures1995 = GetFixtures("1995-1996", "B1");
     // await StoreLeagueInfo(context, belgiumFirstDivisionAFixtures1995, "1995-1996", "Belgium", "First Division A", 1);
@@ -186,6 +193,10 @@ try
     // context = new SoccerSimContext();
     // var turkishSuperLigFixtures1995 = GetFixtures("1995-1996", "T1");
     // await StoreLeagueInfo(context, turkishSuperLigFixtures1995, "1995-1996", "Turkey", "Super Lig", 1);
+
+    #endregion
+
+    #region 1996
 
     // var context = new SoccerSimContext();
     // var belgiumFirstDivisionAFixtures1996 = GetFixtures("1996-1997", "B1");
@@ -259,6 +270,896 @@ try
     // var turkishSuperLigFixtures1996 = GetFixtures("1996-1997", "T1");
     // await StoreLeagueInfo(context, turkishSuperLigFixtures1996, "1996-1997", "Turkey", "Super Lig", 1);
 
+    #endregion
+
+    #region 1997
+
+    var context = new SoccerSimContext();
+    var belgiumJupilerLeagueFixtures1997 = GetFixtures("1997-1998", "B1");
+    await StoreLeagueInfo(context, belgiumJupilerLeagueFixtures1997, "1997-1998", "Belgium", "Jupiler League", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesligaFixtures1997 = GetFixtures("1997-1998", "D1");
+    await StoreLeagueInfo(context, germanBundesligaFixtures1997, "1997-1998", "Germany", "Bundesliga", 1);
+    
+    context = new SoccerSimContext();
+    var german2BundesligaFixtures1997 = GetFixtures("1997-1998", "D2");
+    await StoreLeagueInfo(context, german2BundesligaFixtures1997, "1997-1998", "Germany", "2. Bundesliga", 2);
+    
+    context = new SoccerSimContext();
+    var englishPremierLeagueFixtures1997 = GetFixtures("1997-1998", "E0");
+    await StoreLeagueInfo(context, englishPremierLeagueFixtures1997, "1997-1998", "England", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var englishChampionshipFixtures1997 = GetFixtures("1997-1998", "E1");
+    await StoreLeagueInfo(context, englishChampionshipFixtures1997, "1997-1998", "England", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var englishLeagueOneFixtures1997 = GetFixtures("1997-1998", "E2");
+    await StoreLeagueInfo(context, englishLeagueOneFixtures1997, "1997-1998", "England", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var englishLeagueTwoFixtures1997 = GetFixtures("1997-1998", "E3");
+    await StoreLeagueInfo(context, englishLeagueTwoFixtures1997, "1997-1998", "England", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var frenchLigue1Fixtures1997 = GetFixtures("1997-1998", "F1");
+    await StoreLeagueInfo(context, frenchLigue1Fixtures1997, "1997-1998", "France", "Ligue 1", 1);
+    
+    context = new SoccerSimContext();
+    var frenchLigue2Fixtures1997 = GetFixtures("1997-1998", "F2");
+    await StoreLeagueInfo(context, frenchLigue2Fixtures1997, "1997-1998", "France", "Ligue 2", 2);
+    
+    context = new SoccerSimContext();
+    var greekSuperLeagueFixtures1997 = GetFixtures("1997-1998", "G1");
+    await StoreLeagueInfo(context, greekSuperLeagueFixtures1997, "1997-1998", "Greece", "Super League", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieAFixtures1997 = GetFixtures("1997-1998", "I1");
+    await StoreLeagueInfo(context, italianSerieAFixtures1997, "1997-1998", "Italy", "Serie A", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieBFixtures1997 = GetFixtures("1997-1998", "I2");
+    await StoreLeagueInfo(context, italianSerieBFixtures1997, "1997-1998", "Italy", "Serie B", 2);
+    
+    context = new SoccerSimContext();
+    var dutchEredivisieFixtures1997 = GetFixtures("1997-1998", "N1");
+    await StoreLeagueInfo(context, dutchEredivisieFixtures1997, "1997-1998", "Netherlands", "Eredivisie", 1);
+    
+    context = new SoccerSimContext();
+    var portuguesePrimeiraLigaFixtures1997 = GetFixtures("1997-1998", "P1");
+    await StoreLeagueInfo(context, portuguesePrimeiraLigaFixtures1997, "1997-1998", "Portugal", "Primeira Liga", 1);
+    
+    context = new SoccerSimContext();
+    var scottishPremiershipFixtures1997 = GetFixtures("1997-1998", "SC0");
+    await StoreLeagueInfo(context, scottishPremiershipFixtures1997, "1997-1998", "Scotland", "Premiership", 1);
+    
+    context = new SoccerSimContext();
+    var scottishChampionshipFixtures1997 = GetFixtures("1997-1998", "SC1");
+    await StoreLeagueInfo(context, scottishChampionshipFixtures1997, "1997-1998", "Scotland", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueOneFixtures1997 = GetFixtures("1997-1998", "SC2");
+    await StoreLeagueInfo(context, scottishLeagueOneFixtures1997, "1997-1998", "Scotland", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueTwoFixtures1997 = GetFixtures("1997-1998", "SC3");
+    await StoreLeagueInfo(context, scottishLeagueTwoFixtures1997, "1997-1998", "Scotland", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var spanishLaLigaFixtures1997 = GetFixtures("1997-1998", "SP1");
+    await StoreLeagueInfo(context, spanishLaLigaFixtures1997, "1997-1998", "Spain", "La Liga", 1);
+    
+    context = new SoccerSimContext();
+    var spanishSegundaDivisionFixtures1997 = GetFixtures("1997-1998", "SP2");
+    await StoreLeagueInfo(context, spanishSegundaDivisionFixtures1997, "1997-1998", "Spain", "Segunda Division", 2);
+    
+    context = new SoccerSimContext();
+    var turkishSuperLigFixtures1997 = GetFixtures("1997-1998", "T1");
+    await StoreLeagueInfo(context, turkishSuperLigFixtures1997, "1997-1998", "Turkey", "Super Lig", 1);
+
+    #endregion
+
+    #region 1998
+
+    context = new SoccerSimContext();
+    var belgianFirstDivisionFixtures1998 = GetFixtures("1998-1999", "B1");
+    await StoreLeagueInfo(context, belgianFirstDivisionFixtures1998, "1998-1999", "Belgium", "First Division", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesligaFixtures1998 = GetFixtures("1998-1999", "D1");
+    await StoreLeagueInfo(context, germanBundesligaFixtures1998, "1998-1999", "Germany", "Bundesliga", 1);
+    
+    context = new SoccerSimContext();
+    var german2BundesligaFixtures1998 = GetFixtures("1998-1999", "D2");
+    await StoreLeagueInfo(context, german2BundesligaFixtures1998, "1998-1999", "Germany", "2. Bundesliga", 2);
+    
+    context = new SoccerSimContext();
+    var englishPremierLeagueFixtures1998 = GetFixtures("1998-1999", "E0");
+    await StoreLeagueInfo(context, englishPremierLeagueFixtures1998, "1998-1999", "England", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var englishChampionshipFixtures1998 = GetFixtures("1998-1999", "E1");
+    await StoreLeagueInfo(context, englishChampionshipFixtures1998, "1998-1999", "England", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var englishLeagueOneFixtures1998 = GetFixtures("1998-1999", "E2");
+    await StoreLeagueInfo(context, englishLeagueOneFixtures1998, "1998-1999", "England", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var englishLeagueTwoFixtures1998 = GetFixtures("1998-1999", "E3");
+    await StoreLeagueInfo(context, englishLeagueTwoFixtures1998, "1998-1999", "England", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var frenchLigue1Fixtures1998 = GetFixtures("1998-1999", "F1");
+    await StoreLeagueInfo(context, frenchLigue1Fixtures1998, "1998-1999", "France", "Ligue 1", 1);
+    
+    context = new SoccerSimContext();
+    var frenchLigue2Fixtures1998 = GetFixtures("1998-1999", "F2");
+    await StoreLeagueInfo(context, frenchLigue2Fixtures1998, "1998-1999", "France", "Ligue 2", 2);
+    
+    context = new SoccerSimContext();
+    var greekSuperLeagueFixtures1998 = GetFixtures("1998-1999", "G1");
+    await StoreLeagueInfo(context, greekSuperLeagueFixtures1998, "1998-1999", "Greece", "Super League", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieAFixtures1998 = GetFixtures("1998-1999", "I1");
+    await StoreLeagueInfo(context, italianSerieAFixtures1998, "1998-1999", "Italy", "Serie A", 1);
+
+    context = new SoccerSimContext();
+    var italianSerieBFixtures1998 = GetFixtures("1998-1999", "I2");
+    await StoreLeagueInfo(context, italianSerieBFixtures1998, "1998-1999", "Italy", "Serie B", 2);
+    
+    context = new SoccerSimContext();
+    var dutchEredivisieFixtures1998 = GetFixtures("1998-1999", "N1");
+    await StoreLeagueInfo(context, dutchEredivisieFixtures1998, "1998-1999", "Netherlands", "Eredivisie", 1);
+    
+    context = new SoccerSimContext();
+    var portuguesePrimeiraLigaFixtures1998 = GetFixtures("1998-1999", "P1");
+    await StoreLeagueInfo(context, portuguesePrimeiraLigaFixtures1998, "1998-1999", "Portugal", "Primeira Liga", 1);
+    
+    context = new SoccerSimContext();
+    var scottishPremiershipFixtures1998 = GetFixtures("1998-1999", "SC0");
+    await StoreLeagueInfo(context, scottishPremiershipFixtures1998, "1998-1999", "Scotland", "Premiership", 1);
+    
+    context = new SoccerSimContext();
+    var scottishChampionshipFixtures1998 = GetFixtures("1998-1999", "SC1");
+    await StoreLeagueInfo(context, scottishChampionshipFixtures1998, "1998-1999", "Scotland", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueOneFixtures1998 = GetFixtures("1998-1999", "SC2");
+    await StoreLeagueInfo(context, scottishLeagueOneFixtures1998, "1998-1999", "Scotland", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueTwoFixtures1998 = GetFixtures("1998-1999", "SC3");
+    await StoreLeagueInfo(context, scottishLeagueTwoFixtures1998, "1998-1999", "Scotland", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var spanishLaLigaFixtures1998 = GetFixtures("1998-1999", "SP1");
+    await StoreLeagueInfo(context, spanishLaLigaFixtures1998, "1998-1999", "Spain", "La Liga", 1);
+    
+    context = new SoccerSimContext();
+    var spanishSegundaFixtures1998 = GetFixtures("1998-1999", "SP2");
+    await StoreLeagueInfo(context, spanishSegundaFixtures1998, "1998-1999", "Spain", "Segunda", 2);
+    
+    context = new SoccerSimContext();
+    var turkishSuperLigFixtures1998 = GetFixtures("1998-1999", "T1");
+    await StoreLeagueInfo(context, turkishSuperLigFixtures1998, "1998-1999", "Turkey", "Super Lig", 1);
+
+    #endregion
+
+
+    #region 1999
+    
+    context = new SoccerSimContext();
+    var belgianFirstDivisionFixtures1999 = GetFixtures("1999-2000", "B1");
+    await StoreLeagueInfo(context, belgianFirstDivisionFixtures1999, "1999-2000", "Belgium", "First Division", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesligaFixtures1999 = GetFixtures("1999-2000", "D1");
+    await StoreLeagueInfo(context, germanBundesligaFixtures1999, "1999-2000", "Germany", "Bundesliga", 1);
+    
+    context = new SoccerSimContext();
+    var german2BundesligaFixtures1999 = GetFixtures("1999-2000", "D2");
+    await StoreLeagueInfo(context, german2BundesligaFixtures1999, "1999-2000", "Germany", "2. Bundesliga", 2);
+    
+    context = new SoccerSimContext();
+    var englishPremierLeagueFixtures1999 = GetFixtures("1999-2000", "E0");
+    await StoreLeagueInfo(context, englishPremierLeagueFixtures1999, "1999-2000", "England", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var englishChampionshipFixtures1999 = GetFixtures("1999-2000", "E1");
+    await StoreLeagueInfo(context, englishChampionshipFixtures1999, "1999-2000", "England", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var englishLeagueOneFixtures1999 = GetFixtures("1999-2000", "E2");
+    await StoreLeagueInfo(context, englishLeagueOneFixtures1999, "1999-2000", "England", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var englishLeagueTwoFixtures1999 = GetFixtures("1999-2000", "E3");
+    await StoreLeagueInfo(context, englishLeagueTwoFixtures1999, "1999-2000", "England", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var frenchLigue1Fixtures1999 = GetFixtures("1999-2000", "F1");
+    await StoreLeagueInfo(context, frenchLigue1Fixtures1999, "1999-2000", "France", "Ligue 1", 1);
+    
+    context = new SoccerSimContext();
+    var frenchLigue2Fixtures1999 = GetFixtures("1999-2000", "F2");
+    await StoreLeagueInfo(context, frenchLigue2Fixtures1999, "1999-2000", "France", "Ligue 2", 2);
+    
+    context = new SoccerSimContext();
+    var greekSuperLeagueFixtures1999 = GetFixtures("1999-2000", "G1");
+    await StoreLeagueInfo(context, greekSuperLeagueFixtures1999, "1999-2000", "Greece", "Super League", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieAFixtures1999 = GetFixtures("1999-2000", "I1");
+    await StoreLeagueInfo(context, italianSerieAFixtures1999, "1999-2000", "Italy", "Serie A", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieBFixtures1999 = GetFixtures("1999-2000", "I2");
+    await StoreLeagueInfo(context, italianSerieBFixtures1999, "1999-2000", "Italy", "Serie B", 2);
+    
+    context = new SoccerSimContext();
+    var dutchEredivisieFixtures1999 = GetFixtures("1999-2000", "N1");
+    await StoreLeagueInfo(context, dutchEredivisieFixtures1999, "1999-2000", "Netherlands", "Eredivisie", 1);
+    
+    context = new SoccerSimContext();
+    var portugueseLigaFixtures1999 = GetFixtures("1999-2000", "P1");
+    await StoreLeagueInfo(context, portugueseLigaFixtures1999, "1999-2000", "Portugal", "Liga", 1);
+    
+    context = new SoccerSimContext();
+    var scottishPremiershipFixtures1999 = GetFixtures("1999-2000", "SC0");
+    await StoreLeagueInfo(context, scottishPremiershipFixtures1999, "1999-2000", "Scotland", "Premiership", 1);
+    
+    context = new SoccerSimContext();
+    var scottishChampionshipFixtures1999 = GetFixtures("1999-2000", "SC1");
+    await StoreLeagueInfo(context, scottishChampionshipFixtures1999, "1999-2000", "Scotland", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueOneFixtures1999 = GetFixtures("1999-2000", "SC2");
+    await StoreLeagueInfo(context, scottishLeagueOneFixtures1999, "1999-2000", "Scotland", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueTwoFixtures1999 = GetFixtures("1999-2000", "SC3");
+    await StoreLeagueInfo(context, scottishLeagueTwoFixtures1999, "1999-2000", "Scotland", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var spanishPrimeraFixtures1999 = GetFixtures("1999-2000", "SP1");
+    await StoreLeagueInfo(context, spanishPrimeraFixtures1999, "1999-2000", "Spain", "Primera Division", 1);
+    
+    context = new SoccerSimContext();
+    var spanishSegundaFixtures1999 = GetFixtures("1999-2000", "SP2");
+    await StoreLeagueInfo(context, spanishSegundaFixtures1999, "1999-2000", "Spain", "Segunda Division", 2);
+    
+    context = new SoccerSimContext();
+    var turkishSuperLigFixtures1999 = GetFixtures("1999-2000", "T1");
+    await StoreLeagueInfo(context, turkishSuperLigFixtures1999, "1999-2000", "Turkey", "Super Lig", 1);
+
+    #endregion
+
+    #region 2000
+
+    context = new SoccerSimContext();
+    var belgianFirstDivisionFixtures2000 = GetFixtures("2000-2001", "B1");
+    await StoreLeagueInfo(context, belgianFirstDivisionFixtures2000, "2000-2001", "Belgium", "First Division", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesligaFixtures2000 = GetFixtures("2000-2001", "D1");
+    await StoreLeagueInfo(context, germanBundesligaFixtures2000, "2000-2001", "Germany", "Bundesliga", 1);
+    
+    context = new SoccerSimContext();
+    var german2BundesligaFixtures2000 = GetFixtures("2000-2001", "D2");
+    await StoreLeagueInfo(context, german2BundesligaFixtures2000, "2000-2001", "Germany", "2. Bundesliga", 2);
+    
+    context = new SoccerSimContext();
+    var englishPremierLeagueFixtures2000 = GetFixtures("2000-2001", "E0");
+    await StoreLeagueInfo(context, englishPremierLeagueFixtures2000, "2000-2001", "England", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var englishChampionshipFixtures2000 = GetFixtures("2000-2001", "E1");
+    await StoreLeagueInfo(context, englishChampionshipFixtures2000, "2000-2001", "England", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var englishLeagueOneFixtures2000 = GetFixtures("2000-2001", "E2");
+    await StoreLeagueInfo(context, englishLeagueOneFixtures2000, "2000-2001", "England", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var englishLeagueTwoFixtures2000 = GetFixtures("2000-2001", "E3");
+    await StoreLeagueInfo(context, englishLeagueTwoFixtures2000, "2000-2001", "England", "League Two", 4);
+    
+    // context = new SoccerSimContext();
+    // var englishConferenceFixtures2000 = GetFixtures("2000-2001", "EC");
+    // await StoreLeagueInfo(context, englishConferenceFixtures2000, "2000-2001", "England", "Conference", 5);
+    
+    context = new SoccerSimContext();
+    var frenchLigue1Fixtures2000 = GetFixtures("2000-2001", "F1");
+    await StoreLeagueInfo(context, frenchLigue1Fixtures2000, "2000-2001", "France", "Ligue 1", 1);
+    
+    context = new SoccerSimContext();
+    var frenchLigue2Fixtures2000 = GetFixtures("2000-2001", "F2");
+    await StoreLeagueInfo(context, frenchLigue2Fixtures2000, "2000-2001", "France", "Ligue 2", 2);
+    
+    context = new SoccerSimContext();
+    var greecesuperLeagueFixtures2000 = GetFixtures("2000-2001", "G1");
+    await StoreLeagueInfo(context, greecesuperLeagueFixtures2000, "2000-2001", "Greece", "Super League", 1);
+    
+    context = new SoccerSimContext();
+    var italianserieAFixtures2000 = GetFixtures("2000-2001", "I1");
+    await StoreLeagueInfo(context, italianserieAFixtures2000, "2000-2001", "Italy", "Serie A", 1);
+    
+    context = new SoccerSimContext();
+    var italianserieBFixtures2000 = GetFixtures("2000-2001", "I2");
+    await StoreLeagueInfo(context, italianserieBFixtures2000, "2000-2001", "Italy", "Serie B", 2);
+    
+    context = new SoccerSimContext();
+    var dutchEredivisieFixtures2000 = GetFixtures("2000-2001", "N1");
+    await StoreLeagueInfo(context, dutchEredivisieFixtures2000, "2000-2001", "Netherlands", "Eredivisie", 1);
+    
+    context = new SoccerSimContext();
+    var portugueseLigaFixtures2000 = GetFixtures("2000-2001", "P1");
+    await StoreLeagueInfo(context, portugueseLigaFixtures2000, "2000-2001", "Portugal", "Liga", 1);
+    
+    context = new SoccerSimContext();
+    var scottishPremiership = GetFixtures("2000-2001", "SC0");
+    await StoreLeagueInfo(context, scottishPremiership, "2000-2001", "Scotland", "Premier", 1);
+    
+    context = new SoccerSimContext();
+    var scottishChampionship = GetFixtures("2000-2001", "SC1");
+    await StoreLeagueInfo(context, scottishChampionship, "2000-2001", "Scotland", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueOne = GetFixtures("2000-2001", "SC2");
+    await StoreLeagueInfo(context, scottishLeagueOne, "2000-2001", "Scotland", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueTwo = GetFixtures("2000-2001", "SC3");
+    await StoreLeagueInfo(context, scottishLeagueTwo, "2000-2001", "Scotland", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var spanishPrimeraDivision = GetFixtures("2000-2001", "SP1");
+    await StoreLeagueInfo(context, spanishPrimeraDivision, "2000-2001", "Spain", "Primera Division", 1);
+    
+    context = new SoccerSimContext();
+    var spanishSegundaDivision = GetFixtures("2000-2001", "SP2");
+    await StoreLeagueInfo(context, spanishSegundaDivision, "2000-2001", "Spain", "Segunda Division", 2);
+    
+    context = new SoccerSimContext();
+    var turkishSuperLig = GetFixtures("2000-2001", "T1");
+    await StoreLeagueInfo(context, turkishSuperLig, "2000-2001", "Turkey", "Super Lig", 1);
+
+    #endregion
+
+    #region 2001
+
+    context = new SoccerSimContext();
+    var belgianFirstDivision = GetFixtures("2001-2002", "B1");
+    await StoreLeagueInfo(context, belgianFirstDivision, "2001-2002", "Belgium", "First Division", 1);
+
+    context = new SoccerSimContext();
+    var germanBundesliga = GetFixtures("2001-2002", "D1");
+    await StoreLeagueInfo(context, germanBundesliga, "2001-2002", "Germany", "Bundesliga", 1);
+    
+    context = new SoccerSimContext();
+    var german2Bundesliga = GetFixtures("2001-2002", "D2");
+    await StoreLeagueInfo(context, german2Bundesliga, "2001-2002", "Germany", "2. Bundesliga", 2);
+    
+    context = new SoccerSimContext();
+    var englishPremierLeague = GetFixtures("2001-2002", "E0");
+    await StoreLeagueInfo(context, englishPremierLeague, "2001-2002", "England", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var englishChampionship = GetFixtures("2001-2002", "E1");
+    await StoreLeagueInfo(context, englishChampionship, "2001-2002", "England", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var englishLeagueOne = GetFixtures("2001-2002", "E2");
+    await StoreLeagueInfo(context, englishLeagueOne, "2001-2002", "England", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var englishLeagueTwo = GetFixtures("2001-2002", "E3");
+    await StoreLeagueInfo(context, englishLeagueTwo, "2001-2002", "England", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var frenchLigue1 = GetFixtures("2001-2002", "F1");
+    await StoreLeagueInfo(context, frenchLigue1, "2001-2002", "France", "Ligue 1", 1);
+    
+    context = new SoccerSimContext();
+    var frenchLigue2 = GetFixtures("2001-2002", "F2");
+    await StoreLeagueInfo(context, frenchLigue2, "2001-2002", "France", "Ligue 2", 2);
+    
+    context = new SoccerSimContext();
+    var greekSuperLeague = GetFixtures("2001-2002", "G1");
+    await StoreLeagueInfo(context, greekSuperLeague, "2001-2002", "Greece", "Super League", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieA = GetFixtures("2001-2002", "I1");
+    await StoreLeagueInfo(context, italianSerieA, "2001-2002", "Italy", "Serie A", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieB = GetFixtures("2001-2002", "I2");
+    await StoreLeagueInfo(context, italianSerieB, "2001-2002", "Italy", "Serie B", 2);
+    
+    context = new SoccerSimContext();
+    var dutchEredivisie = GetFixtures("2001-2002", "N1");
+    await StoreLeagueInfo(context, dutchEredivisie, "2001-2002", "Netherlands", "Eredivisie", 1);
+    
+    context = new SoccerSimContext();
+    var portuguesePrimeiraLiga = GetFixtures("2001-2002", "P1");
+    await StoreLeagueInfo(context, portuguesePrimeiraLiga, "2001-2002", "Portugal", "Primeira Liga", 1);
+    
+    context = new SoccerSimContext();
+    var scottishPremiership2001 = GetFixtures("2001-2002", "SC0");
+    await StoreLeagueInfo(context, scottishPremiership2001, "2001-2002", "Scotland", "Premiership", 1);
+    
+    context = new SoccerSimContext();
+    var scottishChampionship2001 = GetFixtures("2001-2002", "SC1");
+    await StoreLeagueInfo(context, scottishChampionship2001, "2001-2002", "Scotland", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueOne2001 = GetFixtures("2001-2002", "SC2");
+    await StoreLeagueInfo(context, scottishLeagueOne2001, "2001-2002", "Scotland", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueTwo2001 = GetFixtures("2001-2002", "SC3");
+    await StoreLeagueInfo(context, scottishLeagueTwo2001, "2001-2002", "Scotland", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var spanishPrimeraDivision2001 = GetFixtures("2001-2002", "SP1");
+    await StoreLeagueInfo(context, spanishPrimeraDivision2001, "2001-2002", "Spain", "Primera Division", 1);
+    
+    context = new SoccerSimContext();
+    var spanishSegundaDivision2001 = GetFixtures("2001-2002", "SP2");
+    await StoreLeagueInfo(context, spanishSegundaDivision2001, "2001-2002", "Spain", "Segunda Division", 2);
+    
+    context = new SoccerSimContext();
+    var turkishSuperLig2001 = GetFixtures("2001-2002", "T1");
+    await StoreLeagueInfo(context, turkishSuperLig2001, "2001-2002", "Turkey", "Super Lig", 1);
+
+    #endregion
+    
+    #region 2002
+    
+    context = new SoccerSimContext();
+    var belgianFirstDivision2002 = GetFixtures("2002-2003", "B1");
+    await StoreLeagueInfo(context, belgianFirstDivision2002, "2002-2003", "Belgium", "First Division", 1);
+
+    context = new SoccerSimContext();
+    var germanBundesliga2002 = GetFixtures("2002-2003", "D1");
+    await StoreLeagueInfo(context, germanBundesliga2002, "2002-2003", "Germany", "Bundesliga", 1);
+    
+    context = new SoccerSimContext();
+    var german2Bundesliga2002 = GetFixtures("2002-2003", "D2");
+    await StoreLeagueInfo(context, german2Bundesliga2002, "2002-2003", "Germany", "2. Bundesliga", 2);
+    
+    context = new SoccerSimContext();
+    var englishPremierLeague2002 = GetFixtures("2002-2003", "E0");
+    await StoreLeagueInfo(context, englishPremierLeague2002, "2002-2003", "England", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var englishChampionship2002 = GetFixtures("2002-2003", "E1");
+    await StoreLeagueInfo(context, englishChampionship2002, "2002-2003", "England", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var englishLeagueOne2002 = GetFixtures("2002-2003", "E2");
+    await StoreLeagueInfo(context, englishLeagueOne2002, "2002-2003", "England", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var englishLeagueTwo2002 = GetFixtures("2002-2003", "E3");
+    await StoreLeagueInfo(context, englishLeagueTwo2002, "2002-2003", "England", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var frenchLigue12002 = GetFixtures("2002-2003", "F1");
+    await StoreLeagueInfo(context, frenchLigue12002, "2002-2003", "France", "Ligue 1", 1);
+    
+    context = new SoccerSimContext();
+    var frenchLigue22002 = GetFixtures("2002-2003", "F2");
+    await StoreLeagueInfo(context, frenchLigue22002, "2002-2003", "France", "Ligue 2", 2);
+    
+    context = new SoccerSimContext();
+    var greecesuperLeague2002 = GetFixtures("2002-2003", "G1");
+    await StoreLeagueInfo(context, greecesuperLeague2002, "2002-2003", "Greece", "Super League", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieA2002 = GetFixtures("2002-2003", "I1");
+    await StoreLeagueInfo(context, italianSerieA2002, "2002-2003", "Italy", "Serie A", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieB2002 = GetFixtures("2002-2003", "I2");
+    await StoreLeagueInfo(context, italianSerieB2002, "2002-2003", "Italy", "Serie B", 2);
+    
+    context = new SoccerSimContext();
+    var dutchEredivisie2002 = GetFixtures("2002-2003", "N1");
+    await StoreLeagueInfo(context, dutchEredivisie2002, "2002-2003", "Netherlands", "Eredivisie", 1);
+    
+    context = new SoccerSimContext();
+    var portugueseLiga2002 = GetFixtures("2002-2003", "P1");
+    await StoreLeagueInfo(context, portugueseLiga2002, "2002-2003", "Portugal", "Liga", 1);
+    
+    context = new SoccerSimContext();
+    var scottishPremierLeague2002 = GetFixtures("2002-2003", "SC0");
+    await StoreLeagueInfo(context, scottishPremierLeague2002, "2002-2003", "Scotland", "Premier League", 1);
+
+    context = new SoccerSimContext();
+    var scottishLeagueOne2002 = GetFixtures("2002-2003", "SC1");
+    await StoreLeagueInfo(context, scottishLeagueOne2002, "2002-2003", "Scotland", "League One", 2);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueTwo2002 = GetFixtures("2002-2003", "SC2");
+    await StoreLeagueInfo(context, scottishLeagueTwo2002, "2002-2003", "Scotland", "League Two", 3);
+    
+    context = new SoccerSimContext();
+    var scottishLeagueCup2002 = GetFixtures("2002-2003", "SC3");
+    await StoreLeagueInfo(context, scottishLeagueCup2002, "2002-2003", "Scotland", "League Cup", 4);
+    
+    context = new SoccerSimContext();
+    var spanishPrimeraDivision2002 = GetFixtures("2002-2003", "SP1");
+    await StoreLeagueInfo(context, spanishPrimeraDivision2002, "2002-2003", "Spain", "Primera Division", 1);
+    
+    context = new SoccerSimContext();
+    var spanishSegundaDivision2002 = GetFixtures("2002-2003", "SP2");
+    await StoreLeagueInfo(context, spanishSegundaDivision2002, "2002-2003", "Spain", "Segunda Division", 2);
+    
+    context = new SoccerSimContext();
+    var turkishSuperLig2002 = GetFixtures("2002-2003", "T1");
+    await StoreLeagueInfo(context, turkishSuperLig2002, "2002-2003", "Turkey", "Super Lig", 1);
+
+    #endregion
+
+    #region 2003
+
+    context = new SoccerSimContext();
+    var belgianJupilerLeague2003 = GetFixtures("2003-2004", "B1");
+    await StoreLeagueInfo(context, belgianJupilerLeague2003, "2003-2004", "Belgium", "Jupiler League", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesliga2003 = GetFixtures("2003-2004", "D1");
+    await StoreLeagueInfo(context, germanBundesliga2003, "2003-2004", "Germany", "Bundesliga", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesliga22003 = GetFixtures("2003-2004", "D2");
+    await StoreLeagueInfo(context, germanBundesliga22003, "2003-2004", "Germany", "Bundesliga 2", 2);
+    
+    context = new SoccerSimContext();
+    var englishPremierLeague2003 = GetFixtures("2003-2004", "E0");
+    await StoreLeagueInfo(context, englishPremierLeague2003, "2003-2004", "England", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var englishChampionship2003 = GetFixtures("2003-2004", "E1");
+    await StoreLeagueInfo(context, englishChampionship2003, "2003-2004", "England", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var englishLeagueOne2003 = GetFixtures("2003-2004", "E2");
+    await StoreLeagueInfo(context, englishLeagueOne2003, "2003-2004", "England", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var englishLeagueTwo2003 = GetFixtures("2003-2004", "E3");
+    await StoreLeagueInfo(context, englishLeagueTwo2003, "2003-2004", "England", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var frenchLigue12003 = GetFixtures("2003-2004", "F1");
+    await StoreLeagueInfo(context, frenchLigue12003, "2003-2004", "France", "Ligue 1", 1);
+    
+    context = new SoccerSimContext();
+    var frenchLigue22003 = GetFixtures("2003-2004", "F2");
+    await StoreLeagueInfo(context, frenchLigue22003, "2003-2004", "France", "Ligue 2", 2);
+    
+    context = new SoccerSimContext();
+    var greekSuperLeague2003 = GetFixtures("2003-2004", "G1");
+    await StoreLeagueInfo(context, greekSuperLeague2003, "2003-2004", "Greece", "Super League", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieA2003 = GetFixtures("2003-2004", "I1");
+    await StoreLeagueInfo(context, italianSerieA2003, "2003-2004", "Italy", "Serie A", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieB2003 = GetFixtures("2003-2004", "I2");
+    await StoreLeagueInfo(context, italianSerieB2003, "2003-2004", "Italy", "Serie B", 2);
+    
+    context = new SoccerSimContext();
+    var dutchEredivisie2003 = GetFixtures("2003-2004", "N1");
+    await StoreLeagueInfo(context, dutchEredivisie2003, "2003-2004", "Netherlands", "Eredivisie", 1);
+    
+    context = new SoccerSimContext();
+    var portugueseLiga2003 = GetFixtures("2003-2004", "P1");
+    await StoreLeagueInfo(context, portugueseLiga2003, "2003-2004", "Portugal", "Liga", 1);
+    
+    context = new SoccerSimContext();
+    var scottishPremierLeague2003 = GetFixtures("2003-2004", "SC0");
+    await StoreLeagueInfo(context, scottishPremierLeague2003, "2003-2004", "Scotland", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var scottishDivisionOne2003 = GetFixtures("2003-2004", "SC1");
+    await StoreLeagueInfo(context, scottishDivisionOne2003, "2003-2004", "Scotland", "Division 1", 2);
+    
+    context = new SoccerSimContext();
+    var scottishDivisionTwo2003 = GetFixtures("2003-2004", "SC2");
+    await StoreLeagueInfo(context, scottishDivisionTwo2003, "2003-2004", "Scotland", "Division 2", 3);
+    
+    context = new SoccerSimContext();
+    var scottishDivisionThree2003 = GetFixtures("2003-2004", "SC3");
+    await StoreLeagueInfo(context, scottishDivisionThree2003, "2003-2004", "Scotland", "Division 3", 4);
+    
+    context = new SoccerSimContext();
+    var spanishPrimeraDivision2003 = GetFixtures("2003-2004", "SP1");
+    await StoreLeagueInfo(context, spanishPrimeraDivision2003, "2003-2004", "Spain", "Primera Division", 1);
+    
+    context = new SoccerSimContext();
+    var spanishSegundaDivision2003 = GetFixtures("2003-2004", "SP2");
+    await StoreLeagueInfo(context, spanishSegundaDivision2003, "2003-2004", "Spain", "Segunda Division", 2);
+    
+    context = new SoccerSimContext();
+    var turkishSuperLig2003 = GetFixtures("2003-2004", "T1");
+    await StoreLeagueInfo(context, turkishSuperLig2003, "2003-2004", "Turkey", "Super Lig", 1);
+
+    #endregion
+
+    #region 2004
+
+    context = new SoccerSimContext();
+    var belgianJupilerLeague2004 = GetFixtures("2004-2005", "B1");
+    await StoreLeagueInfo(context, belgianJupilerLeague2004, "2004-2005", "Belgium", "Jupiler League", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesliga2004 = GetFixtures("2004-2005", "D1");
+    await StoreLeagueInfo(context, germanBundesliga2004, "2004-2005", "Germany", "Bundesliga", 1);
+    
+    context = new SoccerSimContext();
+    var german2Bundesliga2004 = GetFixtures("2004-2005", "D2");
+    await StoreLeagueInfo(context, german2Bundesliga2004, "2004-2005", "Germany", "2. Bundesliga", 2);
+    
+    context = new SoccerSimContext();
+    var englishPremierLeague2004 = GetFixtures("2004-2005", "E0");
+    await StoreLeagueInfo(context, englishPremierLeague2004, "2004-2005", "England", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var englishChampionship2004 = GetFixtures("2004-2005", "E1");
+    await StoreLeagueInfo(context, englishChampionship2004, "2004-2005", "England", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var englishLeagueOne2004 = GetFixtures("2004-2005", "E2");
+    await StoreLeagueInfo(context, englishLeagueOne2004, "2004-2005", "England", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var englishLeagueTwo2004 = GetFixtures("2004-2005", "E3");
+    await StoreLeagueInfo(context, englishLeagueTwo2004, "2004-2005", "England", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var frenchLigueOne2004 = GetFixtures("2004-2005", "F1");
+    await StoreLeagueInfo(context, frenchLigueOne2004, "2004-2005", "France", "Ligue 1", 1);
+    
+    context = new SoccerSimContext();
+    var frenchLigueTwo2004 = GetFixtures("2004-2005", "F2");
+    await StoreLeagueInfo(context, frenchLigueTwo2004, "2004-2005", "France", "Ligue 2", 2);
+    
+    context = new SoccerSimContext();
+    var greekSuperLeague2004 = GetFixtures("2004-2005", "G1");
+    await StoreLeagueInfo(context, greekSuperLeague2004, "2004-2005", "Greece", "Super League", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieA2004 = GetFixtures("2004-2005", "I1");
+    await StoreLeagueInfo(context, italianSerieA2004, "2004-2005", "Italy", "Serie A", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieB2004 = GetFixtures("2004-2005", "I2");
+    await StoreLeagueInfo(context, italianSerieB2004, "2004-2005", "Italy", "Serie B", 2);
+    
+    context = new SoccerSimContext();
+    var dutchEredivisie2004 = GetFixtures("2004-2005", "N1");
+    await StoreLeagueInfo(context, dutchEredivisie2004, "2004-2005", "Netherlands", "Eredivisie", 1);
+    
+    context = new SoccerSimContext();
+    var portugueseSuperLiga2004 = GetFixtures("2004-2005", "P1");
+    await StoreLeagueInfo(context, portugueseSuperLiga2004, "2004-2005", "Portugal", "Super Liga", 1);
+    
+    context = new SoccerSimContext();
+    var scottishPremierLeague2004 = GetFixtures("2004-2005", "SC0");
+    await StoreLeagueInfo(context, scottishPremierLeague2004, "2004-2005", "Scotland", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var scottishDivisionOne2004 = GetFixtures("2004-2005", "SC1");
+    await StoreLeagueInfo(context, scottishDivisionOne2004, "2004-2005", "Scotland", "Division 1", 2);
+    
+    context = new SoccerSimContext();
+    var scottishDivisionTwo2004 = GetFixtures("2004-2005", "SC2");
+    await StoreLeagueInfo(context, scottishDivisionTwo2004, "2004-2005", "Scotland", "Division 2", 3);
+    
+    context = new SoccerSimContext();
+    var scottishDivisionThree2004 = GetFixtures("2004-2005", "SC3");
+    await StoreLeagueInfo(context, scottishDivisionThree2004, "2004-2005", "Scotland", "Division 3", 4);
+    
+    context = new SoccerSimContext();
+    var spanishPrimeraDivision2004 = GetFixtures("2004-2005", "SP1");
+    await StoreLeagueInfo(context, spanishPrimeraDivision2004, "2004-2005", "Spain", "Primera Division", 1);
+    
+    context = new SoccerSimContext();
+    var spanishSegundaDivision2004 = GetFixtures("2004-2005", "SP2");
+    await StoreLeagueInfo(context, spanishSegundaDivision2004, "2004-2005", "Spain", "Segunda Division", 2);
+    
+    context = new SoccerSimContext();
+    var turkishSuperLig2004 = GetFixtures("2004-2005", "T1");
+    await StoreLeagueInfo(context, turkishSuperLig2004, "2004-2005", "Turkey", "Super Lig", 1);
+
+    #endregion
+
+    #region 2005
+
+    context = new SoccerSimContext();
+    var belgianJupilerLeague2005 = GetFixtures("2005-2006", "B1");
+    await StoreLeagueInfo(context, belgianJupilerLeague2005, "2005-2006", "Belgium", "Jupiler League", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesliga2005 = GetFixtures("2005-2006", "D1");
+    await StoreLeagueInfo(context, germanBundesliga2005, "2005-2006", "Germany", "Bundesliga", 1);
+    
+    context = new SoccerSimContext();
+    var german2Bundesliga2005 = GetFixtures("2005-2006", "D2");
+    await StoreLeagueInfo(context, german2Bundesliga2005, "2005-2006", "Germany", "2. Bundesliga", 2);
+    
+    context = new SoccerSimContext();
+    var englishPremierLeague2005 = GetFixtures("2005-2006", "E0");
+    await StoreLeagueInfo(context, englishPremierLeague2005, "2005-2006", "England", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var englishChampionship2005 = GetFixtures("2005-2006", "E1");
+    await StoreLeagueInfo(context, englishChampionship2005, "2005-2006", "England", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var englishLeagueOne2005 = GetFixtures("2005-2006", "E2");
+    await StoreLeagueInfo(context, englishLeagueOne2005, "2005-2006", "England", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var englishLeagueTwo2005 = GetFixtures("2005-2006", "E3");
+    await StoreLeagueInfo(context, englishLeagueTwo2005, "2005-2006", "England", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var frenchLigueOne2005 = GetFixtures("2005-2006", "F1");
+    await StoreLeagueInfo(context, frenchLigueOne2005, "2005-2006", "France", "Ligue 1", 1);
+    
+    context = new SoccerSimContext();
+    var frenchLigueTwo2005 = GetFixtures("2005-2006", "F2");
+    await StoreLeagueInfo(context, frenchLigueTwo2005, "2005-2006", "France", "Ligue 2", 2);
+    
+    context = new SoccerSimContext();
+    var greekSuperLeague2005 = GetFixtures("2005-2006", "G1");
+    await StoreLeagueInfo(context, greekSuperLeague2005, "2005-2006", "Greece", "Super League", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieA2005 = GetFixtures("2005-2006", "I1");
+    await StoreLeagueInfo(context, italianSerieA2005, "2005-2006", "Italy", "Serie A", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieB2005 = GetFixtures("2005-2006", "I2");
+    await StoreLeagueInfo(context, italianSerieB2005, "2005-2006", "Italy", "Serie B", 2);
+    
+    context = new SoccerSimContext();
+    var dutchEredivisie2005 = GetFixtures("2005-2006", "N1");
+    await StoreLeagueInfo(context, dutchEredivisie2005, "2005-2006", "Netherlands", "Eredivisie", 1);
+    
+    context = new SoccerSimContext();
+    var portugueseSuperLiga2005 = GetFixtures("2005-2006", "P1");
+    await StoreLeagueInfo(context, portugueseSuperLiga2005, "2005-2006", "Portugal", "Super Liga", 1);
+    
+    context = new SoccerSimContext();
+    var scottishPremierLeague2005 = GetFixtures("2005-2006", "SC0");
+    await StoreLeagueInfo(context, scottishPremierLeague2005, "2005-2006", "Scotland", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var scottishDivisionOne2005 = GetFixtures("2005-2006", "SC1");
+    await StoreLeagueInfo(context, scottishDivisionOne2005, "2005-2006", "Scotland", "Division 1", 2);
+    
+    context = new SoccerSimContext();
+    var scottishDivisionTwo2005 = GetFixtures("2005-2006", "SC2");
+    await StoreLeagueInfo(context, scottishDivisionTwo2005, "2005-2006", "Scotland", "Division 2", 3);
+    
+    context = new SoccerSimContext();
+    var scottishDivisionThree2005 = GetFixtures("2005-2006", "SC3");
+    await StoreLeagueInfo(context, scottishDivisionThree2005, "2005-2006", "Scotland", "Division 3", 4);
+    
+    context = new SoccerSimContext();
+    var spanishPrimeraLiga2005 = GetFixtures("2005-2006", "SP1");
+    await StoreLeagueInfo(context, spanishPrimeraLiga2005, "2005-2006", "Spain", "Primera Liga", 1);
+    
+    context = new SoccerSimContext();
+    var spanishSegundaLiga2005 = GetFixtures("2005-2006", "SP2");
+    await StoreLeagueInfo(context, spanishSegundaLiga2005, "2005-2006", "Spain", "Segunda Liga", 2);
+    
+    context = new SoccerSimContext();
+    var turkishSuperLig2005 = GetFixtures("2005-2006", "T1");
+    await StoreLeagueInfo(context, turkishSuperLig2005, "2005-2006", "Turkey", "Super Lig", 1);
+
+    #endregion
+    
+    #region 2006
+
+    context = new SoccerSimContext();
+    var belgiumJupilerLeague2006 = GetFixtures("2006-2007", "B1");
+    await StoreLeagueInfo(context, belgiumJupilerLeague2006, "2006-2007", "Belgium", "Jupiler League", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesliga2006 = GetFixtures("2006-2007", "D1");
+    await StoreLeagueInfo(context, germanBundesliga2006, "2006-2007", "Germany", "Bundesliga", 1);
+    
+    context = new SoccerSimContext();
+    var germanBundesliga22006 = GetFixtures("2006-2007", "D2");
+    await StoreLeagueInfo(context, germanBundesliga22006, "2006-2007", "Germany", "Bundesliga 2", 2);
+    
+    context = new SoccerSimContext();
+    var englishPremierLeague2006 = GetFixtures("2006-2007", "E0");
+    await StoreLeagueInfo(context, englishPremierLeague2006, "2006-2007", "England", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var englishChampionship2006 = GetFixtures("2006-2007", "E1");
+    await StoreLeagueInfo(context, englishChampionship2006, "2006-2007", "England", "Championship", 2);
+    
+    context = new SoccerSimContext();
+    var englishLeagueOne2006 = GetFixtures("2006-2007", "E2");
+    await StoreLeagueInfo(context, englishLeagueOne2006, "2006-2007", "England", "League One", 3);
+    
+    context = new SoccerSimContext();
+    var englishLeagueTwo2006 = GetFixtures("2006-2007", "E3");
+    await StoreLeagueInfo(context, englishLeagueTwo2006, "2006-2007", "England", "League Two", 4);
+    
+    context = new SoccerSimContext();
+    var englishConference2006 = GetFixtures("2006-2007", "EC");
+    await StoreLeagueInfo(context, englishConference2006, "2006-2007", "England", "Conference", 5);
+    
+    context = new SoccerSimContext();
+    var frenchLigue12006 = GetFixtures("2006-2007", "F1");
+    await StoreLeagueInfo(context, frenchLigue12006, "2006-2007", "France", "Ligue 1", 1);
+    
+    context = new SoccerSimContext();
+    var frenchLigue22006 = GetFixtures("2006-2007", "F2");
+    await StoreLeagueInfo(context, frenchLigue22006, "2006-2007", "France", "Ligue 2", 2);
+    
+    context = new SoccerSimContext();
+    var greekSuperLeague2006 = GetFixtures("2006-2007", "G1");
+    await StoreLeagueInfo(context, greekSuperLeague2006, "2006-2007", "Greece", "Super League", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieA2006 = GetFixtures("2006-2007", "I1");
+    await StoreLeagueInfo(context, italianSerieA2006, "2006-2007", "Italy", "Serie A", 1);
+    
+    context = new SoccerSimContext();
+    var italianSerieB2006 = GetFixtures("2006-2007", "I2");
+    await StoreLeagueInfo(context, italianSerieB2006, "2006-2007", "Italy", "Serie B", 2);
+    
+    context = new SoccerSimContext();
+    var dutchEredivisie2006 = GetFixtures("2006-2007", "N1");
+    await StoreLeagueInfo(context, dutchEredivisie2006, "2006-2007", "Netherlands", "Eredivisie", 1);
+    
+    context = new SoccerSimContext();
+    var portugueseSuperLiga2006 = GetFixtures("2006-2007", "P1");
+    await StoreLeagueInfo(context, portugueseSuperLiga2006, "2006-2007", "Portugal", "Super Liga", 1);
+    
+    context = new SoccerSimContext();
+    var scottishPremierLeague2006 = GetFixtures("2006-2007", "SC0");
+    await StoreLeagueInfo(context, scottishPremierLeague2006, "2006-2007", "Scotland", "Premier League", 1);
+    
+    context = new SoccerSimContext();
+    var scottishDivisionOne2006 = GetFixtures("2006-2007", "SC1");
+    await StoreLeagueInfo(context, scottishDivisionOne2006, "2006-2007", "Scotland", "Division 1", 2);
+    
+    context = new SoccerSimContext();
+    var scottishDivisionTwo2006 = GetFixtures("2006-2007", "SC2");
+    await StoreLeagueInfo(context, scottishDivisionTwo2006, "2006-2007", "Scotland", "Division 2", 3);
+    
+    context = new SoccerSimContext();
+    var scottishDivisionThree2006 = GetFixtures("2006-2007", "SC3");
+    await StoreLeagueInfo(context, scottishDivisionThree2006, "2006-2007", "Scotland", "Division 3", 4);
+    
+    context = new SoccerSimContext();
+    var spanishPrimeraLiga2006 = GetFixtures("2006-2007", "SP1");
+    await StoreLeagueInfo(context, spanishPrimeraLiga2006, "2006-2007", "Spain", "Primera Liga", 1);
+    
+    context = new SoccerSimContext();
+    var spanishSegundaLiga2006 = GetFixtures("2006-2007", "SP2");
+    await StoreLeagueInfo(context, spanishSegundaLiga2006, "2006-2007", "Spain", "Segunda Liga", 2);
+    
+    context = new SoccerSimContext();
+    var turkishSuperLig2006 = GetFixtures("2006-2007", "T1");
+    await StoreLeagueInfo(context, turkishSuperLig2006, "2006-2007", "Turkey", "Super Lig", 1);
+
+    #endregion
 }
 catch (Exception exception)
 {
